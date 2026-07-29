@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAS Console — Policy Administration System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="screen-login" class="login-wrapper" style="display:none;">
+  <div class="login-card glass">
+    <div class="login-logo"><div class="logo-badge">PAS</div><h1>PAS Console</h1><p>Policy Administration System — Southlake Insurance</p></div>
+    <div class="login-step-indicator" style="text-align:center;font-size:12px;color:var(--text-muted);margin-bottom:16px;">Step 1: Sign In</div>
+    <div id="login-step-1" class="login-step active">
+      <div class="form-group"><label class="form-label">Email Address <i class="info-btn" onclick="showInfo('email-address')">i</i></label><input class="form-input" type="email" id="login-email" placeholder="Enter your email"></div>
+      <div class="form-group"><label class="form-label">Password <i class="info-btn" onclick="showInfo('password')">i</i></label><input class="form-input" type="password" id="login-password" placeholder="Enter your password"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:10px;" onclick="loginStep1()">Sign In</button>
+      <p style="text-align:center;margin-top:12px;font-size:12px;color:var(--text-muted);">Forgot password? Contact your system admin</p>
+    </div>
+    <div id="login-step-2" class="login-step">
+      <div class="form-group"><label class="form-label">OTP Verification Code <i class="info-btn" onclick="showInfo('otp-code')">i</i></label>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">A 6-digit code was sent to <span id="otp-email-display" style="color:var(--accent);"></span></p>
+        <input class="form-input" type="text" id="login-otp" placeholder="Enter 6-digit OTP" maxlength="6" style="text-align:center;font-size:20px;letter-spacing:8px;font-family:monospace;" oninput="if(this.value.length===6)loginStep2()">
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:10px;" onclick="loginStep2()">Verify OTP &amp; Sign In</button>
+      <p style="text-align:center;margin-top:12px;font-size:12px;color:var(--text-muted);">Didn't receive code? <a href="#" style="color:var(--accent);">Resend</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" class="app-shell" style="display:none;">
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-logo"><div class="logo-icon">PA</div><span>PAS Console</span></div>
+  <div class="header-search"><i class="fas fa-search search-icon"></i><input type="text" placeholder="Search policies, submissions, insureds..." id="global-search"></div>
+  <div class="header-actions">
+    <button class="notif-btn"><i class="fas fa-bell"></i><span class="badge">3</span></button>
+    <div class="header-user"><div class="avatar">RS</div><div><div class="user-name">Riya Sharma</div><div class="user-role">Senior Underwriter</div></div><i class="fas fa-chevron-down" style="font-size:10px;color:var(--text-muted);margin-left:4px;"></i></div>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-section"><div class="sidebar-section-title">Main</div>
+    <div class="sidebar-item active" id="nav-dashboard" onclick="showScreen('dashboard')"><span class="icon"><i class="fas fa-th-large"></i></span><span>Dashboard</span></div>
+    <div class="sidebar-item" id="nav-policy-search" onclick="showScreen('policy-search')"><span class="icon"><i class="fas fa-search"></i></span><span>Policy Search</span></div>
+    <div class="sidebar-item" id="nav-new-submission" onclick="showScreen('new-submission')"><span class="icon"><i class="fas fa-plus-circle"></i></span><span>New Submission</span></div>
+    <div class="sidebar-item" id="nav-uw-queue" onclick="showScreen('uw-queue')"><span class="icon"><i class="fas fa-clipboard-check"></i></span><span>UW Queue</span></div>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-title">Policy</div>
+    <div class="sidebar-item" id="nav-policy-details" onclick="showScreen('policy-details')"><span class="icon"><i class="fas fa-file-contract"></i></span><span>Policy Details</span></div>
+    <div class="sidebar-item" id="nav-endorsement" onclick="showScreen('endorsement')"><span class="icon"><i class="fas fa-pen-alt"></i></span><span>Endorsement</span></div>
+    <div class="sidebar-item" id="nav-renewal" onclick="showScreen('renewal')"><span class="icon"><i class="fas fa-sync-alt"></i></span><span>Renewal</span></div>
+    <div class="sidebar-item" id="nav-cancellation" onclick="showScreen('cancellation')"><span class="icon"><i class="fas fa-ban"></i></span><span>Cancellation</span></div>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-title">Financial</div>
+    <div class="sidebar-item" id="nav-billing" onclick="showScreen('billing')"><span class="icon"><i class="fas fa-credit-card"></i></span><span>Billing</span></div>
+    <div class="sidebar-item" id="nav-reports" onclick="showScreen('reports')"><span class="icon"><i class="fas fa-chart-bar"></i></span><span>Reports</span></div>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-title">Records</div>
+    <div class="sidebar-item" id="nav-documents" onclick="showScreen('documents')"><span class="icon"><i class="fas fa-folder-open"></i></span><span>Documents</span></div>
+    <div class="sidebar-item" id="nav-notes" onclick="showScreen('notes')"><span class="icon"><i class="fas fa-sticky-note"></i></span><span>Notes</span></div>
+    <div class="sidebar-item" id="nav-activities" onclick="showScreen('activities')"><span class="icon"><i class="fas fa-history"></i></span><span>Activities & Audit</span></div>
+  </div>
+  <div class="sidebar-section"><div class="sidebar-section-title">System</div>
+    <div class="sidebar-item" id="nav-admin" onclick="showScreen('admin')"><span class="icon"><i class="fas fa-cog"></i></span><span>Admin</span></div>
+    <div class="sidebar-item" onclick="logout()"><span class="icon"><i class="fas fa-sign-out-alt"></i></span><span>Logout</span></div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="content">
+
+<!-- 1. DASHBOARD -->
+<div id="screen-dashboard" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Login</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Pick a task below</span></div>
+  <div class="page-header"><h1>Dashboard <i class="info-btn" onclick="showInfo('dashboard')">i</i></h1><div class="actions"><span style="font-size:12px;color:var(--text-muted);">Last Login: Today 9:10 AM</span></div></div>
+  <div class="kpi-grid">
+    <div class="kpi-card glass"><div class="kpi-top"><div><div class="kpi-label">Active Policies <i class="info-btn" onclick="showInfo('policy-status')">i</i></div><div class="kpi-value">42</div></div><div class="kpi-icon" style="background:var(--success-bg);color:var(--success);"><i class="fas fa-file-contract"></i></div></div><div class="kpi-trend up"><i class="fas fa-arrow-up"></i> +8% this quarter</div></div>
+    <div class="kpi-card glass"><div class="kpi-top"><div><div class="kpi-label">Pending Submissions <i class="info-btn" onclick="showInfo('submission-status')">i</i></div><div class="kpi-value">7</div></div><div class="kpi-icon" style="background:var(--warning-bg);color:var(--warning);"><i class="fas fa-hourglass-half"></i></div></div><div class="kpi-trend down"><i class="fas fa-arrow-down"></i> -2 from last week</div></div>
+    <div class="kpi-card glass"><div class="kpi-top"><div><div class="kpi-label">UW Queue <i class="info-btn" onclick="showInfo('uw-score')">i</i></div><div class="kpi-value">5</div></div><div class="kpi-icon" style="background:var(--cyan-bg);color:var(--cyan);"><i class="fas fa-clipboard-check"></i></div></div><div class="kpi-trend up"><i class="fas fa-arrow-up"></i> +3 from yesterday</div></div>
+    <div class="kpi-card glass"><div class="kpi-top"><div><div class="kpi-label">In-Force Premium <i class="info-btn" onclick="showInfo('premium')">i</i></div><div class="kpi-value">$8.2M</div></div><div class="kpi-icon" style="background:var(--purple-bg);color:var(--purple);"><i class="fas fa-dollar-sign"></i></div></div><div class="kpi-trend up"><i class="fas fa-arrow-up"></i> +12.3% YTD</div></div>
+  </div>
+  <h2 style="font-size:15px;font-weight:600;margin-bottom:var(--spacing-md);">Quick Actions</h2>
+  <div class="quick-actions">
+    <div class="quick-action glass" onclick="showScreen('new-submission')"><div class="qa-icon" style="background:var(--accent-dim);color:var(--accent);"><i class="fas fa-plus-circle"></i></div><div class="qa-label">New Submission</div></div>
+    <div class="quick-action glass" onclick="showScreen('policy-search')"><div class="qa-icon" style="background:var(--success-bg);color:var(--success);"><i class="fas fa-search"></i></div><div class="qa-label">Policy Search</div></div>
+    <div class="quick-action glass" onclick="showScreen('uw-queue')"><div class="qa-icon" style="background:var(--warning-bg);color:var(--warning);"><i class="fas fa-clipboard-check"></i></div><div class="qa-label">UW Queue</div></div>
+    <div class="quick-action glass" onclick="showScreen('endorsement')"><div class="qa-icon" style="background:var(--purple-bg);color:var(--purple);"><i class="fas fa-pen-alt"></i></div><div class="qa-label">Endorsement</div></div>
+    <div class="quick-action glass" onclick="showScreen('billing')"><div class="qa-icon" style="background:var(--cyan-bg);color:var(--cyan);"><i class="fas fa-credit-card"></i></div><div class="qa-label">Billing</div></div>
+    <div class="quick-action glass" onclick="showScreen('reports')"><div class="qa-icon" style="background:var(--danger-bg);color:var(--danger);"><i class="fas fa-chart-bar"></i></div><div class="qa-label">Reports</div></div>
+    <div class="quick-action glass" onclick="showScreen('documents')"><div class="qa-icon" style="background:var(--gray-bg);color:var(--gray);"><i class="fas fa-folder-open"></i></div><div class="qa-label">Documents</div></div>
+    <div class="quick-action glass" onclick="showScreen('admin')"><div class="qa-icon" style="background:var(--secondary);color:#fff;"><i class="fas fa-cog"></i></div><div class="qa-label">Admin</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card glass"><div class="card-title">Recent Activity <i class="info-btn" onclick="showInfo('activity-log')">i</i></div>
+      <table class="data-table"><thead><tr><th>Time</th><th>User</th><th>Action</th><th>Entity</th></tr></thead><tbody>
+        <tr><td style="font-size:12px;color:var(--text-muted);">09:15 AM</td><td>Riya Sharma</td><td><span class="chip chip-submitted"><span class="chip-dot"></span>Created</span></td><td class="col-id">SUB-2026-105</td></tr>
+        <tr><td style="font-size:12px;color:var(--text-muted);">08:45 AM</td><td>Vikram Patel</td><td><span class="chip chip-approved"><span class="chip-dot"></span>Approved</span></td><td class="col-id">SUB-2026-102</td></tr>
+        <tr><td style="font-size:12px;color:var(--text-muted);">04:30 PM</td><td>Neha Gupta</td><td><span class="chip chip-endorsed"><span class="chip-dot"></span>Endorsed</span></td><td class="col-id">POL-2026-004</td></tr>
+        <tr><td style="font-size:12px;color:var(--text-muted);">02:00 PM</td><td>Riya Sharma</td><td><span class="chip chip-active"><span class="chip-dot"></span>Uploaded</span></td><td>Application Form</td></tr>
+        <tr><td style="font-size:12px;color:var(--text-muted);">11:20 AM</td><td>Neha Gupta</td><td><span class="chip chip-pending"><span class="chip-dot"></span>Referred</span></td><td class="col-id">SUB-2026-104</td></tr>
+      </tbody></table>
+    </div>
+    <div class="card glass"><div class="card-title">Upcoming Renewals <i class="info-btn" onclick="showInfo('renewal')">i</i></div>
+      <table class="data-table"><thead><tr><th>Policy</th><th>Insured</th><th>Expiration</th><th>Days Left</th></tr></thead><tbody>
+        <tr><td class="col-id">POL-2026-003</td><td>Horizon Logistics LLC</td><td>2026-05-31</td><td><span style="color:var(--warning);font-weight:600;">25</span></td></tr>
+        <tr><td class="col-id">POL-2026-004</td><td>Coastal Properties Group</td><td>2026-08-31</td><td>115</td></tr>
+        <tr><td class="col-id">POL-2026-008</td><td>Great Lakes Transport</td><td>2026-10-31</td><td>185</td></tr>
+        <tr><td class="col-id">POL-2026-001</td><td>ABC Construction Inc.</td><td>2026-12-31</td><td>245</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- 2. POLICY SEARCH -->
+<div id="screen-policy-search" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Policy Search</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Select a policy to view details</span></div>
+  <div class="page-header"><h1>Policy Search <i class="info-btn" onclick="showInfo('policy-search')">i</i></h1><div class="actions"><button class="btn btn-outline btn-sm"><i class="fas fa-download"></i> Export CSV</button></div></div>
+  <div class="card glass mb-md"><div class="form-row">
+    <div class="form-group"><input class="form-input" type="text" placeholder="Search by Policy #, Insured Name, or FEIN..."></div>
+    <div class="form-group"><select class="form-input"><option>All Lines of Business</option><option>General Liability</option><option>Professional Liability</option><option>Auto Liability</option><option>Property</option><option>Workers Compensation</option><option>Package</option></select></div>
+  </div></div>
+  <div class="filter-bar">
+    <span class="filter-chip active">All (8)</span><span class="filter-chip">Active (4)</span><span class="filter-chip">Pending (1)</span><span class="filter-chip">Endorsed (1)</span><span class="filter-chip">Cancelled (1)</span><span class="filter-chip">Renewed (1)</span>
+  </div>
+  <div class="card glass">
+    <table class="data-table"><thead><tr><th>Policy # <i class="info-btn info-btn-sm" onclick="showInfo('policy-number')">i</i></th><th>Insured</th><th>LOB <i class="info-btn info-btn-sm" onclick="showInfo('lob')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('policy-status')">i</i></th><th>Effective <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></th><th>Expiration <i class="info-btn info-btn-sm" onclick="showInfo('expiration-date')">i</i></th><th>Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></th><th>Actions</th></tr></thead><tbody>
+      <tr onclick="viewPolicy('POL-2026-001')" style="cursor:pointer;"><td class="col-id">POL-2026-001</td><td>ABC Construction Inc.</td><td>General Liability</td><td><span class="chip chip-active"><span class="chip-dot"></span>Active</span></td><td>2026-01-01</td><td>2026-12-31</td><td>$125,000</td><td class="actions-cell"><button class="btn btn-ghost btn-xs">View</button><button class="btn btn-ghost btn-xs">Edit</button></td></tr>
+      <tr onclick="viewPolicy('POL-2026-002')" style="cursor:pointer;"><td class="col-id">POL-2026-002</td><td>MedTech Solutions Inc.</td><td>Professional Liability</td><td><span class="chip chip-pending"><span class="chip-dot"></span>Pending</span></td><td>2026-02-01</td><td>2027-01-31</td><td>$67,500</td><td class="actions-cell"><button class="btn btn-ghost btn-xs">View</button><button class="btn btn-ghost btn-xs">Edit</button></td></tr>
+      <tr onclick="viewPolicy('POL-2026-003')" style="cursor:pointer;"><td class="col-id">POL-2026-003</td><td>Horizon Logistics LLC</td><td>Auto Liability</td><td><span class="chip chip-active"><span class="chip-dot"></span>Active</span></td><td>2025-06-01</td><td>2026-05-31</td><td>$210,000</td><td class="actions-cell"><button class="btn btn-ghost btn-xs">View</button><button class="btn btn-ghost btn-xs">Edit</button></td></tr>
+      <tr onclick="viewPolicy('POL-2026-004')" style="cursor:pointer;"><td class="col-id">POL-2026-004</td><td>Coastal Properties Group</td><td>Property</td><td><span class="chip chip-endorsed"><span class="chip-dot"></span>Endorsed</span></td><td>2025-09-01</td><td>2026-08-31</td><td>$43,200</td><td class="actions-cell"><button class="btn btn-ghost btn-xs">View</button></td></tr>
+      <tr onclick="viewPolicy('POL-2026-005')" style="cursor:pointer;"><td class="col-id">POL-2026-005</td><td>Pioneer Energy Corp.</td><td>Workers Compensation</td><td><span class="chip chip-cancelled"><span class="chip-dot"></span>Cancelled</span></td><td>2025-04-01</td><td>2025-12-15</td><td>$189,000</td><td class="actions-cell"><button class="btn btn-ghost btn-xs">View</button></td></tr>
+      <tr onclick="viewPolicy('POL-2026-006')" style="cursor:pointer;"><td class="col-id">POL-2026-006</td><td>First National Retail</td><td>Package</td><td><span class="chip chip-renewed"><span class="chip-dot"></span>Renewed</span></td><td>2026-01-01</td><td>2026-12-31</td><td>$94,800</td><td class="actions-cell"><button class="btn btn-ghost btn-xs">View</button></td></tr>
+      <tr onclick="viewPolicy('POL-2026-007')" style="cursor:pointer;"><td class="col-id">POL-2026-007</td><td>Sunrise Healthcare LLC</td><td>Professional Liability</td><td><span class="chip chip-active"><span class="chip-dot"></span>Active</span></td><td>2026-03-01</td><td>2027-02-28</td><td>$156,000</td><td class="actions-cell"><button class="btn btn-ghost btn-xs">View</button><button class="btn btn-ghost btn-xs">Edit</button></td></tr>
+      <tr onclick="viewPolicy('POL-2026-008')" style="cursor:pointer;"><td class="col-id">POL-2026-008</td><td>Great Lakes Transport</td><td>Auto Liability</td><td><span class="chip chip-active"><span class="chip-dot"></span>Active</span></td><td>2025-11-01</td><td>2026-10-31</td><td>$185,000</td><td class="actions-cell"><button class="btn btn-ghost btn-xs">View</button><button class="btn btn-ghost btn-xs">Edit</button></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- 3. NEW SUBMISSION -->
+<div id="screen-new-submission" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">New Submission</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Next: Underwriting Review</span></div>
+  <h1 style="font-size:22px;margin-bottom:var(--spacing-lg);">New Business Submission <i class="info-btn" onclick="showInfo('quote')">i</i></h1>
+  <div class="wizard" id="wizard-quote">
+    <div class="wizard-steps">
+      <div class="wizard-step active"><span class="step-num">1</span><span class="step-label">Insured Info</span></div>
+      <div class="wizard-step"><span class="step-num">2</span><span class="step-label">Coverage</span></div>
+      <div class="wizard-step"><span class="step-num">3</span><span class="step-label">Details</span></div>
+      <div class="wizard-step"><span class="step-num">4</span><span class="step-label">Premium</span></div>
+      <div class="wizard-step"><span class="step-num">5</span><span class="step-label">Review</span></div>
+    </div>
+    <div class="wizard-body">
+      <div style="display:block;">
+        <div class="card glass">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Insured Name <i class="info-btn" onclick="showInfo('policy-number')">i</i></label><input class="form-input" value="Blue Ridge Manufacturing" placeholder="Full legal name"></div>
+            <div class="form-group"><label class="form-label">Business Legal Name</label><input class="form-input" value="Blue Ridge Manufacturing Inc." placeholder="Legal entity name"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">FEIN <i class="info-btn" onclick="showInfo('policy-number')">i</i></label><input class="form-input" value="58-2716348" placeholder="XX-XXXXXXX"></div>
+            <div class="form-group"><label class="form-label">Business Type</label><select class="form-input"><option selected>Corporation</option><option>LLC</option><option>Partnership</option><option>Sole Proprietor</option></select></div>
+          </div>
+          <div class="form-group"><label class="form-label">Mailing Address</label><input class="form-input" value="1200 Industrial Blvd, Suite 300, Charlotte, NC 28202"></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Contact Email</label><input class="form-input" value="james.wilson@blueridgemfg.com"></div>
+            <div class="form-group"><label class="form-label">Contact Phone</label><input class="form-input" value="(704) 555-0198"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Effective Date <i class="info-btn" onclick="showInfo('effective-date')">i</i></label><input class="form-input" type="date" value="2026-09-01"></div>
+            <div class="form-group"><label class="form-label">Agent / Broker <i class="info-btn" onclick="showInfo('agent')">i</i></label><select class="form-input"><option selected>Marsh Inc.</option><option>Aon</option><option>WTW</option><option>Lockton</option><option>Gallagher</option></select></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:none;">
+        <div class="card glass">
+          <div class="form-group"><label class="form-label">Line of Business <i class="info-btn" onclick="showInfo('lob')">i</i></label><select class="form-input"><option selected>General Liability</option><option>Professional Liability</option><option>Auto Liability</option><option>Property</option><option>Workers Compensation</option><option>Package</option></select></div>
+          <div class="card-title" style="margin-top:16px;">Coverages <i class="info-btn" onclick="showInfo('coverage')">i</i></div>
+          <div class="radio-group">
+            <div class="radio-card selected"><div class="rc-title"><i class="fas fa-check-circle" style="color:var(--success);"></i> GL</div><div class="rc-desc">General Liability — $1M limit</div></div>
+            <div class="radio-card"><div class="rc-title">Property</div><div class="rc-desc">Property — $5M limit</div></div>
+            <div class="radio-card"><div class="rc-title">Auto</div><div class="rc-desc">Auto Liability — $2M limit</div></div>
+            <div class="radio-card"><div class="rc-title">WC</div><div class="rc-desc">Workers Compensation</div></div>
+          </div>
+          <div class="form-row mt-md">
+            <div class="form-group"><label class="form-label">Selected Coverage</label><input class="form-input" value="General Liability" readonly></div>
+            <div class="form-group"><label class="form-label">Requested Limit <i class="info-btn" onclick="showInfo('coverage-limit')">i</i></label><select class="form-input"><option>$1,000,000</option><option selected>$2,000,000</option><option>$3,000,000</option><option>$5,000,000</option></select></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:none;">
+        <div class="card glass">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Deductible <i class="info-btn" onclick="showInfo('deductible')">i</i></label><select class="form-input"><option>$5,000</option><option selected>$10,000</option><option>$25,000</option><option>$50,000</option><option>$100,000</option></select></div>
+            <div class="form-group"><label class="form-label">Aggregate Limit <i class="info-btn" onclick="showInfo('coverage-limit')">i</i></label><select class="form-input"><option>$2,000,000</option><option selected>$4,000,000</option><option>$6,000,000</option></select></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Rating Basis <i class="info-btn" onclick="showInfo('rating-basis')">i</i></label><select class="form-input"><option selected>Gross Revenue</option><option>Payroll</option><option>Square Footage</option><option>Power Units</option></select></div>
+            <div class="form-group"><label class="form-label">Rating Value</label><input class="form-input" value="$12,500,000"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Optional Coverages</label>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;">
+              <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary);"><input type="checkbox" checked> Employment Practices Liability</label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary);"><input type="checkbox"> Cyber Liability</label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary);"><input type="checkbox"> Equipment Breakdown</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:none;">
+        <div class="card glass">
+          <div class="card-title">Premium Calculation <i class="info-btn" onclick="showInfo('premium-breakdown')">i</i></div>
+          <div class="premium-breakdown">
+            <div class="pb-row"><span class="pb-label">Base Premium</span><span class="pb-value">$72,500</span></div>
+            <div class="pb-row"><span class="pb-label">Experience Mod <i class="info-btn" onclick="showInfo('experience-mod')">i</i></span><span class="pb-value">0.92</span></div>
+            <div class="pb-row"><span class="pb-label">Schedule Credit <i class="info-btn" onclick="showInfo('schedule-credit')">i</i></span><span class="pb-value">-5% (-$3,335)</span></div>
+            <div class="pb-row"><span class="pb-label">Premium Subtotal</span><span class="pb-value">$66,700</span></div>
+            <div class="pb-row"><span class="pb-label">SLA Tax (3.6%) <i class="info-btn" onclick="showInfo('taxes-fees')">i</i></span><span class="pb-value">$2,401</span></div>
+            <div class="pb-row"><span class="pb-label">Stamping Fee (1.5%) <i class="info-btn" onclick="showInfo('taxes-fees')">i</i></span><span class="pb-value">$1,001</span></div>
+            <div class="pb-row total"><span class="pb-label">Total Annual Premium</span><span class="pb-value">$87,502</span></div>
+          </div>
+        </div>
+        <div class="card glass mt-md">
+          <div class="card-title">Billing Plan <i class="info-btn" onclick="showInfo('billing-plan')">i</i></div>
+          <div class="radio-group">
+            <div class="radio-card"><div class="rc-title">Annual</div><div class="rc-desc">$87,502 at bind</div></div>
+            <div class="radio-card selected"><div class="rc-title">Quarterly</div><div class="rc-desc">4 x $21,876</div></div>
+            <div class="radio-card"><div class="rc-title">Monthly</div><div class="rc-desc">12 x $7,292</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:none;">
+        <div class="card glass">
+          <div class="card-title">Submission Summary <i class="info-btn" onclick="showInfo('submission-status')">i</i></div>
+          <div class="summary-card glass-sm">
+            <div class="sc-item"><div class="sc-label">Insured</div><div class="sc-value" style="font-size:16px;">Blue Ridge Manufacturing</div></div>
+            <div class="sc-item"><div class="sc-label">LOB</div><div class="sc-value">General Liability</div></div>
+            <div class="sc-item"><div class="sc-label">Premium</div><div class="sc-value" style="color:var(--accent);">$87,502</div></div>
+            <div class="sc-item"><div class="sc-label">Effective</div><div class="sc-value">2026-09-01</div></div>
+          </div>
+          <div class="mt-md" style="padding:12px;background:var(--success-bg);border-radius:var(--radius-sm);"><p style="font-size:13px;color:var(--success);"><i class="fas fa-check-circle"></i> All required fields completed. Ready to submit for UW review.</p></div>
+          <button class="btn btn-primary mt-md" style="width:100%;justify-content:center;padding:12px;" onclick="showScreen('uw-queue')"><i class="fas fa-paper-plane"></i> Submit to Underwriting</button>
+        </div>
+      </div>
+    </div>
+    <div class="wizard-footer">
+      <button class="btn btn-secondary btn-wizard-back" style="display:none;" onclick="goToStep('wizard-quote',1)"><i class="fas fa-arrow-left"></i> Back</button>
+      <div></div>
+      <button class="btn btn-primary btn-wizard-next" onclick="advanceWizard('wizard-quote')">Next <i class="fas fa-arrow-right"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- 4. UW QUEUE -->
+<div id="screen-uw-queue" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> New Submission</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Underwriting Queue</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Next: Bind &amp; Issue</span></div>
+  <div class="page-header"><h1>Underwriting Queue <i class="info-btn" onclick="showInfo('uw-decision')">i</i></h1><div class="actions"><span style="font-size:12px;color:var(--text-muted);">5 items in queue</span></div></div>
+  <div class="summary-card glass">
+    <div class="sc-item"><div class="sc-label">New</div><div class="sc-value" style="color:var(--warning);">3</div></div>
+    <div class="sc-item"><div class="sc-label">In Review</div><div class="sc-value" style="color:var(--info);">1</div></div>
+    <div class="sc-item"><div class="sc-label">Referred</div><div class="sc-value" style="color:var(--purple);">1</div></div>
+    <div class="sc-item"><div class="sc-label">Avg Score <i class="info-btn info-btn-sm" onclick="showInfo('uw-score')">i</i></div><div class="sc-value">6.8</div></div>
+  </div>
+  <div class="card glass">
+    <table class="data-table"><thead><tr><th>Sub ID</th><th>Insured</th><th>LOB</th><th>Premium</th><th>Score <i class="info-btn info-btn-sm" onclick="showInfo('uw-score')">i</i></th><th>Days <i class="info-btn info-btn-sm" onclick="showInfo('days-in-queue')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('submission-status')">i</i></th><th>Assigned To</th><th>Actions</th></tr></thead><tbody>
+      <tr><td class="col-id">SUB-2026-101</td><td>Blue Ridge Manufacturing</td><td>GL</td><td>$87,500</td><td><span style="font-weight:600;color:var(--success);">7</span></td><td>5</td><td><span class="chip chip-submitted"><span class="chip-dot"></span>New</span></td><td>Riya Sharma</td><td class="actions-cell"><button class="btn btn-success btn-xs"><i class="fas fa-check"></i> Approve</button><button class="btn btn-warning btn-xs"><i class="fas fa-user-check"></i> Refer</button><button class="btn btn-danger btn-xs"><i class="fas fa-times"></i> Decline</button></td></tr>
+      <tr><td class="col-id">SUB-2026-102</td><td>Pacific NW Timber Co.</td><td>WC</td><td>$245,000</td><td><span style="font-weight:600;color:var(--success);">8</span></td><td>9</td><td><span class="chip chip-pending"><span class="chip-dot"></span>In Review</span></td><td>Vikram Patel</td><td class="actions-cell"><button class="btn btn-success btn-xs"><i class="fas fa-check"></i> Approve</button><button class="btn btn-warning btn-xs"><i class="fas fa-user-check"></i> Refer</button><button class="btn btn-danger btn-xs"><i class="fas fa-times"></i> Decline</button></td></tr>
+      <tr><td class="col-id">SUB-2026-103</td><td>Southeast Healthcare Partners</td><td>Prof Liab</td><td>$192,000</td><td><span style="font-weight:600;color:var(--warning);">6</span></td><td>3</td><td><span class="chip chip-submitted"><span class="chip-dot"></span>New</span></td><td>Neha Gupta</td><td class="actions-cell"><button class="btn btn-success btn-xs"><i class="fas fa-check"></i> Approve</button><button class="btn btn-warning btn-xs"><i class="fas fa-user-check"></i> Refer</button><button class="btn btn-danger btn-xs"><i class="fas fa-times"></i> Decline</button></td></tr>
+      <tr><td class="col-id">SUB-2026-104</td><td>Midwest Retail Group</td><td>Package</td><td>$112,000</td><td><span style="font-weight:600;color:var(--danger);">4</span></td><td>12</td><td><span class="chip chip-endorsed"><span class="chip-dot"></span>Referred</span></td><td>Senior UW</td><td class="actions-cell"><span style="font-size:11px;color:var(--text-muted);">Pending senior review</span></td></tr>
+      <tr><td class="col-id">SUB-2026-105</td><td>Gulf Coast Logistics LLC</td><td>Auto</td><td>$178,000</td><td><span style="font-weight:600;color:var(--success);">9</span></td><td>2</td><td><span class="chip chip-submitted"><span class="chip-dot"></span>New</span></td><td>Riya Sharma</td><td class="actions-cell"><button class="btn btn-success btn-xs"><i class="fas fa-check"></i> Approve</button><button class="btn btn-warning btn-xs"><i class="fas fa-user-check"></i> Refer</button><button class="btn btn-danger btn-xs"><i class="fas fa-times"></i> Decline</button></td></tr>
+    </tbody></table>
+  </div>
+  <div class="card glass mt-md">
+    <div class="card-title">Submission Detail <i class="info-btn" onclick="showInfo('submission-status')">i</i></div>
+    <div style="font-size:13px;color:var(--text-muted);padding:20px;text-align:center;"><i class="fas fa-arrow-left"></i> Click any row to view full submission details</div>
+  </div>
+</div>
+
+<!-- 5. POLICY DETAILS -->
+<div id="screen-policy-details" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Policy Search</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Policy Details</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Endorse / Renew / Cancel</span></div>
+  <div class="card glass mb-md">
+    <div class="flex-between">
+      <div><div style="display:flex;align-items:center;gap:12px;"><h1 style="font-size:22px;font-family:monospace;">POL-2026-001</h1><span class="chip chip-active"><span class="chip-dot"></span>Active</span></div>
+      <p style="color:var(--text-secondary);margin-top:4px;">ABC Construction Inc.</p>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:2px;">Effective: 2026-01-01 | Expires: 2026-12-31 | <span style="color:var(--success);">330 days remaining</span></p></div>
+      <div class="actions" style="gap:8px;"><button class="btn btn-primary btn-sm" onclick="showScreen('endorsement')"><i class="fas fa-pen-alt"></i> Endorse</button><button class="btn btn-success btn-sm" onclick="showScreen('renewal')"><i class="fas fa-sync-alt"></i> Renew</button><button class="btn btn-danger btn-sm" onclick="showScreen('cancellation')"><i class="fas fa-ban"></i> Cancel</button></div>
+    </div>
+  </div>
+  <div class="card glass">
+    <div class="tab-bar" id="pd-tabs">
+      <div class="tab-item active" data-tab="details" onclick="switchTab('pd-tabs','details')">Details</div>
+      <div class="tab-item" data-tab="coverages" onclick="switchTab('pd-tabs','coverages')">Coverages</div>
+      <div class="tab-item" data-tab="premium" onclick="switchTab('pd-tabs','premium')">Premium</div>
+      <div class="tab-item" data-tab="versions" onclick="switchTab('pd-tabs','versions')">Versions</div>
+      <div class="tab-item" data-tab="timeline" onclick="switchTab('pd-tabs','timeline')">Timeline</div>
+      <div class="tab-item" data-tab="docs" onclick="switchTab('pd-tabs','docs')">Documents</div>
+      <div class="tab-item" data-tab="notes" onclick="switchTab('pd-tabs','notes')">Notes</div>
+      <div class="tab-item" data-tab="audit" onclick="switchTab('pd-tabs','audit')">Audit</div>
+    </div>
+    <div id="tab-details" class="tab-content active">
+      <div class="detail-grid">
+        <div class="detail-item"><div class="di-label">Insured Name <i class="info-btn info-btn-sm" onclick="showInfo('policy-number')">i</i></div><div class="di-value">ABC Construction Inc.</div></div>
+        <div class="detail-item"><div class="di-label">FEIN</div><div class="di-value font-mono">95-4283716</div></div>
+        <div class="detail-item"><div class="di-label">Line of Business <i class="info-btn info-btn-sm" onclick="showInfo('lob')">i</i></div><div class="di-value">General Liability</div></div>
+        <div class="detail-item"><div class="di-label">Agent / Broker <i class="info-btn info-btn-sm" onclick="showInfo('agent')">i</i></div><div class="di-value">Marsh Inc.</div></div>
+        <div class="detail-item"><div class="di-label">Underwriter <i class="info-btn info-btn-sm" onclick="showInfo('underwriter')">i</i></div><div class="di-value">Riya Sharma</div></div>
+        <div class="detail-item"><div class="di-label">Effective Date <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></div><div class="di-value">2026-01-01</div></div>
+        <div class="detail-item"><div class="di-label">Expiration Date <i class="info-btn info-btn-sm" onclick="showInfo('expiration-date')">i</i></div><div class="di-value">2026-12-31</div></div>
+        <div class="detail-item"><div class="di-label">Policy Term <i class="info-btn info-btn-sm" onclick="showInfo('policy-term')">i</i></div><div class="di-value">Annual (12 months)</div></div>
+        <div class="detail-item"><div class="di-label">Status <i class="info-btn info-btn-sm" onclick="showInfo('policy-status')">i</i></div><div class="di-value"><span class="chip chip-active"><span class="chip-dot"></span>Active</span></div></div>
+        <div class="detail-item"><div class="di-label">Issue Date</div><div class="di-value">2026-01-01</div></div>
+        <div class="detail-item"><div class="di-label">Billing Plan <i class="info-btn info-btn-sm" onclick="showInfo('billing-plan')">i</i></div><div class="di-value">Quarterly</div></div>
+        <div class="detail-item"><div class="di-label">Payment Method</div><div class="di-value">ACH</div></div>
+      </div>
+    </div>
+    <div id="tab-coverages" class="tab-content">
+      <table class="data-table"><thead><tr><th>Coverage <i class="info-btn info-btn-sm" onclick="showInfo('coverage')">i</i></th><th>Limit <i class="info-btn info-btn-sm" onclick="showInfo('coverage-limit')">i</i></th><th>Deductible <i class="info-btn info-btn-sm" onclick="showInfo('deductible')">i</i></th><th>Premium</th><th>Rating Basis <i class="info-btn info-btn-sm" onclick="showInfo('rating-basis')">i</i></th></tr></thead><tbody>
+        <tr><td>General Liability</td><td>$2,000,000</td><td>$10,000</td><td>$87,500</td><td>Gross Revenue $12.5M</td></tr>
+        <tr><td>Employment Practices Liability</td><td>$1,000,000</td><td>$25,000</td><td>$25,000</td><td>Per Claim</td></tr>
+        <tr><td>Hired &amp; Non-Owned Auto</td><td>$1,000,000</td><td>$5,000</td><td>$12,500</td><td>Per Occurrence</td></tr>
+      </tbody></table>
+    </div>
+    <div id="tab-premium" class="tab-content">
+      <div class="premium-breakdown">
+        <div class="pb-row"><span class="pb-label">Base Premium</span><span class="pb-value">$98,000</span></div>
+        <div class="pb-row"><span class="pb-label">Experience Mod <i class="info-btn info-btn-sm" onclick="showInfo('experience-mod')">i</i></span><span class="pb-value">0.92 (-$7,840)</span></div>
+        <div class="pb-row"><span class="pb-label">Schedule Credit <i class="info-btn info-btn-sm" onclick="showInfo('schedule-credit')">i</i></span><span class="pb-value">-5% (-$4,508)</span></div>
+        <div class="pb-row"><span class="pb-label">Premium Subtotal</span><span class="pb-value">$85,652</span></div>
+        <div class="pb-row"><span class="pb-label">SLA Tax (3.6%)</span><span class="pb-value">$3,083</span></div>
+        <div class="pb-row"><span class="pb-label">Stamping Fee (1.5%)</span><span class="pb-value">$1,285</span></div>
+        <div class="pb-row total"><span class="pb-label">Total Annual Premium</span><span class="pb-value">$125,000</span></div>
+      </div>
+    </div>
+    <div id="tab-versions" class="tab-content">
+      <table class="data-table"><thead><tr><th>Version</th><th>Term</th><th>Status</th><th>Effective</th><th>Expiration</th><th>Reason <i class="info-btn info-btn-sm" onclick="showInfo('policy-version')">i</i></th><th>Created By</th></tr></thead><tbody>
+        <tr><td>1</td><td>1</td><td><span class="chip chip-active"><span class="chip-dot"></span>Issued</span></td><td>2026-01-01</td><td>2026-12-31</td><td>New Business</td><td>Riya Sharma</td></tr>
+      </tbody></table>
+    </div>
+    <div id="tab-timeline" class="tab-content">
+      <div class="timeline">
+        <div class="timeline-item"><div class="tl-dot active"></div><div class="tl-date">2026-01-01</div><div class="tl-title">Policy Issued</div><div class="tl-desc">Policy POL-2026-001 issued and activated</div></div>
+        <div class="timeline-item"><div class="tl-dot" style="border-color:var(--accent);"></div><div class="tl-date">2025-11-25</div><div class="tl-title">Underwriting Approved</div><div class="tl-desc">UW decision: Approve — Riya Sharma. Score: 8/10</div></div>
+        <div class="timeline-item"><div class="tl-dot" style="border-color:var(--accent);"></div><div class="tl-date">2025-11-20</div><div class="tl-title">Submission Received</div><div class="tl-desc">New business submission received from Marsh Inc.</div></div>
+      </div>
+    </div>
+    <div id="tab-docs" class="tab-content">
+      <div style="font-size:13px;color:var(--text-muted);padding:8px 0;">Documents for POL-2026-001</div>
+      <div class="doc-item"><div class="doc-icon" style="background:var(--accent-dim);color:var(--accent);"><i class="fas fa-file-pdf"></i></div><div class="doc-info"><div class="doc-name">Signed Application Form</div><div class="doc-meta">Application — Riya Sharma — Jul 27</div></div><span class="chip chip-active"><span class="chip-dot"></span>Final</span></div>
+      <div class="doc-item"><div class="doc-icon" style="background:var(--success-bg);color:var(--success);"><i class="fas fa-file-alt"></i></div><div class="doc-info"><div class="doc-name">GL Coverage Form</div><div class="doc-meta">Policy Forms — System — Jan 01</div></div><span class="chip chip-active"><span class="chip-dot"></span>Final</span></div>
+      <div class="doc-item"><div class="doc-icon" style="background:var(--warning-bg);color:var(--warning);"><i class="fas fa-file-certificate"></i></div><div class="doc-info"><div class="doc-name">Certificate of Insurance</div><div class="doc-meta">Policy Forms — Riya Sharma — Feb 10</div></div><span class="chip chip-active"><span class="chip-dot"></span>Final</span></div>
+    </div>
+    <div id="tab-notes" class="tab-content">
+      <div style="font-size:13px;color:var(--text-muted);padding:8px 0;">Notes for POL-2026-001</div>
+      <div class="note-card glass-sm" style="margin-bottom:8px;"><div class="nc-header"><div class="nc-author"><div class="nc-avatar">RS</div><div><div class="nc-name">Riya Sharma</div><div class="nc-role">Senior Underwriter</div></div></div><span class="nc-time">Jul 24, 2026</span></div><div class="nc-text">Risk inspection completed at 4500 Industrial Blvd. No major concerns.</div></div>
+      <div class="note-card glass-sm"><div class="nc-header"><div class="nc-author"><div class="nc-avatar">VP</div><div><div class="nc-name">Vikram Patel</div><div class="nc-role">Underwriter</div></div></div><span class="nc-time">Jul 22, 2026</span></div><div class="nc-text">Reviewed financials. Revenue consistent. Recommend renewal at preferred pricing.</div></div>
+    </div>
+    <div id="tab-audit" class="tab-content">
+      <div style="font-size:13px;color:var(--text-muted);padding:8px 0;">Audit trail for POL-2026-001</div>
+      <table class="data-table"><thead><tr><th>Timestamp</th><th>User</th><th>Field</th><th>Old Value</th><th>New Value</th></tr></thead><tbody>
+        <tr><td style="font-size:12px;color:var(--text-muted);">2026-07-27 14:00</td><td>Riya Sharma</td><td>Document Status</td><td>Draft</td><td>Final</td></tr>
+        <tr><td style="font-size:12px;color:var(--text-muted);">2026-07-24 10:30</td><td>Riya Sharma</td><td>Note Added</td><td style="color:var(--text-muted);">-</td><td>Risk inspection completed</td></tr>
+        <tr><td style="font-size:12px;color:var(--text-muted);">2026-02-10 09:00</td><td>Riya Sharma</td><td>Certificate Issued</td><td style="color:var(--text-muted);">-</td><td>COI issued</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- 6. ENDORSEMENT -->
+<div id="screen-endorsement" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Policy Details</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Endorsement</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Issued</span></div>
+  <div class="card glass mb-md">
+    <div class="flex-between"><div><h1 style="font-size:22px;">New Endorsement</h1><p style="font-size:13px;color:var(--text-secondary);">POL-2026-001 / ABC Construction Inc.</p></div><div><span class="chip chip-pending"><span class="chip-dot"></span>Draft</span></div></div>
+  </div>
+  <div class="card glass">
+    <div class="tab-bar" id="endo-tabs">
+      <div class="tab-item active" data-tab="endo-type" onclick="switchTab('endo-tabs','endo-type')">Type &amp; Details</div>
+      <div class="tab-item" data-tab="endo-impact" onclick="switchTab('endo-tabs','endo-impact')">Premium Impact</div>
+      <div class="tab-item" data-tab="endo-docs" onclick="switchTab('endo-tabs','endo-docs')">Documents</div>
+      <div class="tab-item" data-tab="endo-review" onclick="switchTab('endo-tabs','endo-review')">Review &amp; Submit</div>
+    </div>
+    <div id="tab-endo-type" class="tab-content active">
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Endorsement Type <i class="info-btn" onclick="showInfo('endorsement')">i</i></label><select class="form-input"><option>-- Select --</option><option>Change in Classification</option><option selected>Additional Insured</option><option>Coverage Extension</option><option>Deductible Change</option><option>Limit Increase</option><option>Name Change</option></select></div>
+        <div class="form-group"><label class="form-label">Effective Date <i class="info-btn" onclick="showInfo('effective-date')">i</i></label><input class="form-input" type="date" value="2026-08-01"></div>
+        <div class="form-group"><label class="form-label">Transaction Code <i class="info-btn" onclick="showInfo('tx-code')">i</i></label><select class="form-input"><option selected>TX-ADD-INSURED</option><option>TX-CHG-CLASS</option><option>TX-EXT-COV</option><option>TX-LIMIT-INC</option></select></div>
+        <div class="form-group full-width"><label class="form-label">Description / Reason</label><textarea class="form-input" rows="3">Adding ABC Properties LLC as additional insured per contract requirements.</textarea></div>
+      </div>
+    </div>
+    <div id="tab-endo-impact" class="tab-content">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">This endorsement will result in a premium adjustment of <strong style="color:var(--accent);">+$2,500</strong> (prorated).</p>
+      <div class="pb-row"><span class="pb-label">Current Annual Premium</span><span class="pb-value">$125,000</span></div>
+      <div class="pb-row"><span class="pb-label">Endorsement Premium Change</span><span class="pb-value" style="color:var(--success);">+$2,500</span></div>
+      <div class="pb-row total"><span class="pb-label">New Annual Premium</span><span class="pb-value">$127,500</span></div>
+    </div>
+    <div id="tab-endo-docs" class="tab-content">
+      <div class="form-group"><label class="form-label">Upload Endorsement Form</label><div class="upload-zone"><i class="fas fa-cloud-upload-alt" style="font-size:32px;color:var(--accent);margin-bottom:8px;"></i><p style="font-size:13px;">Drag &amp; drop or click to upload</p></div></div>
+    </div>
+    <div id="tab-endo-review" class="tab-content">
+      <div class="summary-card glass-sm">
+        <div class="sc-item"><div class="sc-label">Type</div><div class="sc-value">Additional Insured</div></div>
+        <div class="sc-item"><div class="sc-label">Effective</div><div class="sc-value">2026-08-01</div></div>
+        <div class="sc-item"><div class="sc-label">Premium Impact</div><div class="sc-value" style="color:var(--success);">+$2,500</div></div>
+        <div class="sc-item"><div class="sc-label">Document</div><div class="sc-value">Not uploaded</div></div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:16px;" onclick="alert('Endorsement submitted for approval!')"><i class="fas fa-paper-plane"></i> Submit Endorsement</button>
+    </div>
+  </div>
+</div>
+
+<!-- 7. RENEWAL -->
+<div id="screen-renewal" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Policy Details</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Renewal</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Issued</span></div>
+  <div class="card glass mb-md">
+    <div class="flex-between"><div><h1>Renewal Quote</h1><p style="font-size:13px;color:var(--text-secondary);">POL-2026-001 / ABC Construction Inc. — Expires: 2026-12-31</p></div><span class="chip chip-pending"><span class="chip-dot"></span>330 days remaining</span></div>
+  </div>
+  <div class="card glass">
+    <div class="tab-bar" id="ren-tabs">
+      <div class="tab-item active" data-tab="ren-quote" onclick="switchTab('ren-tabs','ren-quote')">Quote Comparison</div>
+      <div class="tab-item" data-tab="ren-forms" onclick="switchTab('ren-tabs','ren-forms')">Renewal Forms</div>
+      <div class="tab-item" data-tab="ren-approval" onclick="switchTab('ren-tabs','ren-approval')">Approval</div>
+    </div>
+    <div id="tab-ren-quote" class="tab-content active">
+      <table class="data-table"><thead><tr><th>Component</th><th>Current</th><th>Proposed</th><th>Change</th></tr></thead><tbody>
+        <tr><td>Base Premium</td><td>$98,000</td><td>$102,000</td><td style="color:var(--danger);">+$4,000</td></tr>
+        <tr><td>Experience Mod</td><td>0.92</td><td>0.89</td><td style="color:var(--success);">-0.03</td></tr>
+        <tr><td>Schedule Credit</td><td>-5%</td><td>-7%</td><td style="color:var(--success);">-2%</td></tr>
+        <tr><td style="font-weight:600;">Total Premium</td><td style="font-weight:600;">$125,000</td><td style="font-weight:600;color:var(--accent);">$130,500</td><td style="font-weight:600;color:var(--danger);">+$5,500</td></tr>
+      </tbody></table>
+      <div class="flex-between mt-md"><span style="font-size:13px;color:var(--text-muted);"><i class="fas fa-info-circle"></i> Proposed premium includes 4% trend adjustment</span><button class="btn btn-success btn-sm"><i class="fas fa-file-export"></i> Export Quote</button></div>
+    </div>
+    <div id="tab-ren-forms" class="tab-content">
+      <div style="font-size:13px;color:var(--text-muted);padding:8px 0;">Renewal documents pending generation</div>
+      <div class="doc-item disabled"><div class="doc-icon" style="background:var(--bg-light);color:var(--text-muted);"><i class="fas fa-file-alt"></i></div><div class="doc-info"><div class="doc-name">Renewal Quote Summary</div><div class="doc-meta">Not yet generated</div></div><span class="chip" style="background:var(--glass-bg);color:var(--text-muted);">Pending</span></div>
+      <div class="doc-item disabled"><div class="doc-icon" style="background:var(--bg-light);color:var(--text-muted);"><i class="fas fa-file-alt"></i></div><div class="doc-info"><div class="doc-name">Renewal Application</div><div class="doc-meta">Not yet generated</div></div><span class="chip" style="background:var(--glass-bg);color:var(--text-muted);">Pending</span></div>
+    </div>
+    <div id="tab-ren-approval" class="tab-content">
+      <div class="form-group"><label class="form-label">UW Decision <i class="info-btn" onclick="showInfo('uw-decision')">i</i></label><select class="form-input"><option>Pending Review</option><option>Approve as Proposed</option><option>Approve with Changes</option><option>Decline Renewal</option></select></div>
+      <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" rows="3">Rate adequacy review needed before final approval.</textarea></div>
+      <button class="btn btn-primary" onclick="alert('Renewal submitted for approval!')"><i class="fas fa-check"></i> Submit Renewal</button>
+    </div>
+  </div>
+</div>
+
+<!-- 8. CANCELLATION -->
+<div id="screen-cancellation" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Policy Details</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Cancellation</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Closed / Reinstate</span></div>
+  <div class="card glass mb-md">
+    <div class="flex-between"><div><h1>Cancel Policy</h1><p style="font-size:13px;color:var(--text-secondary);">POL-2026-001 / ABC Construction Inc.</p></div><span class="chip chip-pending"><span class="chip-dot"></span>Draft</span></div>
+  </div>
+  <div class="card glass">
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">Cancellation Type <i class="info-btn" onclick="showInfo('cancellation')">i</i></label><select class="form-input"><option>-- Select --</option><option selected>Flat</option><option>Pro-Rata</option><option>Short Rate</option><option>Non-Renewal</option></select></div>
+      <div class="form-group"><label class="form-label">Effective Date</label><input class="form-input" type="date" value="2026-08-15"></div>
+      <div class="form-group"><label class="form-label">Reason Code <i class="info-btn" onclick="showInfo('cancel-reason')">i</i></label><select class="form-input"><option selected>Non-Payment</option><option>Underwriting Non-Renewal</option><option>Insured Request</option><option>Duplicate Coverage</option><option>Fraud</option></select></div>
+      <div class="form-group"><label class="form-label">Notice Sent <i class="info-btn" onclick="showInfo('cancel-notice')">i</i></label><select class="form-input"><option>None</option><option selected>10-Day Notice</option><option>30-Day Notice</option></select></div>
+      <div class="form-group full-width"><label class="form-label">Detailed Reason</label><textarea class="form-input" rows="3">Insured failed to make quarterly premium payment due Jul 01, 2026. 10-day notice sent Jul 20, 2026. No response received.</textarea></div>
+    </div>
+  </div>
+  <div class="card glass mt-md">
+    <div class="card-title">Premium Impact <i class="info-btn" onclick="showInfo('cancel-impact')">i</i></div>
+    <div class="pb-row"><span class="pb-label">Annual Premium</span><span class="pb-value">$125,000</span></div>
+    <div class="pb-row"><span class="pb-label">Earned Premium (to date)</span><span class="pb-value">$72,917</span></div>
+    <div class="pb-row"><span class="pb-label">Unearned Premium</span><span class="pb-value">$52,083</span></div>
+    <div class="pb-row total"><span class="pb-label">Return Premium</span><span class="pb-value" style="color:var(--danger);">-$52,083</span></div>
+  </div>
+  <button class="btn btn-danger" style="margin-top:16px;" onclick="alert('Cancellation submitted for approval!')"><i class="fas fa-ban"></i> Submit Cancellation</button>
+</div>
+
+<!-- 9. REINSTATEMENT (NEW) -->
+<div id="screen-reinstatement" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Cancellation</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Reinstatement</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Active</span></div>
+  <div class="card glass mb-md">
+    <div class="flex-between">
+      <div><h1>Reinstatement Request</h1><p style="font-size:13px;color:var(--text-secondary);">POL-2026-005 / Pioneer Energy Corp. — Cancelled: 2025-12-15</p></div>
+      <span class="chip chip-cancelled"><span class="chip-dot"></span>Cancelled — 45 days ago</span>
+    </div>
+  </div>
+  <div class="card glass">
+    <div class="card-title">Policy Information <i class="info-btn" onclick="showInfo('reinstatement')">i</i></div>
+    <div class="summary-card glass-sm">
+      <div class="sc-item"><div class="sc-label">Original Effective</div><div class="sc-value">2025-04-01</div></div>
+      <div class="sc-item"><div class="sc-label">Original Expiration</div><div class="sc-value">2026-03-31</div></div>
+      <div class="sc-item"><div class="sc-label">Annual Premium</div><div class="sc-value">$189,000</div></div>
+      <div class="sc-item"><div class="sc-label">Cancellation Reason</div><div class="sc-value" style="font-size:14px;">Non-Payment</div></div>
+    </div>
+  </div>
+  <div class="card glass">
+    <div class="card-title">Reinstatement Details <i class="info-btn" onclick="showInfo('reinstatement-window')">i</i></div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">Reinstatement Effective Date <i class="info-btn" onclick="showInfo('effective-date')">i</i></label><input class="form-input" type="date" value="2026-01-01"></div>
+      <div class="form-group"><label class="form-label">Reinstatement Reason</label><select class="form-input"><option selected>Payment Received — Full Balance</option><option>Payment Received — Partial Agreement</option><option>Underwriting Review Reversal</option><option>Insured Dispute Resolved</option></select></div>
+      <div class="form-group"><label class="form-label">Reinstatement Fee <i class="info-btn" onclick="showInfo('reinstatement-fee')">i</i></label><input class="form-input" value="$250.00" readonly></div>
+      <div class="form-group"><label class="form-label">Return Premium Reversal <i class="info-btn" onclick="showInfo('return-premium')">i</i></label><input class="form-input" value="$52,083" readonly></div>
+      <div class="form-group full-width"><label class="form-label">UW Notes</label><textarea class="form-input" rows="3">Insured has paid all outstanding balance including late fees. Reinstatement recommended within 30-day window. No lapse in underlying exposure.</textarea></div>
+    </div>
+  </div>
+  <div class="card glass mt-md">
+    <div class="card-title">Reinstatement Impact</div>
+    <div class="pb-row"><span class="pb-label">Premium to be Reinstated</span><span class="pb-value">$189,000</span></div>
+    <div class="pb-row"><span class="pb-label">Reinstatement Fee</span><span class="pb-value" style="color:var(--warning);">$250</span></div>
+    <div class="pb-row"><span class="pb-label">Past Due Balance</span><span class="pb-value" style="color:var(--success);">$0.00 (Paid)</span></div>
+    <div class="pb-row total"><span class="pb-label">Total Due Today</span><span class="pb-value" style="color:var(--warning);">$250</span></div>
+  </div>
+  <div class="flex mt-md" style="gap:12px;">
+    <button class="btn btn-success" style="flex:1;justify-content:center;padding:12px;" onclick="alert('Reinstatement approved! Policy returned to Active status.')"><i class="fas fa-check-circle"></i> Approve Reinstatement</button>
+    <button class="btn btn-secondary" style="flex:1;justify-content:center;" onclick="alert('Reinstatement declined. Policy remains cancelled.')"><i class="fas fa-times"></i> Decline</button>
+  </div>
+</div>
+
+<!-- 10. BILLING -->
+<div id="screen-billing" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Billing</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Make Payment</span></div>
+  <div class="page-header"><h1>Billing <i class="info-btn" onclick="showInfo('billing-plan')">i</i></h1><div class="actions"><span style="font-size:12px;color:var(--text-muted);">Total Outstanding: $87,502</span></div></div>
+  <div class="card glass">
+    <div class="tab-bar" id="bill-tabs">
+      <div class="tab-item active" data-tab="bill-policies" onclick="switchTab('bill-tabs','bill-policies')">Invoice Schedule</div>
+      <div class="tab-item" data-tab="bill-transactions" onclick="switchTab('bill-tabs','bill-transactions')">Transactions</div>
+    </div>
+    <div id="tab-bill-policies" class="tab-content active">
+      <table class="data-table"><thead><tr><th>Policy</th><th>Insured</th><th>Installment <i class="info-btn info-btn-sm" onclick="showInfo('installment')">i</i></th><th>Amount</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+        <tr><td class="col-id">POL-2026-001</td><td>ABC Construction Inc.</td><td>1/4</td><td>$31,250</td><td>2026-01-01</td><td><span class="chip chip-active"><span class="chip-dot"></span>Paid</span></td><td><button class="btn btn-xs" style="background:var(--glass-bg);">Receipt</button></td></tr>
+        <tr><td class="col-id">POL-2026-001</td><td>ABC Construction Inc.</td><td>2/4</td><td>$31,250</td><td>2026-04-01</td><td><span class="chip chip-active"><span class="chip-dot"></span>Paid</span></td><td><button class="btn btn-xs" style="background:var(--glass-bg);">Receipt</button></td></tr>
+        <tr><td class="col-id">POL-2026-001</td><td>ABC Construction Inc.</td><td>3/4</td><td>$31,250</td><td>2026-07-01</td><td><span class="chip chip-danger"><span class="chip-dot"></span>Overdue</span></td><td><button class="btn btn-primary btn-xs"><i class="fas fa-credit-card"></i> Pay Now</button></td></tr>
+        <tr><td class="col-id">POL-2026-001</td><td>ABC Construction Inc.</td><td>4/4</td><td>$31,250</td><td>2026-10-01</td><td><span class="chip chip-submitted"><span class="chip-dot"></span>Upcoming</span></td><td><button class="btn btn-xs disabled" disabled>N/A</button></td></tr>
+      </tbody></table>
+    </div>
+    <div id="tab-bill-transactions" class="tab-content">
+      <table class="data-table"><thead><tr><th>Date</th><th>Type</th><th>Method</th><th>Reference</th><th>Amount</th><th>Status</th></tr></thead><tbody>
+        <tr><td>2026-04-01</td><td>Premium Payment</td><td>ACH</td><td>ACH-2026-0428</td><td>$31,250</td><td><span class="chip chip-active"><span class="chip-dot"></span>Settled</span></td></tr>
+        <tr><td>2026-01-02</td><td>Premium Payment</td><td>Wire</td><td>W-2026-0012</td><td>$31,250</td><td><span class="chip chip-active"><span class="chip-dot"></span>Settled</span></td></tr>
+        <tr><td>2026-01-01</td><td>Initial Premium</td><td>ACH</td><td>INV-001</td><td>$31,250</td><td><span class="chip chip-active"><span class="chip-dot"></span>Settled</span></td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- 11. DOCUMENTS -->
+<div id="screen-documents" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Documents</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Upload / View</span></div>
+  <div class="page-header"><h1>Document Repository <i class="info-btn" onclick="showInfo('document-type')">i</i></h1><button class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Upload</button></div>
+  <div class="card glass">
+    <table class="data-table"><thead><tr><th>Document</th><th>Policy</th><th>Category <i class="info-btn info-btn-sm" onclick="showInfo('document-type')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('doc-status')">i</i></th><th>Uploaded By</th><th>Date</th><th>Actions</th></tr></thead><tbody>
+      <tr><td><div style="display:flex;align-items:center;gap:8px;"><i class="fas fa-file-pdf" style="color:var(--danger);"></i> Signed Application</div></td><td class="col-id">POL-2026-001</td><td>Application</td><td><span class="chip chip-active"><span class="chip-dot"></span>Final</span></td><td>Riya Sharma</td><td>Jul 27</td><td><a href="#" style="color:var(--accent);font-size:12px;">View</a></td></tr>
+      <tr><td><div style="display:flex;align-items:center;gap:8px;"><i class="fas fa-file-alt" style="color:var(--accent);"></i> GL Coverage Form</div></td><td class="col-id">POL-2026-001</td><td>Policy Forms</td><td><span class="chip chip-active"><span class="chip-dot"></span>Final</span></td><td>System</td><td>Jan 01</td><td><a href="#" style="color:var(--accent);font-size:12px;">View</a></td></tr>
+      <tr><td><div style="display:flex;align-items:center;gap:8px;"><i class="fas fa-file-certificate" style="color:var(--warning);"></i> Certificate of Insurance</div></td><td class="col-id">POL-2026-001</td><td>COI</td><td><span class="chip chip-active"><span class="chip-dot"></span>Final</span></td><td>Riya Sharma</td><td>Feb 10</td><td><a href="#" style="color:var(--accent);font-size:12px;">View</a></td></tr>
+      <tr><td><div style="display:flex;align-items:center;gap:8px;"><i class="fas fa-file-signature" style="color:var(--info);"></i> Inspection Report</div></td><td class="col-id">POL-2026-002</td><td>Inspection</td><td><span class="chip chip-pending"><span class="chip-dot"></span>Pending</span></td><td>Vikram Patel</td><td>Jul 28</td><td><span style="font-size:12px;color:var(--text-muted);">Uploading...</span></td></tr>
+      <tr><td><div style="display:flex;align-items:center;gap:8px;"><i class="fas fa-file-invoice" style="color:var(--success);"></i> Billing Invoice Q3</div></td><td class="col-id">POL-2026-003</td><td>Billing</td><td><span class="chip chip-active"><span class="chip-dot"></span>Final</span></td><td>System</td><td>Jul 01</td><td><a href="#" style="color:var(--accent);font-size:12px;">View</a></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- 12. NOTES -->
+<div id="screen-notes" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Notes</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Add Note</span></div>
+  <div class="page-header"><h1>Notes <i class="info-btn" onclick="showInfo('uw-notes')">i</i></h1><button class="btn btn-primary btn-sm" onclick="alert('New note dialog (not implemented in wireframe)')"><i class="fas fa-plus"></i> Add Note</button></div>
+  <div class="card glass">
+    <div class="form-group"><select class="form-input" style="max-width:250px;"><option>All Policies</option><option selected>POL-2026-001</option><option>POL-2026-002</option><option>POL-2026-003</option></select></div>
+  </div>
+  <div class="card glass mt-md">
+    <div class="note-card glass-sm mb-sm"><div class="nc-header"><div class="nc-author"><div class="nc-avatar">RS</div><div><div class="nc-name">Riya Sharma</div><div class="nc-role">Senior Underwriter</div></div></div><span class="nc-time">Jul 24, 2026</span></div><div class="nc-text">Risk inspection completed at 4500 Industrial Blvd. No major concerns. Recommend standard pricing.</div><div class="nc-policy">POL-2026-001</div></div>
+    <div class="note-card glass-sm mb-sm"><div class="nc-header"><div class="nc-author"><div class="nc-avatar">VP</div><div><div class="nc-name">Vikram Patel</div><div class="nc-role">Underwriter</div></div></div><span class="nc-time">Jul 22, 2026</span></div><div class="nc-text">Reviewed financials for ABC Construction. Revenue consistent with prior year at $12.5M. Recommend renewal at preferred pricing.</div><div class="nc-policy">POL-2026-001</div></div>
+    <div class="note-card glass-sm mb-sm"><div class="nc-header"><div class="nc-author"><div class="nc-avatar">NG</div><div><div class="nc-name">Neha Gupta</div><div class="nc-role">Billing Manager</div></div></div><span class="nc-time">Oct 3, 2025</span></div><div class="nc-text">Spoke with insured regarding late payment on Installment 4. ACH issue resolved. Payment expected within 5 days.</div><div class="nc-policy">POL-2026-003</div></div>
+    <div class="note-card glass-sm"><div class="nc-header"><div class="nc-author"><div class="nc-avatar">RS</div><div><div class="nc-name">Riya Sharma</div><div class="nc-role">Senior Underwriter</div></div></div><span class="nc-time">Mar 15, 2026</span></div><div class="nc-text">Endorsement for limit increase approved. Additional premium of $8,640 applies pro-rata from 3/15/2026.</div><div class="nc-policy">POL-2026-004</div></div>
+  </div>
+</div>
+
+<!-- 13. ACTIVITIES & AUDIT -->
+<div id="screen-activities" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Activities</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Export</span></div>
+  <div class="page-header"><h1>Activities &amp; Audit <i class="info-btn" onclick="showInfo('activity-log')">i</i></h1></div>
+  <div class="card glass">
+    <div class="tab-bar" id="act-tabs">
+      <div class="tab-item active" data-tab="act-activities" onclick="switchTab('act-tabs','act-activities')">Recent Activity</div>
+      <div class="tab-item" data-tab="act-audit" onclick="switchTab('act-tabs','act-audit')">Audit Log</div>
+    </div>
+    <div id="tab-act-activities" class="tab-content active">
+      <div class="activity-feed">
+        <div class="activity-item"><div class="act-icon" style="background:var(--success-bg);color:var(--success);"><i class="fas fa-file-contract"></i></div><div class="act-content"><div class="act-title">Policy Issued</div><div class="act-desc">POL-2026-009 issued — Renewal for Great Lakes</div><div class="act-meta">Vikram Patel · Jul 26</div></div></div>
+        <div class="activity-item"><div class="act-icon" style="background:var(--accent-dim);color:var(--accent);"><i class="fas fa-upload"></i></div><div class="act-content"><div class="act-title">Document Uploaded</div><div class="act-desc">Signed Application uploaded to POL-2026-001</div><div class="act-meta">Riya Sharma · Jul 27</div></div></div>
+        <div class="activity-item"><div class="act-icon" style="background:var(--warning-bg);color:var(--warning);"><i class="fas fa-sync-alt"></i></div><div class="act-content"><div class="act-title">Submission Created</div><div class="act-desc">Gulf Coast Logistics LLC — Auto Liability</div><div class="act-meta">Riya Sharma · Jul 28</div></div></div>
+        <div class="activity-item"><div class="act-icon" style="background:var(--danger-bg);color:var(--danger);"><i class="fas fa-ban"></i></div><div class="act-content"><div class="act-title">UW Decision</div><div class="act-desc">SUB-2026-104 referred to Senior UW — score 4/10</div><div class="act-meta">Neha Gupta · Jul 26</div></div></div>
+        <div class="activity-item"><div class="act-icon" style="background:var(--purple-dim);color:var(--purple);"><i class="fas fa-pen-alt"></i></div><div class="act-content"><div class="act-title">Endorsement Completed</div><div class="act-desc">Limit Increase for POL-2026-004 — Premium +$8,640</div><div class="act-meta">Neha Gupta · Jul 27</div></div></div>
+        <div class="activity-item"><div class="act-icon" style="background:var(--info-dim);color:var(--info);"><i class="fas fa-users"></i></div><div class="act-content"><div class="act-title">New Submission</div><div class="act-desc">Southeast Healthcare Partners — Prof Liab $192K</div><div class="act-meta">Neha Gupta · Jul 24</div></div></div>
+      </div>
+    </div>
+    <div id="tab-act-audit" class="tab-content">
+      <table class="data-table"><thead><tr><th>Timestamp</th><th>User</th><th>Action <i class="info-btn info-btn-sm" onclick="showInfo('audit-trail')">i</i></th><th>Entity</th><th>Entity ID</th><th>Details</th></tr></thead><tbody>
+        <tr><td style="font-size:12px;">2026-07-28 09:15</td><td>Riya Sharma</td><td>DOCUMENT_STATUS_CHANGE</td><td>Document</td><td>DOC-101</td><td>Draft to Final</td></tr>
+        <tr><td style="font-size:12px;">2026-07-28 08:45</td><td>Vikram Patel</td><td>UW_DECISION</td><td>Submission</td><td>SUB-2026-102</td><td>Approved</td></tr>
+        <tr><td style="font-size:12px;">2026-07-27 16:30</td><td>Neha Gupta</td><td>COVERAGE_LIMIT_CHANGE</td><td>Policy</td><td>POL-2026-004</td><td>$5M to $6M</td></tr>
+        <tr><td style="font-size:12px;">2026-07-27 16:30</td><td>Neha Gupta</td><td>PREMIUM_CHANGE</td><td>Policy</td><td>POL-2026-004</td><td>$43.2K to $51.8K</td></tr>
+        <tr><td style="font-size:12px;">2026-07-27 14:00</td><td>Riya Sharma</td><td>DOCUMENT_STATUS_CHANGE</td><td>Document</td><td>DOC-008</td><td>Draft to Final</td></tr>
+        <tr><td style="font-size:12px;">2026-07-26 11:20</td><td>Neha Gupta</td><td>STATUS_CHANGE</td><td>Submission</td><td>SUB-2026-104</td><td>In Review to Referred</td></tr>
+        <tr><td style="font-size:12px;">2026-07-26 10:00</td><td>Vikram Patel</td><td>POLICY_ISSUED</td><td>Policy</td><td>POL-2026-009</td><td>New Active</td></tr>
+        <tr><td style="font-size:12px;">2026-07-24 10:30</td><td>Riya Sharma</td><td>NOTE_ADDED</td><td>Note</td><td>NOTE-001</td><td>Inspection note</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- 14. REPORTS -->
+<div id="screen-reports" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Reports</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Schedule</span></div>
+  <div class="page-header"><h1>Reports <i class="info-btn" onclick="showInfo('reports')">i</i></h1><button class="btn btn-primary btn-sm"><i class="fas fa-calendar-alt"></i> Schedule Report</button></div>
+  <div class="summary-card glass">
+    <div class="sc-item"><div class="sc-label">Total Policies</div><div class="sc-value">8</div></div>
+    <div class="sc-item"><div class="sc-label">Total Premium</div><div class="sc-value" style="color:var(--success);">$1.07M</div></div>
+    <div class="sc-item"><div class="sc-label">Pending Subs</div><div class="sc-value" style="color:var(--warning);">5</div></div>
+    <div class="sc-item"><div class="sc-label">Loss Ratio</div><div class="sc-value">42%</div></div>
+  </div>
+  <div class="report-grid">
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--accent);"><i class="fas fa-chart-bar"></i></div><div class="rc-title">Premium by LOB</div><div class="rc-desc">Premium distribution across lines of business</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--success);"><i class="fas fa-chart-pie"></i></div><div class="rc-title">Policy Count by Status</div><div class="rc-desc">Active, expired, cancelled breakdown</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--warning);"><i class="fas fa-chart-line"></i></div><div class="rc-title">Submission Trend</div><div class="rc-desc">Submission volume over time</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--info);"><i class="fas fa-tachometer-alt"></i></div><div class="rc-title">UW Performance</div><div class="rc-desc">Turnaround time, approval rate</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--danger);"><i class="fas fa-file-invoice-dollar"></i></div><div class="rc-title">Aged Receivables</div><div class="rc-desc">Outstanding premium by aging bucket</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--purple);"><i class="fas fa-exchange-alt"></i></div><div class="rc-title">Endorsement Summary</div><div class="rc-desc">Endorsement volume by type</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--cyan);"><i class="fas fa-sync-alt"></i></div><div class="rc-title">Renewal Pipeline</div><div class="rc-desc">Upcoming renewals in next 90 days</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--gray);"><i class="fas fa-history"></i></div><div class="rc-title">Audit Trail</div><div class="rc-desc">Complete change history export</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+  </div>
+</div>
+
+<!-- 15. ADMIN -->
+<div id="screen-admin" class="screen">
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Administration</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Configure</span></div>
+  <div class="page-header"><h1>Administration <i class="info-btn" onclick="showInfo('admin')">i</i></h1></div>
+  <div class="card glass">
+    <div class="tab-bar" id="admin-tabs">
+      <div class="tab-item active" data-tab="admin-users" onclick="switchTab('admin-tabs','admin-users')">Users</div>
+      <div class="tab-item" data-tab="admin-roles" onclick="switchTab('admin-tabs','admin-roles')">Roles &amp; Permissions</div>
+      <div class="tab-item" data-tab="admin-settings" onclick="switchTab('admin-tabs','admin-settings')">System Settings</div>
+    </div>
+    <div id="tab-admin-users" class="tab-content active">
+      <table class="data-table"><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th></tr></thead><tbody>
+        <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="nc-avatar" style="width:28px;height:28px;font-size:11px;">RS</div> Riya Sharma</div></td><td>policyadmin@gamil.com</td><td>Senior Underwriter</td><td><span class="chip chip-active"><span class="chip-dot"></span>Active</span></td><td>2026-07-28 09:10</td></tr>
+        <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="nc-avatar" style="width:28px;height:28px;font-size:11px;">VP</div> Vikram Patel</div></td><td>vikram@southlake.com</td><td>Underwriter</td><td><span class="chip chip-active"><span class="chip-dot"></span>Active</span></td><td>2026-07-28 08:30</td></tr>
+        <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="nc-avatar" style="width:28px;height:28px;font-size:11px;">NG</div> Neha Gupta</div></td><td>neha@southlake.com</td><td>Billing Manager</td><td><span class="chip chip-active"><span class="chip-dot"></span>Active</span></td><td>2026-07-27 16:00</td></tr>
+        <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="nc-avatar" style="width:28px;height:28px;font-size:11px;">AS</div> Amit Singh</div></td><td>amit@southlake.com</td><td>System Admin</td><td><span class="chip chip-active"><span class="chip-dot"></span>Active</span></td><td>2026-07-28 07:45</td></tr>
+        <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="nc-avatar" style="width:28px;height:28px;font-size:11px;">PM</div> Priya Mehta</div></td><td>ppolicyadmin@gamil.com</td><td>Claims Adjuster</td><td><span class="chip chip-active"><span class="chip-dot"></span>Active</span></td><td>2026-07-27 17:30</td></tr>
+        <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="nc-avatar" style="width:28px;height:28px;font-size:11px;">RV</div> Rahul Verma</div></td><td>rahul@southlake.com</td><td>Viewer (Finance)</td><td><span class="chip chip-cancelled"><span class="chip-dot"></span>Inactive</span></td><td>2026-06-15 14:00</td></tr>
+      </tbody></table>
+    </div>
+    <div id="tab-admin-roles" class="tab-content">
+      <table class="data-table"><thead><tr><th>Role</th><th>Users</th><th>Permissions</th></tr></thead><tbody>
+        <tr><td>Super Admin</td><td>1</td><td style="font-size:12px;">Full system access — all modules and actions</td></tr>
+        <tr><td>Senior Underwriter</td><td>1</td><td style="font-size:12px;">UW approval up to $500K, endorsements, renewals</td></tr>
+        <tr><td>Underwriter</td><td>1</td><td style="font-size:12px;">New submissions, risk assessment, quotes</td></tr>
+        <tr><td>Billing Manager</td><td>1</td><td style="font-size:12px;">Billing plans, payment processing, statements</td></tr>
+        <tr><td>Claims Adjuster</td><td>1</td><td style="font-size:12px;">Claims management, reserves, payments</td></tr>
+      </tbody></table>
+    </div>
+    <div id="tab-admin-settings" class="tab-content">
+      <div class="detail-grid">
+        <div class="detail-item"><div class="di-label">Max Login Attempts</div><div class="di-value">5</div></div>
+        <div class="detail-item"><div class="di-label">Password Min Length</div><div class="di-value">8</div></div>
+        <div class="detail-item"><div class="di-label">Session Timeout</div><div class="di-value">60 min</div></div>
+        <div class="detail-item"><div class="di-label">MFA Required</div><div class="di-value">Yes</div></div>
+        <div class="detail-item"><div class="di-label">Auto-Renewal Window</div><div class="di-value">60 days</div></div>
+        <div class="detail-item"><div class="di-label">Reinstatement Window <i class="info-btn info-btn-sm" onclick="showInfo('reinstatement-window')">i</i></div><div class="di-value">30 days</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- INFO MODAL -->
+<div id="info-modal" class="modal-overlay">
+  <div class="modal-box glass">
+    <div class="modal-header"><h3 id="info-modal-title">Info</h3><button class="modal-close" onclick="closeInfo()">&times;</button></div>
+    <div class="modal-body">
+      <div class="info-section"><div class="info-label">What is this?</div><div class="info-text" id="info-modal-what">Content</div></div>
+      <div class="info-section"><div class="info-label">Why does it exist?</div><div class="info-text" id="info-modal-why">Content</div></div>
+      <div class="info-section"><div class="info-label">How it connects in PAS flow</div><div class="info-text" id="info-modal-flow">Content</div></div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

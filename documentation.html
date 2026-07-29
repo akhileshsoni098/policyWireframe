@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAS Documentation — Hinglish</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --accent: #00d4ff;
+  --secondary: #7c3aed;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  --text: #1f2937;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+  --bg: #f8fafc;
+  --card-bg: #ffffff;
+  --border: #e5e7eb;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', -apple-system, sans-serif; font-size: 15px; color: var(--text); background: var(--bg); line-height: 1.7; }
+.container { max-width: 960px; margin: 0 auto; padding: 40px 20px; }
+
+/* Header */
+.header { text-align: center; padding: 48px 0 32px; }
+.header .badge { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #00d4ff, #7c3aed); color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+.header h1 { font-size: 36px; font-weight: 800; background: linear-gradient(135deg, #0f0c29, #302b63); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.header p { font-size: 18px; color: var(--text-secondary); margin-top: 8px; }
+
+/* Story Box */
+.story-box { background: linear-gradient(135deg, #0f0c29, #302b63); color: #fff; padding: 32px; border-radius: var(--radius); margin-bottom: 32px; position: relative; overflow: hidden; }
+.story-box::before { content: '\201C'; position: absolute; top: 8px; left: 16px; font-size: 64px; color: rgba(255,255,255,0.1); font-family: serif; }
+.story-box p { font-size: 16px; line-height: 1.8; color: rgba(255,255,255,0.9); }
+.story-box .author { margin-top: 12px; font-size: 13px; color: var(--accent); font-weight: 600; }
+
+/* Section */
+.section { margin-bottom: 40px; }
+.section h2 { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 3px solid var(--accent); }
+.section h2 .num { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--secondary)); color: #fff; font-size: 16px; font-weight: 700; padding: 0 4px; }
+.section h3 { font-size: 18px; font-weight: 600; color: var(--secondary); margin: 16px 0 8px; display: flex; align-items: center; gap: 8px; }
+.section p { margin-bottom: 12px; color: var(--text-secondary); }
+
+/* Card */
+.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow); }
+.card h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.card ul { padding-left: 20px; margin-bottom: 8px; list-style: none; }
+.card ul li { margin-bottom: 6px; color: var(--text-secondary); padding-left: 0; }
+.card ul li::before { content: '\2022'; color: var(--accent); font-weight: bold; display: inline-block; width: 1em; margin-left: -1em; }
+
+/* Highlight box */
+.highlight { background: rgba(0, 212, 255, 0.1); border-left: 4px solid var(--accent); padding: 12px 16px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 12px 0; font-size: 14px; }
+.highlight strong { color: var(--accent); }
+
+/* Flow rows */
+.flow-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 10px 0; padding: 10px 12px; background: #f0f9ff; border-radius: 8px; font-size: 12px; }
+.flow-row .step { padding: 5px 12px; background: #fff; border: 1px solid var(--border); border-radius: 20px; font-weight: 500; white-space: nowrap; }
+.flow-row .arrow { color: var(--text-muted); font-size: 12px; }
+.flow-row .step.current { background: linear-gradient(135deg, var(--accent), #0099cc); color: #fff; border: none; }
+.flow-row .step.done { background: var(--success); color: #fff; border: none; }
+.flow-row .step.future { background: #e5e7eb; color: #9ca3af; border: 1px dashed #d1d5db; }
+
+/* Tags */
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+.tag-blue { background: rgba(0,212,255,0.15); color: #0099cc; }
+.tag-green { background: rgba(16,185,129,0.15); color: #059669; }
+.tag-purple { background: rgba(124,58,237,0.15); color: #6d28d9; }
+.tag-red { background: rgba(239,68,68,0.15); color: #dc2626; }
+.tag-yellow { background: rgba(245,158,11,0.15); color: #d97706; }
+.tag-info { background: rgba(59,130,246,0.15); color: #2563eb; }
+.tag-pink { background: rgba(236,72,153,0.15); color: #db2777; }
+
+/* Table */
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+th { background: #f0f9ff; font-weight: 600; font-size: 13px; color: var(--text-secondary); }
+tr:hover td { background: #f8fafc; }
+
+/* Info icon demo */
+.info-demo { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer; margin: 0 2px; }
+
+/* Footer */
+.footer { text-align: center; padding: 32px 0; color: var(--text-muted); font-size: 13px; border-top: 1px solid var(--border); margin-top: 40px; }
+.footer a { color: var(--accent); text-decoration: none; }
+
+/* TOC */
+.toc { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 32px; box-shadow: var(--shadow); }
+.toc h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+.toc-grid a { color: var(--text-secondary); text-decoration: none; font-size: 14px; padding: 4px 0; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+.toc-grid a:hover { color: var(--accent); }
+.toc-grid a .toc-num { color: var(--accent); font-weight: 600; min-width: 20px; }
+@media (max-width: 600px) {
+  .header h1 { font-size: 24px; }
+  .toc-grid { grid-template-columns: 1fr; }
+  .flow-row { font-size: 10px; padding: 6px; }
+  .flow-row .step { padding: 3px 8px; }
+  .card { padding: 16px; }
+  .story-box { padding: 20px; }
+}
+
+/* Two column layout */
+.cols { display: flex; gap: 16px; }
+.cols > * { flex: 1; }
+@media (max-width: 600px) { .cols { flex-direction: column; } }
+
+/* ===== MGA DIAGRAM ===== */
+.diagram { padding: 20px; overflow-x: auto; }
+.diagram-svg { width: 100%; max-width: 900px; height: auto; display: block; margin: 0 auto; }
+.diagram-box { fill: #fff; stroke: #e5e7eb; stroke-width: 1.5; rx: 10; ry: 10; transition: all 0.2s; }
+.diagram-box:hover { filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1)); }
+.diagram-box.carrier { fill: #eff6ff; stroke: #3b82f6; }
+.diagram-box.mga { fill: #f0f9ff; stroke: #00d4ff; }
+.diagram-box.broker { fill: #fefce8; stroke: #f59e0b; }
+.diagram-box.insured { fill: #f0fdf4; stroke: #10b981; }
+.diagram-box.uw { fill: #faf5ff; stroke: #7c3aed; }
+.diagram-text { font-family: 'Inter', sans-serif; font-size: 13px; fill: #1f2937; font-weight: 500; }
+.diagram-text.title { font-size: 15px; font-weight: 700; }
+.diagram-text.sub { font-size: 11px; fill: #6b7280; font-weight: 400; }
+.diagram-arrow { stroke: #9ca3af; stroke-width: 1.5; fill: none; marker-end: url(#arrowhead); }
+.diagram-arrow.approve { stroke: #10b981; stroke-width: 2; stroke-dasharray: 6,4; }
+.diagram-arrow.decline { stroke: #ef4444; stroke-width: 2; stroke-dasharray: 4,4; }
+.diagram-arrow.refer { stroke: #f59e0b; stroke-width: 2; stroke-dasharray: 3,3; }
+.diagram-label { font-family: 'Inter', sans-serif; font-size: 10px; fill: #6b7280; }
+.diagram-label.green { fill: #059669; font-weight: 600; }
+.diagram-label.red { fill: #dc2626; font-weight: 600; }
+.diagram-label.blue { fill: #2563eb; font-weight: 600; }
+.diagram-decision { fill: #fff; stroke: #d1d5db; stroke-width: 1.5; rx: 20; ry: 20; }
+
+/* ===== FLOW DIAGRAM 2 ===== */
+.flow-diagram { font-family: 'Inter', sans-serif; }
+.flow-diagram .phase { display: flex; align-items: center; gap: 4px; margin-bottom: 6px; }
+.flow-diagram .phase-box { padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; white-space: nowrap; border: 2px solid; }
+.flow-diagram .phase-box.system { background: #f0f9ff; border-color: #00d4ff; color: #0099cc; }
+.flow-diagram .phase-box.mga-box { background: #faf5ff; border-color: #7c3aed; color: #6d28d9; }
+.flow-diagram .phase-box.carrier-box { background: #eff6ff; border-color: #3b82f6; color: #2563eb; }
+.flow-diagram .phase-box.insured-box { background: #f0fdf4; border-color: #10b981; color: #059669; }
+.flow-diagram .phase-arrow { color: #9ca3af; font-size: 14px; }
+.flow-diagram .phase-label { font-size: 10px; color: #9ca3af; text-align: center; margin-top: 2px; }
+
+/* Authority table */
+.auth-level { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+.auth-level.full { background: #d1fae5; color: #065f46; }
+.auth-level.limited { background: #fef3c7; color: #92400e; }
+.auth-level.none { background: #fee2e2; color: #991b1b; }
+
+/* Mermaid-like legend */
+.legend { display: flex; gap: 20px; flex-wrap: wrap; margin: 12px 0; padding: 12px 16px; background: #f9fafb; border-radius: 8px; font-size: 12px; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-line { width: 30px; height: 3px; border-radius: 2px; }
+.legend-line.approve { background: #10b981; }
+.legend-line.decline { background: #ef4444; }
+.legend-line.refer { background: #f59e0b; border: 1px dashed #f59e0b; height: 0; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ==================== HEADER ==================== -->
+<div class="header">
+  <div class="badge"><i class="fas fa-book-open"></i> PAS Guide — Hinglish</div>
+  <h1>Policy Administration System</h1>
+  <p>Purri tarah se samajhne ke liye — story, flow aur example ke saath</p>
+</div>
+
+<!-- ==================== STORY ==================== -->
+<div class="story-box">
+  <p>Chalo ek kahani se shuru karte hain. <strong>Ramesh bhai</strong> ke paas ek construction company hai — ABC Construction. Unhe apne business ke liye insurance chahiye. Woh apne broker <strong>Marsh Inc.</strong> ke paas jaate hain. Broker unki insurance application hamare <strong>PAS System</strong> mein submit karta hai. Yahan se shuru hoti hai poori journey — submission se lekar policy issue, endorsement, renewal, aur kabhi kabhi cancellation tak. Har step ko system track karta hai, har decision ko record karta hai, aur har change ko audit karta hai. Yeh guide aapko poori PAS journey batayegi — simple Hinglish mein, real example ke saath.</p>
+  <div class="author">— PAS Product Team</div>
+</div>
+
+<!-- ==================== TOC ==================== -->
+<div class="toc">
+  <h3><i class="fas fa-list" style="color:var(--accent);"></i> Is Guide Mein Kya Hai</h3>
+  <div class="toc-grid">
+    <a href="#p1"><span class="toc-num">1</span> Policy Kya Hai?</a>
+    <a href="#p2"><span class="toc-num">2</span> Term aur Version</a>
+    <a href="#p3"><span class="toc-num">3</span> Complete PAS Journey</a>
+    <a href="#p4"><span class="toc-num">4</span> Premium Calculation</a>
+    <a href="#p5"><span class="toc-num">5</span> Billing System</a>
+    <a href="#p6"><span class="toc-num">6</span> Audit Trail</a>
+    <a href="#p7"><span class="toc-num">7</span> Sab Screens</a>
+    <a href="#p8"><span class="toc-num">8</span> Dot-Connection</a>
+    <a href="#p9"><span class="toc-num">9</span> Info Button (i) Kyon?</a>
+    <a href="#p10"><span class="toc-num">10</span> MGA Underwriting</a>
+    <a href="#p11"><span class="toc-num">11</span> Poora System Diagram</a>
+  </div>
+</div>
+
+<!-- ==================== 1. POLICY KYA HAI ==================== -->
+<div class="section" id="p1">
+<h2><span class="num">1</span> Policy Kya Hai?</h2>
+<div class="card">
+  <h4><i class="fas fa-file-contract" style="color:var(--accent);"></i> Policy = Insurance ka Contract</h4>
+  <p><strong>Policy</strong> ek legal agreement hai jo insurer (insurance company) aur insured (customer) ke beech mein hota hai. Ismein likha hota hai ki kaun se risk cover hain, kitni limit hai, kitna deductible hai, aur kitna premium dena hai.</p>
+  <div class="highlight"><strong>Example:</strong> POL-2026-001 = ABC Construction Inc. ki General Liability policy. Ismein $2M limit hai, $10K deductible hai, aur $125,000 annual premium hai. 1 year ka term hai — 1 Jan 2026 se 31 Dec 2026 tak.</div>
+  <p><strong>Policy ke 5 important parts:</strong></p>
+  <ul>
+    <li><span class="tag tag-blue">Policy Number</span> — Unique identifier, jaise POL-2026-001</li>
+    <li><span class="tag tag-green">Status</span> — Active / Pending / Cancelled / Expired / Renewed</li>
+    <li><span class="tag tag-purple">Term</span> — Kitni der coverage hai (6 ya 12 months)</li>
+    <li><span class="tag tag-yellow">Premium</span> — Kitna paisa dena hai</li>
+    <li><span class="tag tag-info">Insured</span> — Policy ka malik (person ya company)</li>
+  </ul>
+  <div class="highlight"><strong>Flow:</strong> Submission → Quote → Bind → Issue → <strong>Active Policy</strong> → Endorsement/Renewal/Cancellation</div>
+</div>
+</div>
+
+<!-- ==================== 2. TERM AUR VERSION ==================== -->
+<div class="section" id="p2">
+<h2><span class="num">2</span> Policy Term aur Version</h2>
+<div class="card">
+  <h4><i class="fas fa-layer-group" style="color:var(--secondary);"></i> Term = Policy ka Time Period</h4>
+  <p>Har policy ka ek <strong>Term</strong> hota hai — effective date se expiration date tak. Jaise POL-2026-001 ka Term 1 hai: 2026-01-01 se 2026-12-31. Jab policy renew hoti hai toh naya term banta hai — Term 2, Term 3, etc.</p>
+  <p><strong>Version</strong> har change par create hota hai. Naya business pe Version 1 banta hai. Endorsement (mid-term change) pe naya version create hota hai. Isse pata chalta hai ki policy kab aur kaise change hui — poori history track hoti hai.</p>
+  <div class="cols">
+    <div>
+      <div class="highlight"><strong>Example — Versions:</strong><br>POL-2026-004 (Coastal Properties)<br>Ver 1 — New Business (01-Jan-2026)<br>Ver 2 — Endorsement: Limit Increase (15-Mar-2026)<br>Ver 3 — Endorsement: AI Add (10-Jun-2026)</div>
+    </div>
+    <div>
+      <div class="highlight"><strong>Example — Terms:</strong><br>POL-2026-001 (ABC Construction)<br>Term 1: 2026-01-01 to 2026-12-31<br>Term 2: 2027-01-01 to 2027-12-31 (Renewed)<br>Term 3: 2028-01-01 to 2028-12-31 (Renewed)</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ==================== 3. COMPLETE PAS JOURNEY ==================== -->
+<div class="section" id="p3">
+<h2><span class="num">3</span> Complete PAS Journey — 9 Steps</h2>
+
+<!-- Step 1 -->
+<div class="card">
+<h4><i class="fas fa-fw" style="color:var(--accent);">1.</i> Submission (Application Dalna)</h4>
+<p>Broker ya agent insured ki taraf se ek <strong>submission</strong> create karta hai. Ismein insured ka naam, business type, revenue, loss history, aur required coverage details hoti hain. System isse <span class="tag tag-blue">New Submission</span> status mein daal deta hai aur UW Queue mein bhej deta hai.</p>
+<div class="flow-row">
+  <span class="step done"><i class="fas fa-check"></i> New Submission</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step current">UW Queue</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step future">Quote</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step future">Bind</span>
+</div>
+<div class="highlight"><strong>Ramesh Bhai ka Example:</strong> Marsh Inc. ne ABC Construction ki submission create ki — $5M revenue, 3 employees, General Liability + Auto coverage, $2M limit. Status: <span class="tag tag-blue">New Submission</span></div>
+</div>
+
+<!-- Step 2 -->
+<div class="card">
+<h4><i class="fas fa-fw" style="color:var(--accent);">2.</i> Quote Generation (Rate Banana)</h4>
+<p>Submission ke basis par system ek <strong>quote</strong> generate karta hai. Quote mein base premium, experience mod, schedule credit, taxes, fees sab calculate hote hain. 5-step wizard mein insured info, coverage selection, details, premium breakdown aur review hota hai. Quote approve hone ke baad hi UW queue mein aage process hota hai.</p>
+<div class="highlight"><strong>Example — Blue Ridge Manufacturing:</strong> Base $72,500 &times; Mod 0.92 &times; Credit 95% + Taxes $3,550 + Fees $1,200 = <strong>Total $87,502</strong></div>
+</div>
+
+<!-- Step 3 -->
+<div class="card">
+<h4><i class="fas fa-fw" style="color:var(--accent);">3.</i> Underwriting Review (Risk Evaluation)</h4>
+<p>UW Queue mein submission aata hai. Yahan <strong>Underwriter</strong> risk ko evaluate karta hai — loss history, financials, score (1-10 scale). Teen decisions hote hain:</p>
+<ul>
+  <li><span class="tag tag-green">Approve</span> — Risk acceptable hai, policy bind kar sakte hain</li>
+  <li><span class="tag tag-yellow">Refer</span> — Senior UW ke paas bhejna hai (score &lt; 5)</li>
+  <li><span class="tag tag-red">Decline</span> — Risk unacceptable, reject with reason</li>
+</ul>
+<div class="highlight"><strong>Business Rule:</strong> Score 5 se kam hai → Senior UW referral mandatory. Score 7+ hai → auto-approve upto $500K premium. Score 3 se kam → auto-decline.</div>
+<div class="flow-row">
+  <span class="step done">New Submission</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step done">UW Queue</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step current">UW Approve</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step future">Bind</span>
+</div>
+</div>
+
+<!-- Step 4 -->
+<div class="card">
+<h4><i class="fas fa-fw" style="color:var(--accent);">4.</i> Bind &amp; Issue (Policy Active Banana)</h4>
+<p>UW approval ke baad policy <strong>bind</strong> hoti hai. Bind ka matlab — temporary coverage start ho gayi. Phir <strong>Issue</strong> hota hai — policy number generate hota hai (POL-2026-001), official documents PDF mein bante hain, billing schedule banta hai, aur status <span class="tag tag-green">Active</span> ho jata hai.</p>
+<div class="flow-row">
+  <span class="step done">UW Approved</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step done">Bind</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step current">Issue</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step done">Active</span>
+</div>
+<div class="highlight"><strong>Ramesh Bhai ka Example:</strong> POL-2026-001 issue hui. Policy number mil gaya. Premium $125,000. 4 quarterly installments of $31,250. Status: <span class="tag tag-green">Active</span></div>
+</div>
+
+<!-- Step 5 -->
+<div class="card">
+<h4><i class="fas fa-fw" style="color:var(--accent);">5.</i> Active Policy (Policy Chal Rahi Hai)</h4>
+<p>Policy issue hone ke baad <span class="tag tag-green">Active</span> status mein aa jati hai. Ab insured ko coverage milti hai, billing schedule ke hisaab se payments hote hain, aur UW monitoring karta hai. Is stage par 3 major actions possible hain:</p>
+<ul>
+  <li><i class="fas fa-pen-alt" style="color:var(--secondary);"></i> <strong>Endorsement</strong> — coverage mein mid-term change</li>
+  <li><i class="fas fa-sync-alt" style="color:var(--success);"></i> <strong>Renewal</strong> — naye term ke liye extend karna</li>
+  <li><i class="fas fa-ban" style="color:var(--danger);"></i> <strong>Cancellation</strong> — policy band karna</li>
+</ul>
+</div>
+
+<!-- Step 6 -->
+<div class="card">
+<h4><i class="fas fa-fw" style="color:var(--accent);">6.</i> Endorsement (Mid-term Change)</h4>
+<p>Kabhi kabhi policy ke beech mein changes ki zaroorat hoti hai — jaise <strong>Additional Insured</strong> add karna, limit badhana, deductible change karna, ya location add karna. Iske liye <strong>Endorsement</strong> create karte hain. Endorsement se:</p>
+<ul>
+  <li>Premium change hota hai (additional ya return premium)</li>
+  <li>Billing schedule adjust hoti hai</li>
+  <li>Policy ka naya version banta hai (Version 2)</li>
+  <li>New policy documents issue hote hain</li>
+</ul>
+<div class="highlight"><strong>Ramesh Bhai ka Example:</strong> ABC Construction ne ABC Properties LLC ko additional insured add kiya. Endorsement create hua. Premium +$2,500 barha. Nayi annual premium $127,500. Nayi billing: 4 installments of $31,875. Version 2 bana.</div>
+<div class="flow-row">
+  <span class="step done">Policy Active</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step done">Endorsement</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step current">Premium Change</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step done">Billing Adjust</span>
+</div>
+</div>
+
+<!-- Step 7 -->
+<div class="card">
+<h4><i class="fas fa-fw" style="color:var(--accent);">7.</i> Renewal (Naya Term)</h4>
+<p>Policy ke expiration date se pehle <strong>Renewal</strong> process shuru hota hai. UW current term ke experience ko review karta hai, naya premium calculate karta hai (loss trends, inflation, experience mod change), aur naya term offer karta hai. Renewal se naya policy term aur naya version create hota hai.</p>
+<div class="highlight"><strong>Ramesh Bhai ka Renewal Example:</strong><br>
+<table>
+  <tr><th>Component</th><th>Current Term</th><th>Renewal Term</th><th>Change</th></tr>
+  <tr><td>Base Premium</td><td>$98,000</td><td>$102,000</td><td>+4.1% (trend)</td></tr>
+  <tr><td>Experience Mod</td><td>0.92</td><td>0.89</td><td>Improved</td></tr>
+  <tr><td>Schedule Credit</td><td>-5%</td><td>-7%</td><td>Better</td></tr>
+  <tr><td><strong>Total Premium</strong></td><td><strong>$125,000</strong></td><td><strong>$130,500</strong></td><td><strong>+$5,500</strong></td></tr>
+</table>
+</div>
+<div class="flow-row">
+  <span class="step done">Policy Details</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step done">Renewal Quote</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step current">UW Review</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step done">Issue Renewal</span>
+</div>
+</div>
+
+<!-- Step 8 -->
+<div class="card">
+<h4><i class="fas fa-fw" style="color:var(--accent);">8.</i> Cancellation (Policy Band Karna)</h4>
+<p>Kisi wajah se policy beech mein band karni hoti hai. Cancellation ke 3 types hote hain:</p>
+<ul>
+  <li><span class="tag tag-blue">Flat Cancellation</span> — Effective date se pehle cancel. <strong>No premium owed.</strong> Koi coverage nahi mila, koi paisa nahi.</li>
+  <li><span class="tag tag-yellow">Pro-rata Cancellation</span> — UW-initiated (non-payment, risk change). Jitna time coverage use kiya utna premium (<em>earned</em>), baaki premium wapas (<em>unearned</em>).</li>
+  <li><span class="tag tag-red">Short Rate Cancellation</span> — Insured ne khud cancel karaya. 10% penalty on unearned premium. Insured ko thoda kam premium wapas milta hai.</li>
+</ul>
+<div class="highlight"><strong>Example — POL-2026-005 (Pioneer Energy):</strong> Non-payment ke karan UW ne cancel kiya. 7 months coverage use hui. Earned premium $72,917. Unearned $52,083 wapas. Status: <span class="tag tag-red">Cancelled</span></div>
+<div class="flow-row">
+  <span class="step done">Policy Details</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step done">Cancel Request</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step current">Premium Calc</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step done">Cancelled</span>
+</div>
+</div>
+
+<!-- Step 9 -->
+<div class="card">
+<h4><i class="fas fa-fw" style="color:var(--accent);">9.</i> Reinstatement (Wapas Active Karna)</h4>
+<p>Agar policy cancellation ke baad <strong>30 din ke andar</strong> insured saari dues clear kar de (including late fees), toh policy ko <strong>Reinstate</strong> kiya ja sakta hai — matlab dubara Active karna. Ismein ek reinstatement fee ($250) lagti hai. Policy wapas original terms par active ho jati hai — jaise cancel hui hi nahi. Naya version banta hai indicating reinstatement.</p>
+<div class="highlight"><strong>Business Rule:</strong> Reinstatement window sirf <strong>30 days</strong> hai. Iske baad naya submission + UW approval chahiye. Reinstatement fee $250 non-negotiable hai.</div>
+<div class="flow-row">
+  <span class="step done">Cancelled Policy</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step done">Payment Cleared</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step current">Reinstate</span>
+  <span class="arrow"><i class="fas fa-arrow-right"></i></span>
+  <span class="step done">Active</span>
+</div>
+</div>
+</div>
+
+<!-- ==================== 4. PREMIUM CALCULATION ==================== -->
+<div class="section" id="p4">
+<h2><span class="num">4</span> Premium Calculation — Paise Ka Hisaab</h2>
+<div class="card">
+  <h4><i class="fas fa-calculator" style="color:var(--warning);"></i> Premium Kaise Banta Hai?</h4>
+  <p>Premium simple formula se calculate hota hai:</p>
+  <div class="highlight" style="text-align:center;font-size:18px;border-left-color:var(--warning);background:rgba(245,158,11,0.08);">
+    <strong>Base Premium × Experience Mod × Schedule Credit + Taxes + Fees = Total Premium</strong>
+  </div>
+  <p><strong>Real Example — POL-2026-001 (ABC Construction):</strong></p>
+  <table>
+    <tr><th>Component</th><th>Amount</th><th>Kya Hai?</th></tr>
+    <tr><td>Base Premium</td><td>$98,000</td><td>Industry class aur rating basis se aata hai</td></tr>
+    <tr><td>Experience Mod</td><td>0.92</td><td>8% discount kyunki claims history achhi hai</td></tr>
+    <tr><td>Schedule Credit</td><td>-5%</td><td>UW ne extra discount diya</td></tr>
+    <tr><td>Premium Subtotal</td><td>$85,652</td><td>Base × Mod × Credit</td></tr>
+    <tr><td>SLA Tax (3.6%)</td><td>$3,083</td><td>State government ka tax (Surplus Lines)</td></tr>
+    <tr><td>Stamping Fee (1.5%)</td><td>$1,285</td><td>Surplus lines stamping fee</td></tr>
+    <tr><td><strong>Total Premium</strong></td><td><strong>$125,000</strong></td><td>Final amount insured ko dena hai</td></tr>
+  </table>
+  <p><strong>Billing Impact:</strong> Quarterly plan hai → 4 installments of $31,250. Pehle do paid, teesra <span class="tag tag-yellow">Overdue</span> (15 days late), chautha <span class="tag tag-blue">Upcoming</span>.</p>
+</div>
+</div>
+
+<!-- ==================== 5. BILLING ==================== -->
+<div class="section" id="p5">
+<h2><span class="num">5</span> Billing — Payment Ka System</h2>
+<div class="card">
+  <h4><i class="fas fa-credit-card" style="color:var(--success);"></i> Billing Plan aur Installments</h4>
+  <p>Insured apna <strong>billing plan</strong> choose kar sakta hai:</p>
+  <ul>
+    <li><span class="tag tag-blue">Annual</span> — Saara premium ek sath</li>
+    <li><span class="tag tag-info">Semi-Annual</span> — 2 installments</li>
+    <li><span class="tag tag-yellow">Quarterly</span> — 4 installments (sabse common)</li>
+    <li><span class="tag tag-purple">Monthly</span> — 12 installments (with interest)</li>
+  </ul>
+  <p><strong>Payment Methods:</strong> ACH (most common), Wire, Check, Credit Card (2.5% fee)</p>
+  <p><strong>Key Rules:</strong></p>
+  <ul>
+    <li><strong>Grace Period:</strong> Due date ke baad 10 days tak late fee nahi lagta</li>
+    <li><strong>Late Fee:</strong> 10 days ke baad 1.5% monthly (18% APR)</li>
+    <li><strong>Cancellation Notice:</strong> 10 days notice ke baad bhi payment nahi aayi toh cancellation start</li>
+  </ul>
+  <div class="highlight"><strong>Flow:</strong> Policy Issue → Billing Schedule Create → Installments Generate → Payment Receive → Receipt Generate → Audit Log Update</div>
+</div>
+</div>
+
+<!-- ==================== 6. AUDIT TRAIL ==================== -->
+<div class="section" id="p6">
+<h2><span class="num">6</span> Audit Trail — Sab Ka Record</h2>
+<div class="card">
+  <h4><i class="fas fa-history" style="color:var(--secondary);"></i> Har Action Track Hota Hai</h4>
+  <p>PAS system mein har ek action record hota hai — <strong>kaun, kab, kya change kiya, purani value kya thi, nayi value kya hai</strong>. Yeh <strong>audit trail</strong> regulatory compliance (SOX, NAIC) ke liye mandatory hai. Koi bhi dispute ho toh 5 saal purana record bhi nikal sakte hain.</p>
+  <table>
+    <tr><th>Timestamp</th><th>User</th><th>Action</th><th>Old Value</th><th>New Value</th></tr>
+    <tr><td>2026-07-27 16:30</td><td>Riya Sharma</td><td>Coverage Limit Change</td><td>$5,000,000</td><td>$6,000,000</td></tr>
+    <tr><td>2026-07-27 16:31</td><td>Riya Sharma</td><td>Premium Recalc</td><td>$125,000</td><td>$127,500</td></tr>
+    <tr><td>2026-07-27 16:32</td><td>System</td><td>Version Created</td><td>Ver 1</td><td>Ver 2</td></tr>
+  </table>
+  <div class="highlight"><strong>Why important?</strong> Agar regulator puchhe — "Policy par endorsement kisne kiya aur kyun?" — toh audit trail mein sab clear hota hai.</div>
+</div>
+</div>
+
+<!-- ==================== 7. SCREENS ==================== -->
+<div class="section" id="p7">
+<h2><span class="num">7</span> 16 Screens — Poora System</h2>
+<div class="card">
+  <h4><i class="fas fa-th-large" style="color:var(--accent);"></i> Har Screen Kya Karti Hai</h4>
+  <table>
+    <tr><th>#</th><th>Screen</th><th>Kya Hota Hai?</th><th>Status</th></tr>
+    <tr><td>1</td><td>Login</td><td>2-step login (Email+Password → OTP)</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>2</td><td>Dashboard</td><td>KPI cards, quick actions, recent activity, upcoming renewals</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>3</td><td>Policy Search</td><td>8 policies list with search and status filters</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>4</td><td>New Submission</td><td>5-step wizard (Insured → Coverage → Details → Premium → Review)</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>5</td><td>UW Queue</td><td>5 submissions with Approve/Refer/Decline buttons</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>6</td><td>Policy Details</td><td>8 tabs (Details, Coverages, Premium, Versions, Timeline, Docs, Notes, Audit)</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>7</td><td>Endorsement</td><td>4-tab wizard (Type, Premium, Docs, Review) + premium impact</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>8</td><td>Renewal</td><td>3 tabs (Quote Comparison, Forms, Approval)</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>9</td><td>Cancellation</td><td>Type (Flat/Pro-rata/Short Rate), reason, premium impact</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>10</td><td>Reinstatement</td><td>30-day window check, fee $250, policy restoration</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>11</td><td>Billing</td><td>Invoices list, transactions, payment status tracking</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>12</td><td>Documents</td><td>Uploaded files with category filters and download</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>13</td><td>Notes</td><td>UW notes, billing notes, claims notes — with timestamps</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>14</td><td>Activities &amp; Audit</td><td>Activity feed + full audit log table</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>15</td><td>Reports</td><td>8 report types (Premium, UW, Billing, Claims, etc.)</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>16</td><td>Admin</td><td>Users, Roles, Permissions, System Settings</td><td><span class="tag tag-yellow">In Progress</span></td></tr>
+  </table>
+</div>
+</div>
+
+<!-- ==================== 8. DOT CONNECTION ==================== -->
+<div class="section" id="p8">
+<h2><span class="num">8</span> Dot-Connection — Sab Kaise Jude Hain</h2>
+<div class="card">
+  <h4><i class="fas fa-project-diagram" style="color:var(--secondary);"></i> Ek Screen Doosre Se Kaise Connected Hai</h4>
+  <p><strong>Complete Journey Flow:</strong></p>
+  <div class="flow-row">
+    <span class="step">Login</span><span class="arrow">→</span>
+    <span class="step">Dashboard</span><span class="arrow">→</span>
+    <span class="step">New Submission</span><span class="arrow">→</span>
+    <span class="step">UW Queue</span><span class="arrow">→</span>
+    <span class="step">Bind &amp; Issue</span><span class="arrow">→</span>
+    <span class="step current">Active Policy</span>
+  </div>
+  <p><strong>Active Policy se teen branches:</strong></p>
+  <div class="cols">
+    <div>
+      <div class="highlight" style="border-left-color:var(--secondary);">
+        <strong>Endorsement Branch</strong><br>
+        Active Policy → Endorsement → Premium Change → Billing Adjust → New Version
+      </div>
+    </div>
+    <div>
+      <div class="highlight" style="border-left-color:var(--success);">
+        <strong>Renewal Branch</strong><br>
+        Active Policy → Renewal Quote → UW Review → New Term → New Version
+      </div>
+    </div>
+  </div>
+  <div class="cols" style="margin-top:8px;">
+    <div>
+      <div class="highlight" style="border-left-color:var(--danger);">
+        <strong>Cancellation Branch</strong><br>
+        Active Policy → Cancel Request → Premium Calc → Cancelled → (30d) → Reinstate → Active
+      </div>
+    </div>
+    <div>
+      <div class="highlight" style="border-left-color:var(--warning);">
+        <strong>Cross-Cutting</strong><br>
+        Every Action → Audit Log → Document Store → Report Updated
+      </div>
+    </div>
+  </div>
+  <p style="margin-top:16px;"><strong>Downstream Impact — Har Action Ka Result:</strong></p>
+  <ul>
+    <li>📝 Endorsement → Premium +$2,500 → Billing adjust → New Version 2 created</li>
+    <li>🔄 Renewal → New Term 2 → New premium $130,500 → New billing schedule</li>
+    <li>🚫 Cancellation → Return premium -$52,083 → Commission chargeback → Policy closed</li>
+    <li>💳 Payment → Billing status updated → Late fee removed → Receipt generated</li>
+  </ul>
+</div>
+</div>
+
+<!-- ==================== 9. INFO BUTTON ==================== -->
+<div class="section" id="p9">
+<h2><span class="num">9</span> Har Element Par Info Button — Kyon?</h2>
+<div class="card">
+  <h4><i class="fas fa-info-circle" style="color:var(--accent);"></i> Info Button (<span class="info-demo">i</span>) Ka Matlab</h4>
+  <p>Screen par har field, label, table header, card, status chip ke saath ek <span class="info-demo">i</span> button hai. Yeh button teen cheezein batata hai:</p>
+  <ul>
+    <li><strong>What:</strong> Yeh element kya hai? — Definition</li>
+    <li><strong>Why:</strong> Yeh kyon exist karta hai? — Business logic</li>
+    <li><strong>Flow:</strong> Yeh PAS flow mein kaise connect hota hai? — Cross-module impact</li>
+  </ul>
+  <div class="highlight">
+    <strong>Example — Policy Number (<span class="info-demo">i</span>):</strong><br>
+    <strong>What:</strong> Unique alphanumeric identifier assigned to every insurance policy. Format: POL-YYYY-NNN.<br>
+    <strong>Why:</strong> Used to track, reference, and retrieve a policy across all modules — billing, claims, endorsements, renewals, and compliance reporting.<br>
+    <strong>Flow:</strong> Auto-generated when a policy is bound and issued. Referenced on every transaction, document, and communication throughout the policy lifecycle.
+  </div>
+  <div class="highlight" style="border-left-color:var(--secondary);">
+    <strong>Example — Status Badge (<span class="info-demo">i</span>):</strong><br>
+    <strong>What:</strong> Visual indicator of a policy's current state in its lifecycle. Values: Active, Pending, Cancelled, Expired, Renewed, Draft.<br>
+    <strong>Why:</strong> Instantly shows where the policy stands without needing to open it. Used for filtering, reporting, and workflow decisions.<br>
+    <strong>Flow:</strong> Changes automatically based on actions (Bind → Active, Cancel → Cancelled, Expire → Expired). Drives what actions are available on the policy.
+  </div>
+</div>
+</div>
+
+<!-- ==================== 10. MGA UNDERWRITING ==================== -->
+<div class="section" id="p10">
+<h2><span class="num">10</span> MGA Underwriting — Delegated Authority</h2>
+
+<div class="card">
+<h4><i class="fas fa-user-tie" style="color:var(--secondary);"></i> MGA Kya Hai?</h4>
+<p><strong>MGA = Managing General Agent</strong>. Yeh ek specialized agent/broker hota hai jise insurance company (Carrier) ne apni taraf se underwriting karne ka <strong>delegated authority</strong> diya hota hai. Simple words mein — Carrier ne MGA ko trust kiya hai ki woh policies issue kar sakta hai, rates set kar sakta hai (limits ke andar), aur claims bhi handle kar sakta hai.</p>
+<div class="highlight"><strong>Real World Analogy:</strong> Jaise <strong>Zomato</strong> (Carrier) ne kisi local restaurant ko (MGA) authority di ho ki woh apne area mein Zomato ke brand se orders accept kar sakta hai, delivery kar sakta hai, aur issues bhi resolve kar sakta hai — bina har baar Zomato head office se permission liye.</div>
+
+<div class="cols" style="margin-top:16px;">
+  <div>
+    <h4><i class="fas fa-balance-scale" style="color:var(--accent);"></i> MGA vs Traditional Broker</h4>
+    <table>
+      <tr><th>Feature</th><th>Broker</th><th>MGA</th></tr>
+      <tr><td>UW Authority</td><td><span class="auth-level none">None</span></td><td><span class="auth-level full">Full (within limits)</span></td></tr>
+      <tr><td>Bind Coverage</td><td>Carrier se puchhna padega</td><td>Khud bind kar sakta hai</td></tr>
+      <tr><td>Issue Policy</td><td>Carrier karega</td><td>Khud issue kar sakta hai</td></tr>
+      <tr><td>Set Rates</td><td>Carrier ke rates</td><td>Guidelines mein apne rates</td></tr>
+      <tr><td>Claims Handling</td><td>Sirf report karega</td><td>Upto $50K handle kar sakta hai</td></tr>
+      <tr><td>Commission</td><td>10-15%</td><td>20-30% (profit share bhi)</td></tr>
+    </table>
+  </div>
+  <div>
+    <h4><i class="fas fa-list-check" style="color:var(--success);"></i> MGA Ke 5 Key Roles</h4>
+    <ul>
+      <li><strong>Marketing & Distribution</strong> — Carrier ke products ko market mein bechna</li>
+      <li><strong>Underwriting</strong> — Risk evaluate karna aur accept/reject karna</li>
+      <li><strong>Policy Administration</strong> — Policies issue karna, endorse karna, renew karna</li>
+      <li><strong>Claims Management</strong> — Chhoti claims handle karna (within authority)</li>
+      <li><strong>Compliance</strong> — State regulations ke hisaab se filing aur reporting</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<div class="card">
+<h4><i class="fas fa-sitemap" style="color:var(--accent);"></i> MGA Underwriting Flow — Proper Diagram</h4>
+<p>Neeche diye gaye diagram mein aap dekhenge ki <strong>Insured → Broker → MGA → Carrier</strong> tak ka poora flow kaise kaam karta hai. Har decision point par MGA ke paas 3 options hote hain: <span class="tag tag-green">Approve</span>, <span class="tag tag-yellow">Refer to Carrier</span>, <span class="tag tag-red">Decline</span>.</p>
+
+<div class="legend">
+  <span class="legend-item"><span class="legend-line approve"></span> Approve / Bind (MGA ke authority mein)</span>
+  <span class="legend-item"><span class="legend-line refer"></span> Refer to Carrier (authority se outside)</span>
+  <span class="legend-item"><span class="legend-line decline"></span> Decline (risk unacceptable)</span>
+</div>
+
+<div class="diagram">
+<svg class="diagram-svg" viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9ca3af"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ef4444"/>
+    </marker>
+    <marker id="arrow-yellow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/>
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="115%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="880" height="560" rx="12" fill="#f8fafc" stroke="#e5e7eb" stroke-width="1"/>
+
+  <!-- Layer Labels -->
+  <text x="440" y="30" text-anchor="middle" font-family="'Inter',sans-serif" font-size="12" fill="#9ca3af" font-weight="600">MGA UNDERWRITING FLOW — Delegated Authority Model</text>
+
+  <!-- ===== LAYER 1: INSURED ===== -->
+  <rect x="40" y="55" width="200" height="70" rx="10" fill="#f0fdf4" stroke="#10b981" stroke-width="2" filter="url(#shadow)"/>
+  <text x="140" y="82" text-anchor="middle" class="diagram-text title" fill="#059669">🏢 Insured</text>
+  <text x="140" y="100" text-anchor="middle" class="diagram-text sub">ABC Construction Inc.</text>
+  <text x="140" y="115" text-anchor="middle" class="diagram-text sub">Insurance chahiye → broker ke paas</text>
+
+  <!-- Arrow: Insured → Broker -->
+  <line x1="240" y1="90" x2="310" y2="90" class="diagram-arrow"/>
+  <text x="275" y="82" text-anchor="middle" class="diagram-label">Applies</text>
+
+  <!-- ===== LAYER 2: BROKER ===== -->
+  <rect x="320" y="55" width="200" height="70" rx="10" fill="#fefce8" stroke="#f59e0b" stroke-width="2" filter="url(#shadow)"/>
+  <text x="420" y="82" text-anchor="middle" class="diagram-text title" fill="#b45309">📋 Broker / Agent</text>
+  <text x="420" y="100" text-anchor="middle" class="diagram-text sub">Marsh Inc.</text>
+  <text x="420" y="115" text-anchor="middle" class="diagram-text sub">Submission create karta hai</text>
+
+  <!-- Arrow: Broker → MGA -->
+  <line x1="520" y1="90" x2="590" y2="90" class="diagram-arrow"/>
+  <text x="555" y="82" text-anchor="middle" class="diagram-label">Submission</text>
+
+  <!-- ===== LAYER 3: MGA ===== -->
+  <rect x="600" y="45" width="220" height="90" rx="10" fill="#f0f9ff" stroke="#00d4ff" stroke-width="2.5" filter="url(#shadow)"/>
+  <text x="710" y="72" text-anchor="middle" class="diagram-text title" fill="#0099cc">⚡ MGA</text>
+  <text x="710" y="90" text-anchor="middle" class="diagram-text sub">Managing General Agent</text>
+  <text x="710" y="108" text-anchor="middle" class="diagram-text sub" fill="#4b5563">Delegated Underwriting Authority</text>
+  <text x="710" y="123" text-anchor="middle" class="diagram-text sub">UW Score 1-10 → Decision</text>
+
+  <!-- ===== MGA DECISION DIAMOND ===== -->
+  <rect x="340" y="175" width="200" height="45" rx="22" fill="#fff" stroke="#d1d5db" stroke-width="2" filter="url(#shadow)"/>
+  <text x="440" y="202" text-anchor="middle" class="diagram-text" fill="#374151" font-weight="600">MGA UW Decision → ?</text>
+
+  <!-- Arrow: MGA → Decision -->
+  <line x1="710" y1="135" x2="710" y2="175" class="diagram-arrow"/>
+  <line x1="710" y1="175" x1="540" y2="175" class="diagram-arrow"/>
+  <!-- drop line from MGA box center down -->
+  <path d="M 710 135 L 710 160 L 440 160 L 440 175" class="diagram-arrow" fill="none"/>
+
+  <!-- ===== OPTION 1: APPROVE (LEFT) ===== -->
+  <rect x="70" y="265" width="240" height="85" rx="10" fill="#f0fdf4" stroke="#10b981" stroke-width="2" filter="url(#shadow)"/>
+  <text x="190" y="292" text-anchor="middle" class="diagram-text title" fill="#059669">✅ Approve &amp; Bind</text>
+  <text x="190" y="312" text-anchor="middle" class="diagram-text sub">MGA ke authority mein hai</text>
+  <text x="190" y="330" text-anchor="middle" class="diagram-text sub" fill="#4b5563">Policy Issue → Active → Docs Generate</text>
+
+  <!-- Arrow: Decision → Approve -->
+  <path d="M 340 197 L 310 197 L 310 307 L 310 307" class="diagram-arrow approve" stroke="#10b981"/>
+  <text x="292" y="288" text-anchor="end" class="diagram-label green">Score ≥ 5 &amp; within binding limit</text>
+
+  <!-- ===== OPTION 2: REFER TO CARRIER (CENTER) ===== -->
+  <rect x="360" y="265" width="240" height="85" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="480" y="292" text-anchor="middle" class="diagram-text title" fill="#2563eb">🔄 Refer to Carrier</text>
+  <text x="480" y="312" text-anchor="middle" class="diagram-text sub">Authority limit se bahar hai</text>
+  <text x="480" y="330" text-anchor="middle" class="diagram-text sub" fill="#4b5563">Senior UW review karega</text>
+
+  <!-- Arrow: Decision → Refer -->
+  <line x1="440" y1="220" x2="440" y2="265" class="diagram-arrow refer" stroke="#f59e0b"/>
+  <text x="450" y="248" text-anchor="start" class="diagram-label blue">Score &lt; 5 ya limit exceeds $500K</text>
+
+  <!-- ===== OPTION 3: DECLINE (RIGHT) ===== -->
+  <rect x="650" y="265" width="180" height="85" rx="10" fill="#fef2f2" stroke="#ef4444" stroke-width="2" filter="url(#shadow)"/>
+  <text x="740" y="292" text-anchor="middle" class="diagram-text title" fill="#dc2626">❌ Decline</text>
+  <text x="740" y="312" text-anchor="middle" class="diagram-text sub">Risk unacceptable</text>
+  <text x="740" y="330" text-anchor="middle" class="diagram-text sub" fill="#4b5563">Reason ke saath reject</text>
+
+  <!-- Arrow: Decision → Decline -->
+  <path d="M 440 220 L 440 240 L 740 240 L 740 265" class="diagram-arrow decline" stroke="#ef4444"/>
+  <text x="620" y="255" text-anchor="start" class="diagram-label red">Score ≤ 3 ya prohibited class</text>
+
+  <!-- ===== CARRIER (Top Right) ===== -->
+  <rect x="620" y="380" width="220" height="70" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="730" y="407" text-anchor="middle" class="diagram-text title" fill="#2563eb">🏛️ Insurance Carrier</text>
+  <text x="730" y="425" text-anchor="middle" class="diagram-text sub">Southlake Insurance</text>
+  <text x="730" y="440" text-anchor="middle" class="diagram-text sub" fill="#4b5563">Carrier UW → Final Decision</text>
+
+  <!-- Arrow: Refer → Carrier -->
+  <line x1="480" y1="350" x2="480" y2="415" class="diagram-arrow refer" stroke="#f59e0b"/>
+  <line x1="480" y1="415" x2="620" y2="415" class="diagram-arrow refer" stroke="#f59e0b"/>
+  <text x="550" y="407" text-anchor="middle" class="diagram-label blue">Binds outside MGA authority</text>
+
+  <!-- ===== CARRIER DECISION ===== -->
+  <rect x="100" y="380" width="240" height="70" rx="10" fill="#f0fdf4" stroke="#10b981" stroke-width="2" filter="url(#shadow)"/>
+  <text x="220" y="407" text-anchor="middle" class="diagram-text title" fill="#059669">✅ Bind Authority Granted</text>
+  <text x="220" y="425" text-anchor="middle" class="diagram-text sub">MGA ko binding authority mili</text>
+  <text x="220" y="440" text-anchor="middle" class="diagram-text sub" fill="#4b5563">Niche MGA Authority Levels dekhein</text>
+
+  <!-- Arrow: Carrier back to MGA authority -->
+  <line x1="620" y1="415" x2="340" y2="415" class="diagram-arrow approve" stroke="#10b981"/>
+  <!-- Arrow: Decision (carrier) to Bind Authority -->
+  <text x="340" y="407" text-anchor="end" class="diagram-label green">Carrier Approved → MGA Binds</text>
+
+  <!-- ===== BOTTOM: BIND & ISSUE ===== -->
+  <rect x="120" y="480" width="600" height="55" rx="10" fill="#1f2937" stroke="none" filter="url(#shadow)"/>
+  <text x="420" y="507" text-anchor="middle" font-family="'Inter',sans-serif" font-size="14" fill="#fff" font-weight="600">✅ Policy Bound &amp; Issued → Active Status → Billing → Docs → Audit Trail</text>
+  <text x="420" y="525" text-anchor="middle" font-family="'Inter',sans-serif" font-size="11" fill="#9ca3af">Yeh step MGA ya Carrier dono kar sakte hain — authority ke hisaab se</text>
+
+  <!-- Arrow: Approve → Bind -->
+  <line x1="190" y1="350" x2="190" y2="480" class="diagram-arrow approve" stroke="#10b981"/>
+  <!-- Arrow: Bind Authority → Bind -->
+  <line x1="220" y1="450" x2="220" y2="480" class="diagram-arrow approve" stroke="#10b981"/>
+  <!-- Arrow: Carrier Bind → Bind -->
+  <path d="M 730 450 L 730 507 L 720 507" class="diagram-arrow approve" stroke="#10b981"/>
+</svg>
+</div>
+
+<div class="highlight"><strong>Diagram Kaise Padhein:</strong> Upar se neeche flow hai. Insured (customer) → Broker → MGA → Decision Point. MGA ke paas 3 options: Approve (left), Refer to Carrier (center), Decline (right). Carrier approve kare toh MGA bind kar sakta hai. Finally policy Active hoti hai.</div>
+</div>
+
+<div class="card">
+<h4><i class="fas fa-shield-halved" style="color:var(--warning);"></i> MGA Authority Levels — Kitna Power Hai?</h4>
+<p>Har MGA ko alag-alag authority milti hai. Yeh authority <strong>Binding Authority Agreement (BAA)</strong> mein likhi hoti hai. Teen levels hote hain:</p>
+<table>
+  <tr><th>Level</th><th>Authority</th><th>Binding Limit</th><th>Carrier Approval</th></tr>
+  <tr>
+    <td><span class="auth-level full">Tier 1 — Full</span></td>
+    <td>Bind, Issue, Endorse, Renew, Claims upto $50K</td>
+    <td>Upto $1M limit / $500K premium</td>
+    <td>Annual audit only</td>
+  </tr>
+  <tr>
+    <td><span class="auth-level limited">Tier 2 — Limited</span></td>
+    <td>Bind & Issue only. Endorsements need approval</td>
+    <td>Upto $500K limit / $250K premium</td>
+    <td>Quarterly bordereau review</td>
+  </tr>
+  <tr>
+    <td><span class="auth-level none">Tier 3 — Non-Binding</span></td>
+    <td>Quote only. Bind nahi kar sakta</td>
+    <td>N/A — Carrier binds directly</td>
+    <td>Every submission needs UW approval</td>
+  </tr>
+</table>
+<div class="highlight"><strong>Business Rule:</strong> MGA ka authority kabhi bhi Carrier se zyada nahi ho sakta. MGA sirf utna kar sakta hai jitna <strong>Binding Authority Agreement (BAA)</strong> mein likha hai. Agar koi submission BAA se bahar hai → <span class="tag tag-yellow">Refer to Carrier</span>.</div>
+</div>
+
+<div class="card">
+<h4><i class="fas fa-clock-rotate-left" style="color:var(--accent);"></i> MGA Reporting — Bordereau</h4>
+<p>MGA ko har month Carrier ko <strong>bordereau</strong> bhejna hota hai — ek detailed report jismein sab kuch hota hai:</p>
+<div class="cols">
+  <div>
+    <div class="highlight" style="border-left-color:var(--secondary);">
+      <strong>Premium Bordereau</strong><br>
+      Kis policy par kitna premium likha?<br>
+      Kitna commission liya?<br>
+      Kitna Carrier ko bheja?
+    </div>
+  </div>
+  <div>
+    <div class="highlight" style="border-left-color:var(--warning);">
+      <strong>Claims Bordereau</strong><br>
+      Kitne claims aaye?<br>
+      Kitna paid kiya?<br>
+      Kitna reserve rakha?
+    </div>
+  </div>
+</div>
+<div class="highlight"><strong>Flow:</strong> MGA binds policies → Monthly bordereau generate → Carrier receives → Premium reconciled → Commission paid</div>
+</div>
+
+<div class="card">
+<h4><i class="fas fa-store" style="color:var(--success);"></i> Ramesh Bhai ka Example — MGA Scenario</h4>
+<p>Maan lijiye Ramesh Bhai ki ABC Construction ko construction insurance chahiye. Lekin Southlake Insurance directly construction business nahi leti. Woh <strong>BuildSure MGA</strong> ko authority deti hai jo construction business mein expert hai.</p>
+<div class="flow-row">
+  <span class="step done">ABC Construction</span><span class="arrow">→</span>
+  <span class="step done">Marsh Broker</span><span class="arrow">→</span>
+  <span class="step done">BuildSure MGA</span><span class="arrow">→</span>
+  <span class="step current">UW Review</span>
+</div>
+<p><strong>Scenario 1 — MGA Bind (Score 7):</strong> ABC Construction ka experience achha hai, losses nahi hain. MGA ne score 7 diya. Policy MGA ne khud bind ki — $1M GL + $1M Auto. Premium $125,000. Carrier ko sirf monthly bordereau mein pata chala. <span class="tag tag-green">Tier 1 Authority</span></p>
+<p><strong>Scenario 2 — Refer to Carrier (Score 4):</strong> ABC Construction ko $5M limit chahiye jo MGA ke $1M binding limit se bahar hai. MGA ne <span class="tag tag-yellow">Refer to Carrier</span> kiya. Carrier ne UW review kiya aur approve kiya. MGA ne bind kiya but Carrier ke approval se. <span class="tag tag-yellow">Tier 1 — Outside Binding Limit</span></p>
+<p><strong>Scenario 3 — Decline (Score 2):</strong> ABC Construction ki loss history bahut buri hai. MGA ne score 2 diya — <span class="tag tag-red">Decline</span>. Carrier ko bhi report kiya ki kyun decline kiya.</p>
+<div class="highlight"><strong>Moral of the Story:</strong> MGA ko Carrier ka trust chahiye. Har decision track hota hai. Bordereau se Carrier monitor karta hai ki MGA sahi decisions le raha hai ya nahi. Agar MGA bar-bar galat decisions lega toh Carrier uska authority wapas le sakta hai.</div>
+</div>
+</div>
+
+<!-- ==================== 11. POORA SYSTEM DIAGRAM ==================== -->
+<div class="section" id="p11">
+<h2><span class="num">11</span> Poora PAS System Diagram — End to End</h2>
+
+<div class="card">
+<h4><i class="fas fa-diagram-project" style="color:var(--accent);"></i> Complete PAS Lifecycle — Visual Overview</h4>
+<p>Yeh diagram poori Policy Administration System ka end-to-end flow dikhata hai — submission se lekar cancellation tak. Har phase mein kaun involvement hai, kya action hota hai, aur next step kya hai.</p>
+
+<div style="font-family:'Inter',sans-serif;padding:10px 0;">
+
+<!-- PHASE 1: SUBMISSION -->
+<div style="border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;">
+  <div style="background:linear-gradient(135deg,#00d4ff,#0099cc);color:#fff;padding:10px 16px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;">
+    <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.2);font-size:14px;">1</span> SUBMISSION PHASE
+  </div>
+  <div style="display:flex;gap:0;border-top:1px solid var(--border);">
+    <div style="flex:1;padding:12px;border-right:1px solid var(--border);background:#faf5ff;">
+      <div style="font-size:11px;color:#7c3aed;font-weight:600;">KAUN KARTA HAI?</div>
+      <div style="font-size:13px;margin-top:4px;">Broker / Agent</div>
+    </div>
+    <div style="flex:1.5;padding:12px;border-right:1px solid var(--border);">
+      <div style="font-size:11px;color:#6b7280;font-weight:600;">KYA HOTA HAI?</div>
+      <div style="font-size:13px;margin-top:4px;">Insured details, coverage needs, loss history, revenue — sab submit hota hai</div>
+    </div>
+    <div style="flex:1;padding:12px;">
+      <div style="font-size:11px;color:#6b7280;font-weight:600;">OUTPUT</div>
+      <div style="font-size:13px;margin-top:4px;"><span class="tag tag-blue">New Submission</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 2: QUOTE -->
+<div style="border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;">
+  <div style="background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;padding:10px 16px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;">
+    <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.2);font-size:14px;">2</span> QUOTE PHASE
+  </div>
+  <div style="display:flex;gap:0;border-top:1px solid var(--border);">
+    <div style="flex:1;padding:12px;border-right:1px solid var(--border);background:#faf5ff;">
+      <div style="font-size:11px;color:#7c3aed;font-weight:600;">KAUN?</div>
+      <div style="font-size:13px;margin-top:4px;">System + Underwriter</div>
+    </div>
+    <div style="flex:1.5;padding:12px;border-right:1px solid var(--border);">
+      <div style="font-size:11px;color:#6b7280;font-weight:600;">KYA?</div>
+      <div style="font-size:13px;margin-top:4px;">Base Premium × Mod × Credit + Taxes + Fees = Total</div>
+    </div>
+    <div style="flex:1;padding:12px;">
+      <div style="font-size:11px;color:#6b7280;font-weight:600;">OUTPUT</div>
+      <div style="font-size:13px;margin-top:4px;"><span class="tag tag-yellow">Quote</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 3: UW -->
+<div style="border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;">
+  <div style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;padding:10px 16px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;">
+    <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.2);font-size:14px;">3</span> UNDERWRITING PHASE
+  </div>
+  <div style="padding:12px;">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:200px;padding:10px;background:#f0f9ff;border-radius:8px;">
+        <div style="font-weight:600;font-size:13px;"><span class="tag tag-green">✓ Approve</span></div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px;">Score ≥ 5 → Bind</div>
+      </div>
+      <div style="flex:1;min-width:200px;padding:10px;background:#fefce8;border-radius:8px;">
+        <div style="font-weight:600;font-size:13px;"><span class="tag tag-yellow">⟳ Refer</span></div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px;">Score &lt; 5 ya high limit → Senior UW</div>
+      </div>
+      <div style="flex:1;min-width:200px;padding:10px;background:#fef2f2;border-radius:8px;">
+        <div style="font-weight:600;font-size:13px;"><span class="tag tag-red">✗ Decline</span></div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px;">Score ≤ 3 ya prohibited risk</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 4: BIND & ISSUE -->
+<div style="border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;">
+  <div style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:10px 16px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;">
+    <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.2);font-size:14px;">4</span> BIND &amp; ISSUE PHASE
+  </div>
+  <div style="padding:12px;">
+    <div style="display:flex;gap:12px;">
+      <div style="flex:1;padding:8px 12px;background:#f0fdf4;border-radius:8px;">
+        <div style="font-weight:600;font-size:13px;">🔒 Bind</div>
+        <div style="font-size:12px;color:#6b7280;">Temporary coverage start</div>
+      </div>
+      <div style="display:flex;align-items:center;color:#9ca3af;">→</div>
+      <div style="flex:1;padding:8px 12px;background:#f0fdf4;border-radius:8px;">
+        <div style="font-weight:600;font-size:13px;">📄 Issue</div>
+        <div style="font-size:12px;color:#6b7280;">Policy # generated, PDF docs</div>
+      </div>
+      <div style="display:flex;align-items:center;color:#9ca3af;">→</div>
+      <div style="flex:1;padding:8px 12px;background:#f0fdf4;border-radius:8px;">
+        <div style="font-weight:600;font-size:13px;">💰 Billing</div>
+        <div style="font-size:12px;color:#6b7280;">Installments created</div>
+      </div>
+      <div style="display:flex;align-items:center;color:#9ca3af;">→</div>
+      <div style="flex:1;padding:8px 12px;background:#ecfdf5;border-radius:8px;border:2px solid #10b981;">
+        <div style="font-weight:700;font-size:13px;color:#059669;">✅ Active</div>
+        <div style="font-size:12px;color:#6b7280;">Policy live!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 5-7: ACTIVE LIFECYCLE -->
+<div style="border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;">
+  <div style="background:linear-gradient(135deg,#1f2937,#374151);color:#fff;padding:10px 16px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;">
+    <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.2);font-size:14px;">5-7</span> ACTIVE POLICY LIFECYCLE
+  </div>
+  <div style="display:flex;gap:0;border-top:1px solid var(--border);">
+    <div style="flex:1;padding:12px;text-align:center;border-right:1px solid var(--border);">
+      <div style="font-size:28px;color:var(--secondary);">✏️</div>
+      <div style="font-weight:600;font-size:13px;margin-top:4px;">Endorsement</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:4px;">Mid-term change → New Version</div>
+    </div>
+    <div style="flex:1;padding:12px;text-align:center;border-right:1px solid var(--border);">
+      <div style="font-size:28px;color:var(--success);">🔄</div>
+      <div style="font-weight:600;font-size:13px;margin-top:4px;">Renewal</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:4px;">Naya term &amp; premium → New Version</div>
+    </div>
+    <div style="flex:1;padding:12px;text-align:center;border-right:1px solid var(--border);">
+      <div style="font-size:28px;color:var(--danger);">🚫</div>
+      <div style="font-weight:600;font-size:13px;margin-top:4px;">Cancellation</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:4px;">Flat / Pro-rata / Short Rate → Closed</div>
+    </div>
+    <div style="flex:1;padding:12px;text-align:center;">
+      <div style="font-size:28px;color:var(--info);">↩️</div>
+      <div style="font-weight:600;font-size:13px;margin-top:4px;">Reinstatement</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:4px;">30-day window → Back to Active</div>
+    </div>
+  </div>
+</div>
+
+<!-- CROSS-CUTTING -->
+<div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+  <div style="background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;padding:10px 16px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;">
+    <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.2);font-size:14px;">♻</span> CROSS-CUTTING — HAR PHASE MEIN COMMON
+  </div>
+  <div style="display:flex;gap:0;border-top:1px solid var(--border);">
+    <div style="flex:1;padding:12px;text-align:center;border-right:1px solid var(--border);background:#f0f9ff;">
+      <div style="font-size:20px;color:var(--accent);">📋</div>
+      <div style="font-weight:600;font-size:12px;">Audit Trail</div>
+      <div style="font-size:10px;color:#6b7280;">Har action log hota hai</div>
+    </div>
+    <div style="flex:1;padding:12px;text-align:center;border-right:1px solid var(--border);background:#faf5ff;">
+      <div style="font-size:20px;color:var(--secondary);">📄</div>
+      <div style="font-weight:600;font-size:12px;">Documents</div>
+      <div style="font-size:10px;color:#6b7280;">PDFs, endorsements, forms</div>
+    </div>
+    <div style="flex:1;padding:12px;text-align:center;border-right:1px solid var(--border);background:#fefce8;">
+      <div style="font-size:20px;color:var(--warning);">📊</div>
+      <div style="font-weight:600;font-size:12px;">Reports</div>
+      <div style="font-size:10px;color:#6b7280;">Premium, UW, Billing, Claims</div>
+    </div>
+    <div style="flex:1;padding:12px;text-align:center;background:#f0fdf4;">
+      <div style="font-size:20px;color:var(--success);">🔔</div>
+      <div style="font-weight:600;font-size:12px;">Notifications</div>
+      <div style="font-size:10px;color:#6b7280;">Emails, alerts, tasks</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="highlight"><strong>Ek Line Mein:</strong> Submission → Quote → Underwriting → Bind & Issue → Active (Endorse/Renew/Cancel) → Audit sab kuch track karta hai. Bas itna hai poori PAS story!</div>
+</div>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p><strong>PAS Console — Policy Administration System</strong> | Southlake Insurance</p>
+  <p>Made with <i class="fas fa-heart" style="color:var(--danger);"></i> for learning &amp; training | Hinglish Documentation v1.0</p>
+  <p style="margin-top:8px;"><a href="index.html" class="btn-link">← Wireframe mein jayein</a> &nbsp;|&nbsp; <a href="#top" class="btn-link"><i class="fas fa-arrow-up"></i> Top par jayein</a></p>
+</div>
+
+</div>
+</body>
+</html>
