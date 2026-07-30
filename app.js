@@ -800,6 +800,14 @@ function showPolicies() {
 }
 
 function backFromSubScreen() {
+  const visible = document.querySelector('.screen.active');
+  const lifecycle = ['screen-renewal','screen-cancellation','screen-reinstatement'];
+  if (visible && lifecycle.includes(visible.id)) {
+    selectedQuoteId = null;
+    const reRender = { 'screen-renewal':renderRenewal, 'screen-cancellation':renderCancellation, 'screen-reinstatement':renderReinstatement };
+    reRender[visible.id]();
+    return;
+  }
   if (window._policyContext === 'policies' && selectedPolicyId) {
     showScreen('policies');
   } else if (selectedQuoteId) {
@@ -1363,6 +1371,21 @@ function renderRenewal() {
         </div>
       </div>
     </div>
+    <div class="card glass">
+      <div class="card-title">Policy Details <i class="info-btn" onclick="showInfo('quote-status')">i</i></div>
+      <div class="summary-card glass-sm">
+        <div class="sc-item"><div class="sc-label">Insured</div><div class="sc-value">${q.insuredName}</div></div>
+        <div class="sc-item"><div class="sc-label">FEIN</div><div class="sc-value">${q.fein}</div></div>
+        <div class="sc-item"><div class="sc-label">Broker / Agent</div><div class="sc-value">${q.agent}</div></div>
+        <div class="sc-item"><div class="sc-label">MGA</div><div class="sc-value">${q.mga}</div></div>
+        <div class="sc-item"><div class="sc-label">Line of Business</div><div class="sc-value">${q.lob}</div></div>
+        <div class="sc-item"><div class="sc-label">Term</div><div class="sc-value">${q.term}</div></div>
+        <div class="sc-item"><div class="sc-label">Premium</div><div class="sc-value">${fmt(q.premium)}</div></div>
+        <div class="sc-item"><div class="sc-label">Effective</div><div class="sc-value">${q.effective}</div></div>
+        <div class="sc-item"><div class="sc-label">Expiration</div><div class="sc-value">${q.expiration}</div></div>
+        <div class="sc-item"><div class="sc-label">Billing Plan</div><div class="sc-value">${q.billingPlan}</div></div>
+      </div>
+    </div>
 
     <div class="card glass">
       <div class="tab-bar" id="ren-tabs">
@@ -1459,6 +1482,21 @@ function renderCancellation() {
           </div>
           <p style="font-size:13px;color:var(--text-secondary);margin-top:4px;">${q.id} / ${q.insuredName} — ${q.effective} to ${q.expiration}</p>
         </div>
+      </div>
+    </div>
+    <div class="card glass">
+      <div class="card-title">Policy Details <i class="info-btn" onclick="showInfo('quote-status')">i</i></div>
+      <div class="summary-card glass-sm">
+        <div class="sc-item"><div class="sc-label">Insured</div><div class="sc-value">${q.insuredName}</div></div>
+        <div class="sc-item"><div class="sc-label">FEIN</div><div class="sc-value">${q.fein}</div></div>
+        <div class="sc-item"><div class="sc-label">Broker / Agent</div><div class="sc-value">${q.agent}</div></div>
+        <div class="sc-item"><div class="sc-label">MGA</div><div class="sc-value">${q.mga}</div></div>
+        <div class="sc-item"><div class="sc-label">Line of Business</div><div class="sc-value">${q.lob}</div></div>
+        <div class="sc-item"><div class="sc-label">Term</div><div class="sc-value">${q.term}</div></div>
+        <div class="sc-item"><div class="sc-label">Premium</div><div class="sc-value">${fmt(q.premium)}</div></div>
+        <div class="sc-item"><div class="sc-label">Effective</div><div class="sc-value">${q.effective}</div></div>
+        <div class="sc-item"><div class="sc-label">Expiration</div><div class="sc-value">${q.expiration}</div></div>
+        <div class="sc-item"><div class="sc-label">Billing Plan</div><div class="sc-value">${q.billingPlan}</div></div>
       </div>
     </div>
     <div class="card glass">
@@ -1561,7 +1599,21 @@ function renderReinstatement() {
         </div>
       </div>
     </div>
-
+    <div class="card glass">
+      <div class="card-title">Policy Details <i class="info-btn" onclick="showInfo('quote-status')">i</i></div>
+      <div class="summary-card glass-sm">
+        <div class="sc-item"><div class="sc-label">Insured</div><div class="sc-value">${q.insuredName}</div></div>
+        <div class="sc-item"><div class="sc-label">FEIN</div><div class="sc-value">${q.fein}</div></div>
+        <div class="sc-item"><div class="sc-label">Broker / Agent</div><div class="sc-value">${q.agent}</div></div>
+        <div class="sc-item"><div class="sc-label">MGA</div><div class="sc-value">${q.mga}</div></div>
+        <div class="sc-item"><div class="sc-label">Line of Business</div><div class="sc-value">${q.lob}</div></div>
+        <div class="sc-item"><div class="sc-label">Term</div><div class="sc-value">${q.term}</div></div>
+        <div class="sc-item"><div class="sc-label">Premium</div><div class="sc-value">${fmt(q.premium)}</div></div>
+        <div class="sc-item"><div class="sc-label">Effective</div><div class="sc-value">${q.effective}</div></div>
+        <div class="sc-item"><div class="sc-label">Expiration</div><div class="sc-value">${q.expiration}</div></div>
+        <div class="sc-item"><div class="sc-label">Billing Plan</div><div class="sc-value">${q.billingPlan}</div></div>
+      </div>
+    </div>
     <div class="card glass">
       <div class="card-title">Quote Information <i class="info-btn" onclick="showInfo('reinstatement')">i</i></div>
       <div class="summary-card glass-sm">
