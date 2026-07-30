@@ -181,16 +181,134 @@ const AUDIT_LOGS = [
 ];
 
 const DOCUMENTS = [
-  { id:'DOC-001', name:'Signed Application Form', type:'Application', quoteId:'QTE-2026-001', uploadedBy:'Akhilesh-Salman-Policy', date:'2026-07-27', status:'Final' },
-  { id:'DOC-002', name:'Loss Runs Report', type:'Application', quoteId:'QTE-2026-003', uploadedBy:'Vikram Patel', date:'2025-09-10', status:'Final' },
-  { id:'DOC-003', name:'Policy Document — GL Coverage Form', type:'Policy Forms', quoteId:'QTE-2026-001', uploadedBy:'System', date:'2026-01-01', status:'Final' },
-  { id:'DOC-004', name:'Endorsement Form — Limit Increase', type:'Endorsements', quoteId:'QTE-2026-004', uploadedBy:'Neha Gupta', date:'2026-03-15', status:'Final' },
-  { id:'DOC-005', name:'Renewal Quote Summary', type:'Correspondence', quoteId:'QTE-2026-006', uploadedBy:'Akhilesh-Salman-Policy', date:'2025-12-15', status:'Final' },
-  { id:'DOC-006', name:'Certificate of Insurance', type:'Policy Forms', quoteId:'QTE-2026-001', uploadedBy:'Akhilesh-Salman-Policy', date:'2026-02-10', status:'Final' },
-  { id:'DOC-007', name:'Cancellation Notice', type:'Correspondence', quoteId:'QTE-2026-005', uploadedBy:'Vikram Patel', date:'2025-12-15', status:'Final' },
-  { id:'DOC-008', name:'Underwriting Guidelines Checklist', type:'Application', quoteId:'QTE-2026-007', uploadedBy:'Neha Gupta', date:'2026-03-01', status:'Draft' },
-  { id:'DOC-009', name:'Claim Report — Incident CL-2026-112', type:'Claims', quoteId:'QTE-2026-003', uploadedBy:'Claims Dept', date:'2026-06-20', status:'Final' },
-  { id:'DOC-010', name:'Billing Statement — Q2 2026', type:'Correspondence', quoteId:'QTE-2026-003', uploadedBy:'System', date:'2026-07-01', status:'Final' }
+  { id:'DOC-001', name:'Signed Application Form', type:'Application', quoteId:'QTE-2026-001', uploadedBy:'Akhilesh-Salman-Policy', date:'2026-07-27', status:'Final', contentType:'form', content:
+`INSURED: ABC Construction Inc.
+POLICY NO: POL-2026-001
+COVERAGE: General Liability
+LIMIT: $2,000,000 per occurrence
+DEDUCTIBLE: $10,000
+PREMIUM: $125,000
+SIGNED: Yes — Ramesh Patel (Director)
+DATE SIGNED: 2026-01-01` },
+  { id:'DOC-002', name:'Loss Runs Report', type:'Application', quoteId:'QTE-2026-003', uploadedBy:'Vikram Patel', date:'2025-09-10', status:'Final', contentType:'text', content:
+`LOSS RUNS REPORT — QTE-2026-003 (Blue Ridge Manufacturing)
+Generated: 2025-09-10
+
+Year    Claims    Amount Paid    Reserve
+2023    1         $12,500        $0
+2024    2         $8,200         $3,500
+2025    0         $0             $0
+
+Experience Mod: 0.92 (favorable)
+Loss Ratio: 38.5% — below threshold` },
+  { id:'DOC-003', name:'Policy Document — GL Coverage Form', type:'Policy Forms', quoteId:'QTE-2026-001', uploadedBy:'System', date:'2026-01-01', status:'Final', contentType:'form', content:
+`POLICY NUMBER: POL-2026-001
+INSURED: ABC Construction Inc.
+COVERAGE: General Liability
+FORM: CG 00 01 12 19 (Commercial General Liability Coverage Form)
+
+LIMITS:
+  Each Occurrence: $2,000,000
+  General Aggregate: $4,000,000
+  Products/Completed Ops: $4,000,000
+  Personal/Advertising Injury: $1,000,000
+  Damage to Premises: $500,000
+
+DEDUCTIBLE: $10,000 per occurrence
+POLICY PERIOD: 2026-01-01 to 2026-12-31` },
+  { id:'DOC-004', name:'Endorsement Form — Limit Increase', type:'Endorsements', quoteId:'QTE-2026-004', uploadedBy:'Neha Gupta', date:'2026-03-15', status:'Final', contentType:'form', content:
+`ENDORSEMENT: Limit Increase
+POLICY: QTE-2026-004 (Coastal Properties LLC)
+EFFECTIVE DATE: 2026-03-15
+
+CHANGE:
+  GL Aggregate Limit: $2,000,000 → $3,000,000
+  Additional Premium: +$8,500
+
+ENDORSEMENT NO: END-2026-001
+VERSION: 2 (updated)
+STATUS: Bound` },
+  { id:'DOC-005', name:'Renewal Quote Summary', type:'Correspondence', quoteId:'QTE-2026-006', uploadedBy:'Akhilesh-Salman-Policy', date:'2025-12-15', status:'Final', contentType:'text', content:
+`RENEWAL QUOTE SUMMARY — QTE-2026-006 (Pinnacle Logistics)
+Prepared for: Marsh Inc.
+Date: 2025-12-15
+
+CURRENT TERM: $432,700
+PROPOSED RENEWAL: $455,000
+CHANGE: +$22,300 (+5.2%)
+
+COMPONENTS:
+  Base Premium: $345,000 → $362,000 (+4.9%)
+  Experience Mod: 0.95 → 0.93 (improved)
+  Schedule Credit: -5% → -7% (better)
+  Taxes/Fees: +$23,500 → +$24,800
+
+UW NOTES: Loss history improved. Recommend approve.` },
+  { id:'DOC-006', name:'Certificate of Insurance', type:'Policy Forms', quoteId:'QTE-2026-001', uploadedBy:'Akhilesh-Salman-Policy', date:'2026-02-10', status:'Final', contentType:'form', content:
+`CERTIFICATE OF INSURANCE
+POLICY: POL-2026-001
+INSURED: ABC Construction Inc.
+
+COVERAGES:
+  GL: $2,000,000 each occ / $4,000,000 aggregate
+  Auto: $1,000,000 each accident
+
+CERTIFICATE HOLDER: ABC Properties LLC
+ADDITIONAL INSURED: Yes (Endorsement attached)
+CANCEL NOTICE: 30 days
+
+ISSUED: 2026-02-10
+EXPIRES: 2026-12-31` },
+  { id:'DOC-007', name:'Cancellation Notice', type:'Correspondence', quoteId:'QTE-2026-005', uploadedBy:'Vikram Patel', date:'2025-12-15', status:'Final', contentType:'form', content:
+`CANCELLATION NOTICE
+POLICY: QTE-2026-005 (Pioneer Energy Services)
+REASON: Non-payment of premium
+
+TYPE: Pro-rata Cancellation
+EFFECTIVE DATE: 2025-12-15
+
+EARNED PREMIUM (7 months): $72,917
+UNEARNED PREMIUM: $52,083 (refunded)
+OUTSTANDING: $0 — balance cleared
+
+NOTICE SENT TO: Insured + Broker` },
+  { id:'DOC-008', name:'Underwriting Guidelines Checklist', type:'Application', quoteId:'QTE-2026-007', uploadedBy:'Neha Gupta', date:'2026-03-01', status:'Draft', contentType:'form', content:
+`UW GUIDELINES CHECKLIST — QTE-2026-007 (Summit Holdings)
+STATUS: Draft (incomplete)
+
+[✅] Application completed
+[✅] Loss runs obtained
+[❌] Financial statements received (pending)
+[✅] Credit check passed
+[❌] Site inspection scheduled
+[❌] Binding authority confirmed
+
+UW NOTES: High revenue — needs senior UW review.` },
+  { id:'DOC-009', name:'Claim Report — Incident CL-2026-112', type:'Claims', quoteId:'QTE-2026-003', uploadedBy:'Claims Dept', date:'2026-06-20', status:'Final', contentType:'text', content:
+`CLAIM REPORT — CL-2026-112
+POLICY: QTE-2026-003 (Blue Ridge Manufacturing)
+DATE OF LOSS: 2026-06-15
+
+TYPE: Workers Compensation — Employee Injury
+DESCRIPTION: Employee slipped in warehouse. Fractured wrist.
+MEDICAL: $4,200 (paid)
+INDEMNITY: $1,800 (3 days lost time)
+
+RESERVE: $15,000
+STATUS: Open — Awaiting final medical report` },
+  { id:'DOC-010', name:'Billing Statement — Q2 2026', type:'Correspondence', quoteId:'QTE-2026-003', uploadedBy:'System', date:'2026-07-01', status:'Final', contentType:'form', content:
+`BILLING STATEMENT — Q2 2026
+POLICY: QTE-2026-003 (Blue Ridge Manufacturing)
+PLAN: Quarterly (4 installments)
+
+INSTALLMENTS:
+  #1 Due 01-Jan-2026: $108,175 — PAID
+  #2 Due 01-Apr-2026: $108,175 — PAID
+  #3 Due 01-Jul-2026: $108,175 — OVERDUE (15 days)
+  #4 Due 01-Oct-2026: $108,175 — UPCOMING
+
+TOTAL ANNUAL: $432,700
+OUTSTANDING: $108,175 + Late fee` },
 ];
 
 const NOTES = [
@@ -1860,8 +1978,29 @@ function renderDocuments() {
     const color = colors[d.type] || 'var(--text-muted)';
     return `<tr><td><div style="display:flex;align-items:center;gap:8px;"><i class="fas ${icon}" style="color:${color};"></i> ${d.name}</div></td>
       <td class="col-id">${d.quoteId}</td><td>${d.type}</td><td>${chip(d.status)}</td><td>${d.uploadedBy}</td><td>${d.date}</td>
-      <td><a href="#" style="color:var(--accent);font-size:12px;" onclick="event.preventDefault();alert('Document viewer — not implemented in this phase')">View</a></td></tr>`;
+      <td><a href="#" style="color:var(--accent);font-size:12px;" onclick="event.preventDefault();viewDocument('${d.id}')">View</a></td></tr>`;
   }).join('');
+}
+
+function viewDocument(id) {
+  const doc = DOCUMENTS.find(d => d.id === id);
+  if (!doc) return;
+  document.getElementById('doc-viewer-title').textContent = doc.name;
+  document.getElementById('doc-viewer-modal').classList.add('open');
+  const body = document.getElementById('doc-viewer-body');
+  if (doc.contentType === 'form') {
+    body.innerHTML = '<div class="doc-viewer-form">' + doc.content.split('\n').map(line => {
+      const idx = line.indexOf(':');
+      if (idx === -1) return `<div class="dv-section">${line}</div>`;
+      return `<div class="dv-row"><span class="dv-label">${line.slice(0, idx).trim()}</span><span class="dv-value">${line.slice(idx + 1).trim()}</span></div>`;
+    }).join('') + '</div>';
+  } else {
+    body.innerHTML = `<div style="white-space:pre-wrap;font-size:13px;line-height:1.7;color:var(--text-secondary);">${doc.content}</div>`;
+  }
+}
+
+function closeDocViewer() {
+  document.getElementById('doc-viewer-modal').classList.remove('open');
 }
 
 // ======== NOTES ========

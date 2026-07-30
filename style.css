@@ -261,6 +261,12 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .doc-item .doc-name { font-size: 13px; font-weight: 500; }
 .doc-item .doc-meta { font-size: 11px; color: var(--text-muted); }
 .doc-item.disabled { opacity: 0.5; }
+.doc-viewer-form { padding:4px 0; }
+.doc-viewer-form .dv-row { display:flex; padding:10px 12px; border-bottom:1px solid var(--glass-border); align-items:flex-start; }
+.doc-viewer-form .dv-row:last-child { border-bottom:none; }
+.doc-viewer-form .dv-label { width:200px; font-weight:600; color:var(--text-secondary); flex-shrink:0; font-size:12px; text-transform:uppercase; letter-spacing:0.3px; }
+.doc-viewer-form .dv-value { flex:1; color:var(--text); font-size:14px; }
+.doc-viewer-form .dv-section { font-size:13px; font-weight:700; color:var(--accent); padding:14px 12px 4px; }
 .premium-breakdown { max-width: 500px; }
 .pb-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.05); }
 .pb-row:last-child { border-bottom: none; }

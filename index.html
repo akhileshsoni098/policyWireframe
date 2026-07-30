@@ -280,9 +280,18 @@
     <table class="data-table"><thead><tr><th>Document</th><th>Policy</th><th>Category <i class="info-btn info-btn-sm" onclick="showInfo('document-type')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('doc-status')">i</i></th><th>Uploaded By</th><th>Date</th><th>Actions</th></tr></thead><tbody id="documents-body">
     </tbody></table>
   </div>
+  <!-- Document Viewer Modal -->
+  <div id="doc-viewer-modal" class="modal-overlay">
+    <div class="modal-box glass" style="width:700px;max-width:90vw;">
+      <div class="modal-header"><h3 id="doc-viewer-title">Document</h3><button class="modal-close" onclick="closeDocViewer()">&times;</button></div>
+      <div class="modal-body" id="doc-viewer-body" style="max-height:60vh;overflow-y:auto;padding:var(--spacing-lg);min-height:200px;"></div>
+      <div style="padding:var(--spacing-md) var(--spacing-lg);border-top:1px solid var(--glass-border);display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn btn-ghost btn-sm" onclick="closeDocViewer()">Close</button>
+        <button class="btn btn-primary btn-sm" onclick="alert('Download — not implemented in this phase')"><i class="fas fa-download"></i> Download</button>
+      </div>
+    </div>
+  </div>
 </div>
-
-<!-- 12. NOTES -->
 <div id="screen-notes" class="screen">
   <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Notes</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Add Note</span></div>
   <div class="page-header"><div style="display:flex;align-items:center;gap:12px;"><button class="btn btn-ghost btn-sm" onclick="showScreen('dashboard')"><i class="fas fa-arrow-left"></i></button><h1>Notes <i class="info-btn" onclick="showInfo('uw-notes')">i</i></h1></div><button class="btn btn-primary btn-sm" onclick="alert('New note dialog (not implemented in wireframe)')"><i class="fas fa-plus"></i> Add Note</button></div>
