@@ -172,7 +172,7 @@ tr:hover td { background: #f8fafc; }
 
 <!-- ==================== STORY ==================== -->
 <div class="story-box">
-  <p>Chalo ek kahani se shuru karte hain. <strong>Ramesh bhai</strong> ke paas ek construction company hai — ABC Construction. Unhe apne business ke liye insurance chahiye. Woh apne broker <strong>Marsh Inc.</strong> ke paas jaate hain. Broker unki insurance application hamare <strong>PAS System</strong> mein submit karta hai. Yahan se shuru hoti hai poori journey — submission se lekar policy issue, endorsement, renewal, aur kabhi kabhi cancellation tak. Har step ko system track karta hai, har decision ko record karta hai, aur har change ko audit karta hai. Yeh guide aapko poori PAS journey batayegi — simple Hinglish mein, real example ke saath.</p>
+  <p>Chalo ek kahani se shuru karte hain. <strong>Ramesh bhai</strong> ke paas ek construction company hai — ABC Construction. Unhe apne business ke liye insurance chahiye. Woh apne broker <strong>Marsh Inc.</strong> ke paas jaate hain. Broker unki insurance application hamare <strong>PAS System</strong> mein submit karta hai. Yahan se shuru hoti hai poori journey — submission se lekar policy issue, endorsement, renewal (notice management ke saath), cancellation, aur reinstatement tak. Har step ko system track karta hai, har decision ko record karta hai, aur enterprise dashboard analytics mein real-time dikhta hai — premium by LOB, policy status distribution, transaction volume, agent rankings, notice pipeline, sab kuch. Yeh guide aapko poori PAS journey batayegi — simple Hinglish mein, real example ke saath.</p>
   <div class="author">— PAS Product Team</div>
 </div>
 
@@ -283,6 +283,7 @@ tr:hover td { background: #f8fafc; }
 <div class="card">
 <h4><i class="fas fa-fw" style="color:var(--accent);">4.</i> Bind &amp; Issue (Policy Active Banana)</h4>
 <p>UW approval ke baad policy <strong>bind</strong> hoti hai. Bind ka matlab — temporary coverage start ho gayi. Phir <strong>Issue</strong> hota hai — policy number generate hota hai (POL-2026-001), official documents PDF mein bante hain, billing schedule banta hai, aur status <span class="tag tag-green">Active</span> ho jata hai.</p>
+<p><strong>Note:</strong> Renewal ke case mein, bind se pehle Notice Management flow complete hona chahiye — MGA ko proposed premium ke saath notice bheji jaati hai, MGA accept karta hai tab hi renewal bind hota hai.</p>
 <div class="flow-row">
   <span class="step done">UW Approved</span>
   <span class="arrow"><i class="fas fa-arrow-right"></i></span>
@@ -298,11 +299,13 @@ tr:hover td { background: #f8fafc; }
 <!-- Step 5 -->
 <div class="card">
 <h4><i class="fas fa-fw" style="color:var(--accent);">5.</i> Active Policy (Policy Chal Rahi Hai)</h4>
-<p>Policy issue hone ke baad <span class="tag tag-green">Active</span> status mein aa jati hai. Ab insured ko coverage milti hai, billing schedule ke hisaab se payments hote hain, aur UW monitoring karta hai. Is stage par 3 major actions possible hain:</p>
+<p>Policy issue hone ke baad <span class="tag tag-green">Active</span> status mein aa jati hai. Ab insured ko coverage milti hai, billing schedule ke hisaab se payments hote hain, aur UW monitoring karta hai. Is stage par <strong>5 major actions</strong> possible hain:</p>
 <ul>
-  <li><i class="fas fa-pen-alt" style="color:var(--secondary);"></i> <strong>Endorsement</strong> — coverage mein mid-term change</li>
-  <li><i class="fas fa-sync-alt" style="color:var(--success);"></i> <strong>Renewal</strong> — naye term ke liye extend karna</li>
+  <li><i class="fas fa-bell" style="color:var(--warning);"></i> <strong>Notice Management</strong> — renewal window khulte hi system notice generate karta hai, MGA ko bhejta hai</li>
+  <li><i class="fas fa-pen-alt" style="color:var(--secondary);"></i> <strong>Endorsement</strong> — coverage mein mid-term change (queue se approve hone ke baad)</li>
+  <li><i class="fas fa-sync-alt" style="color:var(--success);"></i> <strong>Renewal</strong> — naye term ke liye extend karna (notice accept ke baad)</li>
   <li><i class="fas fa-ban" style="color:var(--danger);"></i> <strong>Cancellation</strong> — policy band karna</li>
+  <li><i class="fas fa-undo-alt" style="color:var(--info);"></i> <strong>Reinstatement</strong> — cancellation ke baad 30 din mein wapas active</li>
 </ul>
 </div>
 
@@ -455,28 +458,97 @@ tr:hover td { background: #f8fafc; }
 
 <!-- ==================== 7. SCREENS ==================== -->
 <div class="section" id="p7">
-<h2><span class="num">7</span> 16 Screens — Poora System</h2>
+<h2><span class="num">7</span> 20 Screens — Poora System</h2>
 <div class="card">
   <h4><i class="fas fa-th-large" style="color:var(--accent);"></i> Har Screen Kya Karti Hai</h4>
   <table>
     <tr><th>#</th><th>Screen</th><th>Kya Hota Hai?</th><th>Status</th></tr>
     <tr><td>1</td><td>Login</td><td>2-step login (Email+Password → OTP)</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>2</td><td>Dashboard</td><td>KPI cards, quick actions, recent activity, upcoming renewals</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>3</td><td>Policy Search</td><td>8 policies list with search and status filters</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>4</td><td>New Submission</td><td>5-step wizard (Insured → Coverage → Details → Premium → Review)</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>5</td><td>UW Queue</td><td>5 submissions with Approve/Refer/Decline buttons</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>6</td><td>Policy Details</td><td>8 tabs (Details, Coverages, Premium, Versions, Timeline, Docs, Notes, Audit)</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>7</td><td>Endorsement</td><td>4-tab wizard (Type, Premium, Docs, Review) + premium impact</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>8</td><td>Renewal</td><td>3 tabs (Quote Comparison, Forms, Approval)</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>9</td><td>Cancellation</td><td>Type (Flat/Pro-rata/Short Rate), reason, premium impact</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>10</td><td>Reinstatement</td><td>30-day window check, fee $250, policy restoration</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>11</td><td>Billing</td><td>Invoices list, transactions, payment status tracking</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>12</td><td>Documents</td><td>Uploaded files with category filters and download</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>13</td><td>Notes</td><td>UW notes, billing notes, claims notes — with timestamps</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>14</td><td>Activities &amp; Audit</td><td>Activity feed + full audit log table</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>15</td><td>Reports</td><td>8 report types (Premium, UW, Billing, Claims, etc.)</td><td><span class="tag tag-green">Done</span></td></tr>
-    <tr><td>16</td><td>Admin</td><td>Users, Roles, Permissions, System Settings</td><td><span class="tag tag-yellow">In Progress</span></td></tr>
-  </table>
+    <tr><td>2</td><td>Dashboard</td><td>8 KPI cards, 6 analytics charts (LOB, Status, Txn Vol, Agents, Notice Pipeline, Endorse Summary), Quick Actions, Activity, Renewals</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>3</td><td>Quotes</td><td>Search/filter by LOB &amp; status, premium breakdown, click for detail</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>4</td><td>Policy Search</td><td>8 policies list — search, status/LOB filter, click→detail (8 tabs)</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>5</td><td>New Submission</td><td>5-step wizard (Insured → Coverage → Details → Premium → Review)</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>6</td><td>UW Queue</td><td>5 submissions with Approve/Refer/Decline buttons, score-based rules</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>7</td><td>Policy Details</td><td>8 tabs (Details, Coverages, Premium, Versions, Timeline, Docs, Notes, Audit)</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>8</td><td>Notice Management</td><td>Notice lifecycle Draft→Sent→Delivered→Executed/Expired. Proposed premium, Accept→Renewal, Expire button</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>9</td><td>Endorsement Req Queue</td><td>Pending requests — Approve/Decline/Refer, status pipeline</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>10</td><td>Endorsement</td><td>4-tab wizard (Type, Premium, Docs, Review) + premium impact</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>11</td><td>Renewal</td><td>Editable premium input, Send Offer to MGA, renewal window with progress bar</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>12</td><td>Cancellation</td><td>Type (Flat/Pro-rata/Short Rate), reason, premium impact</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>13</td><td>Reinstatement</td><td>30-day window check, fee $250, policy restoration</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>14</td><td>Billing</td><td>Invoices, payment status, installment tracking, overdue alerts</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>15</td><td>Transactions</td><td>Financial history — Issues, Renewals, Endorsements, Cancellations sab ka record</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>16</td><td>Documents</td><td>Uploaded files with category filters (UW/Billing/Claims) and download</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>17</td><td>Notes</td><td>UW notes, billing notes, claims notes — timestamps ke saath</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>18</td><td>Activities &amp; Audit</td><td>Activity feed + full audit log table with old/new values</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>19</td><td>Reports</td><td>8 report types (Premium, UW, Billing, Claims, etc.)</td><td><span class="tag tag-green">Done</span></td></tr>
+    <tr><td>20</td><td>Admin</td><td>Users, Roles, Permissions, System Settings</td><td><span class="tag tag-yellow">In Progress</span></td></tr>
+</table>
+  </div>
+
+<div class="card">
+<h4><i class="fas fa-chart-pie" style="color:var(--accent);"></i> 📊 Dashboard Analytics — Ek Nazar Mein</h4>
+<p>Dashboard ab sirf KPI cards nahi hai — poora analytics command center hai. Har metric real-time calculate hota hai.</p>
+<p><strong>8 KPI Cards (2 rows × 4):</strong></p>
+<ul>
+  <li><span class="tag tag-info">Approved to Issue</span> — Kitni policies approve hain but issue nahi hui</li>
+  <li><span class="tag tag-success">Active Policies</span> — Kitni policies abhi chal rahi hain</li>
+  <li><span class="tag tag-purple">In-Force Premium</span> — Saari active policies ka total premium</li>
+  <li><span class="tag tag-info">Avg Premium</span> — Average premium per active policy</li>
+  <li><span class="tag tag-yellow">Pending Notices</span> — Kitne notices MGA action ka wait kar rahe hain</li>
+  <li><span class="tag tag-red">Pending Decisions</span> — DELIVERED notices jinpe decision baaki hai</li>
+  <li><span class="tag tag-yellow">Renewals Due (30d)</span> — Agle 30 din mein kitni policies expire hone wali</li>
+  <li><span class="tag tag-purple">Open Endorse Reqs</span> — Kitne endorsement requests pending hain</li>
+</ul>
+<p><strong>6 Chart Sections (pure CSS, no library):</strong></p>
+<ul>
+  <li><strong>Premium by LOB</strong> — Har line of business (GL, Auto, WC, Prof Liab, Package) ka premium. Horizontal bar chart mein sabse bada premium upar. Color-coded bars.</li>
+  <li><strong>Policy Status Distribution</strong> — ACTIVE, APPROVED, CANCELLED, EXPIRED, SUBMITTED, DRAFT — har status ki count. Progress bars mein count likha hota hai.</li>
+  <li><strong>Transaction Volume</strong> — ISSUE, RENEWAL, ENDORSEMENT, CANCELLATION, REINSTATEMENT — har type ke kitne transactions hue. Bar chart with counts.</li>
+  <li><strong>Top Agents by Premium</strong> — Top 5 agents (Marsh, WTW, Aon, Gallagher, Lockton) jinhone sabse zyada premium likha. Table format mein rank, agent name, premium.</li>
+  <li><strong>Notice Pipeline</strong> — DRAFT → SENT → DELIVERED → EXECUTED → REJECTED → EXPIRED. Har stage mein kitne notices hain. Pipeline view.</li>
+  <li><strong>Endorsement Requests</strong> — PENDING, IN_PROGRESS, UNDER_REVIEW, COMPLETED, PROCESSED, DECLINED — har status ka count.</li>
+</ul>
+<div class="highlight"><strong>Data Source:</strong> Sab data QUOTES, TRANSACTIONS, NOTICES, ENDORSEMENT_REQUESTS se aata hai — real-time. Jaise hi koi naya transaction ya notice aata hai, dashboard refresh hota hai.</div>
+</div>
+
+<div class="card">
+<h4><i class="fas fa-bell" style="color:var(--warning);"></i> 📬 Notice Management — Insurance ka Proposal</h4>
+<p><strong>Kya Hai?</strong> Jab policy ka renewal time aata hai, system ek <strong>Notice</strong> generate karta hai. Notice ek formal proposal hai jo MGA ko bheja jaata hai — "Is policy ko naye terms par renew karna hai, kya aapko accept hai?"</p>
+<p><strong>Notice Lifecycle:</strong></p>
+<div class="flow-row">
+  <span class="step done">DRAFT</span><span class="arrow">→</span>
+  <span class="step done">SENT</span><span class="arrow">→</span>
+  <span class="step done">DELIVERED</span><span class="arrow">→</span>
+  <span class="step current">EXECUTED</span>
+  <span class="arrow">|</span>
+  <span class="step" style="background:#fee2e2;color:#dc2626;border:none;">EXPIRED</span>
+</div>
+<p><strong>Kaise Kaam Karta Hai?</strong></p>
+<ol>
+  <li>Renewal screen mein UW proposed premium + effective date + expiration date set karta hai</li>
+  <li>"Send Offer to MGA" button se notice create hota hai — status DRAFT → SENT → DELIVERED</li>
+  <li>Notice DELIVERED status mein aata hai — MGA ko decision lena hai</li>
+  <li>MGA <span class="tag tag-green">Accept</span> kare → system automatically: policy effective/expiration update karta hai, naya premium set karta hai, naya billing schedule generate karta hai, RENEWAL transaction record karta hai</li>
+  <li>MGA <span class="tag tag-red">Expire</span> kare → notice band, policy as-is, koi change nahi</li>
+</ol>
+<p><strong>Screen Features:</strong> Har notice dikhati hai policy number, insured name, proposed premium, effective→expiration. Status chips: DRAFT, SENT, DELIVERED, EXECUTED, EXPIRED, REJECTED. DELIVERED notices par Accept aur Expire button aate hain. KPI card "Pending Notices" + "Pending Decisions" se real-time count.</p>
+<div class="highlight"><strong>Business Rule:</strong> Renewal window sirf tab khulta hai jab expiration se 30 din ya kam reh gaye hain. Us window ke bahar "Send Offer" button disabled hota hai.</div>
+</div>
+
+<div class="card">
+<h4><i class="fas fa-pen-alt" style="color:var(--purple);"></i> ✏️ Endorsement Req Queue — Change Requests</h4>
+<p><strong>Kya Hai?</strong> Kabhi kabhi policy ke beech mein change chahiye hota hai — additional insured add karna, limit badhana, location change. Yeh sab endorse karne se pehle ek request banayi jaati hai jo Queue mein aati hai.</p>
+<p><strong>Status Pipeline:</strong></p>
+<div class="flow-row">
+  <span class="step done">PENDING</span><span class="arrow">→</span>
+  <span class="step done">IN PROGRESS</span><span class="arrow">→</span>
+  <span class="step done">UNDER REVIEW</span><span class="arrow">→</span>
+  <span class="step done">COMPLETED</span>
+  <span class="arrow">/</span>
+  <span class="step">DECLINED</span>
+</div>
+<p><strong>Screen Features:</strong> Har request dikhati hai — request ID, policy reference, endorsement type, UW score, current status. Actions: <span class="tag tag-green">Approve</span> → Endorsement process start, <span class="tag tag-red">Decline</span> → Reject with reason, <span class="tag tag-yellow">Refer</span> → Senior UW ko bhejo. Pending requests ka count dashboard KPI mein dikhta hai.</p>
 </div>
 </div>
 
@@ -494,7 +566,7 @@ tr:hover td { background: #f8fafc; }
     <span class="step">Bind &amp; Issue</span><span class="arrow">→</span>
     <span class="step current">Active Policy</span>
   </div>
-  <p><strong>Active Policy se teen branches:</strong></p>
+  <p><strong>Active Policy se paanch branches:</strong></p>
   <div class="cols">
     <div>
       <div class="highlight" style="border-left-color:var(--secondary);">
@@ -518,15 +590,32 @@ tr:hover td { background: #f8fafc; }
     </div>
     <div>
       <div class="highlight" style="border-left-color:var(--warning);">
+        <strong>Notice Management Branch</strong><br>
+        Active Policy → Renewal Window → Notice Created (Draft) → Sent → Delivered →
+        Accept → New Term / Expire → No Change
+      </div>
+    </div>
+  </div>
+  <div class="cols" style="margin-top:8px;">
+    <div>
+      <div class="highlight" style="border-left-color:var(--purple);">
+        <strong>Endorsement Queue Branch</strong><br>
+        Active Policy → Endorsement Request → Queue → Approve → Endorse / Decline → Closed
+      </div>
+    </div>
+    <div>
+      <div class="highlight" style="border-left-color:var(--info);">
         <strong>Cross-Cutting</strong><br>
-        Every Action → Audit Log → Document Store → Report Updated
+        Every Action → Audit Log → Document Store → Report Updated → Dashboard Analytics
       </div>
     </div>
   </div>
   <p style="margin-top:16px;"><strong>Downstream Impact — Har Action Ka Result:</strong></p>
   <ul>
     <li>📝 Endorsement → Premium +$2,500 → Billing adjust → New Version 2 created</li>
-    <li>🔄 Renewal → New Term 2 → New premium $130,500 → New billing schedule</li>
+    <li>🔄 Notice Accepted → Policy renewal → New premium $130,500 → New billing schedule → RENEWAL transaction</li>
+    <li>📬 Notice Expired → Policy as-is → Expiry date tak chalegi → No change</li>
+    <li>✏️ Endorse Req Approved → Endorsement process start → Premium change → New Version</li>
     <li>🚫 Cancellation → Return premium -$52,083 → Commission chargeback → Policy closed</li>
     <li>💳 Payment → Billing status updated → Late fee removed → Receipt generated</li>
   </ul>
