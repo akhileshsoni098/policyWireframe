@@ -25,7 +25,8 @@ const QUOTES = [
   { id:'QTE-2026-009', insuredName:'Blue Ridge Manufacturing', fein:'58-2716348', lob:'General Liability', status:'APPROVED', effective:'2026-09-01', expiration:'2027-08-31', premium:87500, uw:'Akhilesh-Salman-Policy', agent:'Marsh Inc.', mga:'Southlake MGA', term:'Annual', billingPlan:'Quarterly', paymentMethod:'ACH', coverage:'GL', deductible:10000, limit:2000000, ratingBasis:'Revenue $12.5M', basePremium:72500, modFactor:0.92, scheduleCredit:0.05, slaTax:2401, stampingFee:1001, policyNumber:null, issueDate:null, createdDate:'2026-07-22', approvedDate:'2026-07-28' },
   { id:'QTE-2026-010', insuredName:'Southwest Retail Group', fein:'86-4517293', lob:'Package', status:'ACTIVE', effective:'2026-02-01', expiration:'2027-02-01', premium:156200, uw:'Akhilesh-Salman-Policy', agent:'Aon', mga:'Retail Insurance Services', term:'Annual', billingPlan:'Quarterly', paymentMethod:'ACH', coverage:'Package', deductible:10000, limit:2000000, ratingBasis:'Revenue $22.8M', basePremium:128000, modFactor:0.94, scheduleCredit:0.05, slaTax:4608, stampingFee:1920, policyNumber:'POL-2026-010', issueDate:'2026-01-20', createdDate:'2025-12-01', approvedDate:'2025-12-15' },
   { id:'QTE-2026-011', insuredName:'Gulf Coast Marine', fein:'72-3849165', lob:'Workers Compensation', status:'ACTIVE', effective:'2026-03-15', expiration:'2027-03-15', premium:243800, uw:'Vikram Patel', agent:'Gallagher', mga:'Energy Risk Services', term:'Annual', billingPlan:'Monthly', paymentMethod:'ACH', coverage:'WC', deductible:25000, limit:1000000, ratingBasis:'Payroll $28.5M', basePremium:205000, modFactor:1.08, scheduleCredit:0.02, slaTax:7380, stampingFee:3075, policyNumber:'POL-2026-011', issueDate:'2026-03-01', createdDate:'2026-01-15', approvedDate:'2026-02-01' },
-  { id:'QTE-2026-012', insuredName:'Empire State Realty', fein:'41-8273651', lob:'Property', status:'CANCELLED', effective:'2025-10-01', expiration:'2026-10-01', premium:78500, uw:'Neha Gupta', agent:'Lockton', mga:'Coastal MGA Solutions', term:'Annual', billingPlan:'Annual', paymentMethod:'Wire', coverage:'Property', deductible:25000, limit:3000000, ratingBasis:'TIV $9.2M', basePremium:68000, modFactor:1.0, scheduleCredit:0.06, slaTax:2448, stampingFee:1020, policyNumber:'POL-2026-012', issueDate:'2025-09-15', createdDate:'2025-07-20', approvedDate:'2025-08-01' }
+  { id:'QTE-2026-012', insuredName:'Empire State Realty', fein:'41-8273651', lob:'Property', status:'CANCELLED', effective:'2025-10-01', expiration:'2026-10-01', premium:78500, uw:'Neha Gupta', agent:'Lockton', mga:'Coastal MGA Solutions', term:'Annual', billingPlan:'Annual', paymentMethod:'Wire', coverage:'Property', deductible:25000, limit:3000000, ratingBasis:'TIV $9.2M', basePremium:68000, modFactor:1.0, scheduleCredit:0.06, slaTax:2448, stampingFee:1020, policyNumber:'POL-2026-012', issueDate:'2025-09-15', createdDate:'2025-07-20', approvedDate:'2025-08-01' },
+  { id:'QTE-2026-013', insuredName:'Sterling Transport Inc.', fein:'52-9183472', lob:'Auto Liability', status:'ACTIVE', effective:'2025-07-15', expiration:'2026-07-15', premium:143500, uw:'Akhilesh-Salman-Policy', agent:'Gallagher', mga:'National Auto Underwriters', term:'Annual', billingPlan:'Monthly', paymentMethod:'ACH', coverage:'Auto', deductible:5000, limit:2000000, ratingBasis:'Power Units 32', basePremium:118000, modFactor:1.1, scheduleCredit:0.04, slaTax:4305, stampingFee:1794, policyNumber:'POL-2026-013', issueDate:'2025-07-15', createdDate:'2025-06-10', approvedDate:'2025-06-25' }
 ];
 
 // TRANSACTIONS — Lifecycle event log for each quote
@@ -53,16 +54,71 @@ const TRANSACTIONS = [
 
 // NOTICES — Notice/Offer workflow for Renewal, Cancellation, Reinstatement
 // Owned By: Policy Administration
-// Status: DRAFT → GENERATED → SENT → ACKNOWLEDGED → DELIVERED → ACCEPTED/REJECTED/EXPIRED → EXECUTED
+// Status: DRAFT → GENERATED → SENT → MGA_ACKNOWLEDGED → WITH_BROKER → INSURED_REVIEW → INSURED_DECISION → ACCEPTED/REJECTED → EXECUTED (+ EXPIRED)
 const NOTICES = [
-  { id:'NTC-001', quoteId:'QTE-2026-003', policyNumber:'POL-2026-003', type:'RENEWAL_OFFER', status:'DRAFT', generatedDate:null, sentDate:null, acknowledgedDate:null, deliveredDate:null, decisionDate:null, decision:null, premium:210000, coverage:'Auto', createdDate:'2026-07-28' },
-  { id:'NTC-002', quoteId:'QTE-2026-005', policyNumber:'POL-2026-005', type:'CANCELLATION_NOTICE', status:'EXECUTED', generatedDate:'2025-12-01', sentDate:'2025-12-01', acknowledgedDate:'2025-12-05', deliveredDate:'2025-12-08', decisionDate:'2025-12-10', decision:'ACCEPTED', premium:189000, coverage:'WC', createdDate:'2025-12-01' },
-  { id:'NTC-003', quoteId:'QTE-2026-008', policyNumber:'POL-2026-008', type:'RENEWAL_OFFER', status:'SENT', generatedDate:'2026-07-15', sentDate:'2026-07-20', acknowledgedDate:null, deliveredDate:null, decisionDate:null, decision:null, premium:185000, coverage:'Auto', createdDate:'2026-07-15' },
-  { id:'NTC-004', quoteId:'QTE-2026-009', type:'RENEWAL_OFFER', status:'GENERATED', generatedDate:'2026-07-25', sentDate:null, acknowledgedDate:null, deliveredDate:null, decisionDate:null, decision:null, premium:87500, coverage:'GL', createdDate:'2026-07-25' },
-  { id:'NTC-005', quoteId:'QTE-2026-006', policyNumber:'POL-2026-006', type:'RENEWAL_OFFER', status:'DELIVERED', generatedDate:'2026-07-22', sentDate:'2026-07-24', acknowledgedDate:'2026-07-26', deliveredDate:'2026-07-28', decisionDate:null, decision:null, premium:94800, coverage:'Package', createdDate:'2026-07-22' },
-  { id:'NTC-006', quoteId:'QTE-2026-004', policyNumber:'POL-2026-004', type:'CANCELLATION_NOTICE', status:'EXECUTED', generatedDate:'2026-07-01', sentDate:'2026-07-02', acknowledgedDate:'2026-07-05', deliveredDate:'2026-07-08', decisionDate:'2026-07-10', decision:'ACCEPTED', premium:43200, coverage:'Property', createdDate:'2026-07-01' },
-  { id:'NTC-007', quoteId:'QTE-2026-010', policyNumber:'POL-2026-010', type:'RENEWAL_OFFER', status:'ACKNOWLEDGED', generatedDate:'2026-07-25', sentDate:'2026-07-26', acknowledgedDate:'2026-07-28', deliveredDate:null, decisionDate:null, decision:null, premium:156200, coverage:'Package', createdDate:'2026-07-25' },
-  { id:'NTC-008', quoteId:'QTE-2026-004', policyNumber:'POL-2026-004', type:'RENEWAL_OFFER', status:'DELIVERED', generatedDate:'2026-07-25', sentDate:'2026-07-26', acknowledgedDate:'2026-07-28', deliveredDate:'2026-07-30', decisionDate:null, decision:null, premium:43200, coverage:'Property', proposedValues:{ premium:46400, basePremium:41000, modFactor:1.0, scheduleCredit:0.06, effectiveDate:'2026-08-19', expirationDate:'2027-08-19' }, createdDate:'2026-07-25' }
+  { id:'NTC-001', quoteId:'QTE-2026-003', policyNumber:'POL-2026-003', type:'RENEWAL_OFFER', status:'INSURED_DECISION', insuredDecision:'ACCEPT', generatedDate:'2026-07-28', sentDate:'2026-07-29', acknowledgedDate:'2026-07-30', withBrokerDate:'2026-07-30', insuredReviewDate:'2026-07-31', deliveredDate:'2026-07-31', decisionDate:null, decision:null, premium:210000, coverage:'Auto', proposedValues:{ premium:218400, basePremium:182000, modFactor:1.05, scheduleCredit:0.03, effectiveDate:'2026-08-11', expirationDate:'2027-08-11' }, createdDate:'2026-07-28', events:[
+    { step:'DRAFT', at:'2026-07-28 09:15', actor:'Akhilesh-Salman-Policy', note:'Renewal offer drafted for Horizon Logistics LLC' },
+    { step:'GENERATED', at:'2026-07-28 09:22', actor:'Akhilesh-Salman-Policy', note:'Offer generated — proposed premium $218,400' },
+    { step:'SENT', at:'2026-07-29 10:05', actor:'Akhilesh-Salman-Policy', note:'Offer sent to MGA (National Auto Underwriters)' },
+    { step:'MGA_ACKNOWLEDGED', at:'2026-07-30 08:40', actor:'National Auto Underwriters', note:'MGA acknowledged receipt of offer' },
+    { step:'WITH_BROKER', at:'2026-07-30 14:12', actor:'WTW', note:'Offer routed to broker WTW for insured outreach' },
+    { step:'INSURED_REVIEW', at:'2026-07-31 11:20', actor:'WTW', note:'Offer presented to insured for review' },
+    { step:'INSURED_DECISION', at:'2026-07-31 16:45', actor:'Horizon Logistics LLC', note:'Insured decision returned — ACCEPT' }
+  ] },
+  { id:'NTC-002', quoteId:'QTE-2026-005', policyNumber:'POL-2026-005', type:'CANCELLATION_NOTICE', status:'EXECUTED', insuredDecision:'ACCEPT', generatedDate:'2025-12-01', sentDate:'2025-12-01', acknowledgedDate:'2025-12-05', withBrokerDate:'2025-12-05', insuredReviewDate:'2025-12-07', deliveredDate:'2025-12-08', decisionDate:'2025-12-10', decision:'ACCEPTED', premium:189000, coverage:'WC', createdDate:'2025-12-01', events:[
+    { step:'DRAFT', at:'2025-12-01 08:00', actor:'Akhilesh-Salman-Policy', note:'Cancellation notice drafted for Pioneer Energy Corp.' },
+    { step:'GENERATED', at:'2025-12-01 08:05', actor:'Akhilesh-Salman-Policy', note:'Cancellation notice generated' },
+    { step:'SENT', at:'2025-12-01 09:00', actor:'Akhilesh-Salman-Policy', note:'Notice sent to MGA (Energy Risk Services)' },
+    { step:'MGA_ACKNOWLEDGED', at:'2025-12-05 10:00', actor:'Energy Risk Services', note:'MGA acknowledged notice' },
+    { step:'WITH_BROKER', at:'2025-12-05 15:00', actor:'Gallagher', note:'Notice routed to broker' },
+    { step:'INSURED_REVIEW', at:'2025-12-07 09:30', actor:'Gallagher', note:'Notice presented to insured' },
+    { step:'INSURED_DECISION', at:'2025-12-08 14:00', actor:'Pioneer Energy Corp.', note:'Insured confirmed — ACCEPT' },
+    { step:'EXECUTED', at:'2025-12-10 11:00', actor:'Akhilesh-Salman-Policy', note:'Cancellation executed — policy CANCELLED' }
+  ] },
+  { id:'NTC-003', quoteId:'QTE-2026-008', policyNumber:'POL-2026-008', type:'RENEWAL_OFFER', status:'SENT', insuredDecision:'ACCEPT', generatedDate:'2026-07-15', sentDate:'2026-07-20', acknowledgedDate:null, withBrokerDate:null, insuredReviewDate:null, deliveredDate:null, decisionDate:null, decision:null, premium:185000, coverage:'Auto', createdDate:'2026-07-15', events:[
+    { step:'DRAFT', at:'2026-07-15 10:00', actor:'Akhilesh-Salman-Policy', note:'Renewal offer drafted for Great Lakes Transport' },
+    { step:'GENERATED', at:'2026-07-15 10:10', actor:'Akhilesh-Salman-Policy', note:'Offer generated' },
+    { step:'SENT', at:'2026-07-20 09:00', actor:'Akhilesh-Salman-Policy', note:'Offer sent to MGA (National Auto Underwriters)' }
+  ] },
+  { id:'NTC-004', quoteId:'QTE-2026-009', type:'RENEWAL_OFFER', status:'GENERATED', insuredDecision:'ACCEPT', generatedDate:'2026-07-25', sentDate:null, acknowledgedDate:null, withBrokerDate:null, insuredReviewDate:null, deliveredDate:null, decisionDate:null, decision:null, premium:87500, coverage:'GL', createdDate:'2026-07-25', events:[
+    { step:'DRAFT', at:'2026-07-25 09:00', actor:'Akhilesh-Salman-Policy', note:'Renewal offer drafted for Blue Ridge Manufacturing' },
+    { step:'GENERATED', at:'2026-07-25 09:15', actor:'Akhilesh-Salman-Policy', note:'Offer generated' }
+  ] },
+  { id:'NTC-005', quoteId:'QTE-2026-006', policyNumber:'POL-2026-006', type:'RENEWAL_OFFER', status:'INSURED_DECISION', insuredDecision:'ACCEPT', generatedDate:'2026-07-22', sentDate:'2026-07-24', acknowledgedDate:'2026-07-26', withBrokerDate:'2026-07-26', insuredReviewDate:'2026-07-27', deliveredDate:'2026-07-28', decisionDate:null, decision:null, premium:94800, coverage:'Package', createdDate:'2026-07-22', events:[
+    { step:'DRAFT', at:'2026-07-22 11:00', actor:'Akhilesh-Salman-Policy', note:'Renewal offer drafted for First National Retail' },
+    { step:'GENERATED', at:'2026-07-22 11:12', actor:'Akhilesh-Salman-Policy', note:'Offer generated' },
+    { step:'SENT', at:'2026-07-24 10:00', actor:'Akhilesh-Salman-Policy', note:'Offer sent to MGA (Retail Insurance Services)' },
+    { step:'MGA_ACKNOWLEDGED', at:'2026-07-26 09:00', actor:'Retail Insurance Services', note:'MGA acknowledged offer' },
+    { step:'WITH_BROKER', at:'2026-07-26 16:00', actor:'Marsh Inc.', note:'Offer routed to broker' },
+    { step:'INSURED_REVIEW', at:'2026-07-27 10:00', actor:'Marsh Inc.', note:'Offer presented to insured' },
+    { step:'INSURED_DECISION', at:'2026-07-28 15:30', actor:'First National Retail', note:'Insured decision returned — ACCEPT' }
+  ] },
+  { id:'NTC-006', quoteId:'QTE-2026-004', policyNumber:'POL-2026-004', type:'CANCELLATION_NOTICE', status:'EXECUTED', insuredDecision:'ACCEPT', generatedDate:'2026-07-01', sentDate:'2026-07-02', acknowledgedDate:'2026-07-05', withBrokerDate:'2026-07-05', insuredReviewDate:'2026-07-07', deliveredDate:'2026-07-08', decisionDate:'2026-07-10', decision:'ACCEPTED', premium:43200, coverage:'Property', createdDate:'2026-07-01', events:[
+    { step:'DRAFT', at:'2026-07-01 09:00', actor:'Akhilesh-Salman-Policy', note:'Cancellation notice drafted for Coastal Properties Group' },
+    { step:'GENERATED', at:'2026-07-01 09:10', actor:'Akhilesh-Salman-Policy', note:'Cancellation notice generated' },
+    { step:'SENT', at:'2026-07-02 10:00', actor:'Akhilesh-Salman-Policy', note:'Notice sent to MGA (Coastal MGA Solutions)' },
+    { step:'MGA_ACKNOWLEDGED', at:'2026-07-05 09:00', actor:'Coastal MGA Solutions', note:'MGA acknowledged notice' },
+    { step:'WITH_BROKER', at:'2026-07-05 15:00', actor:'Lockton', note:'Notice routed to broker' },
+    { step:'INSURED_REVIEW', at:'2026-07-07 10:00', actor:'Lockton', note:'Notice presented to insured' },
+    { step:'INSURED_DECISION', at:'2026-07-08 16:00', actor:'Coastal Properties Group', note:'Insured confirmed — ACCEPT' },
+    { step:'EXECUTED', at:'2026-07-10 12:00', actor:'Akhilesh-Salman-Policy', note:'Cancellation executed — policy CANCELLED' }
+  ] },
+  { id:'NTC-007', quoteId:'QTE-2026-010', policyNumber:'POL-2026-010', type:'RENEWAL_OFFER', status:'WITH_BROKER', insuredDecision:'ACCEPT', generatedDate:'2026-07-25', sentDate:'2026-07-26', acknowledgedDate:'2026-07-28', withBrokerDate:'2026-07-29', insuredReviewDate:null, deliveredDate:null, decisionDate:null, decision:null, premium:156200, coverage:'Package', createdDate:'2026-07-25', events:[
+    { step:'DRAFT', at:'2026-07-25 10:00', actor:'Akhilesh-Salman-Policy', note:'Renewal offer drafted for Southwest Retail Group' },
+    { step:'GENERATED', at:'2026-07-25 10:20', actor:'Akhilesh-Salman-Policy', note:'Offer generated' },
+    { step:'SENT', at:'2026-07-26 09:00', actor:'Akhilesh-Salman-Policy', note:'Offer sent to MGA (Retail Insurance Services)' },
+    { step:'MGA_ACKNOWLEDGED', at:'2026-07-28 10:00', actor:'Retail Insurance Services', note:'MGA acknowledged offer' },
+    { step:'WITH_BROKER', at:'2026-07-29 14:00', actor:'Aon', note:'Offer routed to broker Aon for insured outreach' }
+  ] },
+  { id:'NTC-008', quoteId:'QTE-2026-004', policyNumber:'POL-2026-004', type:'RENEWAL_OFFER', status:'INSURED_DECISION', insuredDecision:'DECLINE', generatedDate:'2026-07-25', sentDate:'2026-07-26', acknowledgedDate:'2026-07-28', withBrokerDate:'2026-07-29', insuredReviewDate:'2026-07-30', deliveredDate:'2026-07-31', decisionDate:null, decision:null, premium:43200, coverage:'Property', proposedValues:{ premium:46400, basePremium:41000, modFactor:1.0, scheduleCredit:0.06, effectiveDate:'2026-08-19', expirationDate:'2027-08-19' }, createdDate:'2026-07-25', events:[
+    { step:'DRAFT', at:'2026-07-25 11:00', actor:'Akhilesh-Salman-Policy', note:'Renewal offer drafted for Coastal Properties Group' },
+    { step:'GENERATED', at:'2026-07-25 11:10', actor:'Akhilesh-Salman-Policy', note:'Offer #1 generated — proposed premium $46,400' },
+    { step:'SENT', at:'2026-07-26 09:00', actor:'Akhilesh-Salman-Policy', note:'Offer sent to MGA (Coastal MGA Solutions)' },
+    { step:'MGA_ACKNOWLEDGED', at:'2026-07-28 10:00', actor:'Coastal MGA Solutions', note:'MGA acknowledged offer' },
+    { step:'WITH_BROKER', at:'2026-07-29 14:00', actor:'Lockton', note:'Offer routed to broker' },
+    { step:'INSURED_REVIEW', at:'2026-07-30 10:00', actor:'Lockton', note:'Offer presented to insured' },
+    { step:'INSURED_DECISION', at:'2026-07-31 17:00', actor:'Coastal Properties Group', note:'Insured decision returned — DECLINE' }
+  ] }
 ];
 
 // ENDORSEMENT_REQUESTS — Inbound endorsement requests from MGA API
@@ -404,7 +460,7 @@ const INFO_DATA = {
   'bind': { title:'Bind', what:'The act of accepting a risk after underwriting approval. Creates a temporary coverage contract until the formal policy is issued.', why:'Provides immediate coverage. Transitions the quote from "APPROVED" to "ISSUED" status. Triggers policy number generation.', flow:'UW approval > Issue Policy > Generate policy number > ACTIVE status. Billing begins after issue.' },
   'coverage': { title:'Coverage', what:'Specific protection provided under an insurance policy — what is covered, limits, deductibles, and exclusions.', why:'Defines the scope of protection. Each coverage has its own limit, deductible, and rating basis.', flow:'Selected during quote creation. Confirmed at issue. Changed via endorsement. Each coverage drives a portion of the premium.' },
   'endorsement': { title:'Endorsement', what:'A mid-term change to an existing policy that modifies coverages, limits, deductibles, named insureds, or terms.', why:'Policies are not static — businesses change. Endorsements allow flexibility while maintaining continuous coverage.', flow:'Created from Quote Details > Endorse. Direct execution (no notice). Creates ENDORSEMENT transaction. Premium adjusted pro-rata.' },
-  'renewal': { title:'Renewal', what:'The process of extending coverage beyond the current policy term, typically with a new term, revised premium, and updated coverages.', why:'Retains existing customers. Renewal premium is often different due to loss experience and market conditions.', flow:'Initiated from Quote Details > Renew. Generates RENEWAL_OFFER notice. Sent to MGA for confirmation. On acceptance, executes renewal and creates RENEWAL transaction.' },
+  'renewal': { title:'Renewal', what:'The process of extending coverage beyond the current policy term, typically with a new term, revised premium, and updated coverages.', why:'Retains existing customers. Renewal premium is often different due to loss experience and market conditions. Multiple offers can be issued within the expiry period.', flow:'Initiated from Quote Details > Renew. Generates RENEWAL_OFFER notice. Offer flows PAS → MGA → Broker → Insured. On insured confirmation (ACCEPT), PAS records the response, executes the renewal and creates a RENEWAL transaction.' },
   'cancellation': { title:'Cancellation', what:'Early termination of a policy before its natural expiration date. Can be initiated by insured or carrier.', why:'Needed when coverage is no longer required, risk becomes unacceptable, or payment is not received.', flow:'Initiated from Quote Details > Cancel. Generates CANCELLATION_NOTICE. Sent to MGA. On acceptance, executes cancellation and creates CANCELLATION transaction.' },
   'reinstatement': { title:'Reinstatement', what:'Restoring a cancelled policy back to active status, typically within a grace period and with a reinstatement fee.', why:'Preserves original policy terms and continuous coverage history. Avoids needing new underwriting and new application.', flow:'Initiated from Quote Details > Reinstate. Generates REINSTATEMENT_OFFER. Sent to MGA. On acceptance, executes reinstatement and creates REINSTATEMENT transaction.' },
   'premium-breakdown': { title:'Premium Breakdown', what:'Detailed calculation showing how the total premium is derived — base, modifications, credits, taxes, and fees.', why:'Transparency in pricing. Required for regulatory compliance and audit.', flow:'Calculated during quoting. Base premium x Mod Factor x Schedule Credit = Subtotal. Taxes and fees added.' },
@@ -431,14 +487,98 @@ const INFO_DATA = {
   'dashboard': { title:'Dashboard', what:'The main landing page showing KPIs, quick actions, recent activity, and upcoming renewals at a glance.', why:'Provides a birds-eye view of portfolio health. Helps prioritize work.', flow:'First screen shown after login. Aggregates data from all modules — quotes, notices, transactions, billing.' },
   'quotes-search': { title:'Quotes Search', what:'A searchable listing of all quotes in the system with filters by status, LOB, and keywords.', why:'Primary way to find and access quote details. Supports servicing and workflows.', flow:'Accessed from sidebar or dashboard. Search results link to Quote Details for full information.' },
   'transaction': { title:'Transaction', what:'A record of a lifecycle event performed on a quote — Issue, Endorsement, Renewal, Cancellation, or Reinstatement.', why:'Provides a complete audit trail of all actions. Each transaction publishes an event for downstream systems.', flow:'Created when a lifecycle action is executed. Append-only, never modified or deleted.' },
-  'notice-management': { title:'Notice Management', what:'The module for generating, sending, and tracking notices/offers to MGA for renewal, cancellation, and reinstatement.', why:'Implements the MGA confirmation workflow required for policy lifecycle actions.', flow:'DRAFT > GENERATED > SENT > ACKNOWLEDGED > DELIVERED > ACCEPTED/REJECTED/EXPIRED > EXECUTED.' },
+  'notice-management': { title:'Notice Management', what:'The module for generating, sending, and tracking notices/offers through the external chain — MGA → Broker → Insured — for renewal, cancellation, and reinstatement.', why:'Implements the MGA/Broker/Insured confirmation workflow. PAS generates and sends the offer; the insured confirms; PAS only records the returned decision.', flow:'DRAFT > GENERATED > SENT > MGA_ACKNOWLEDGED > WITH_BROKER > INSURED_REVIEW > INSURED_DECISION > ACCEPTED/REJECTED > EXECUTED (+ EXPIRED).' },
   'transaction-timeline': { title:'Transaction Timeline', what:'A chronological view of all lifecycle events for a quote, showing the complete history from approval through current status.', why:'Provides full policy history at a glance. Essential for audits and understanding what happened when.', flow:'Approved > Issue > Endorsement > Renewal > Cancellation > Reinstatement. Each step shows date, user, and details.' },
   'integration-monitor': { title:'Integration Monitor', what:'A real-time status dashboard showing the health of all integrated external services.', why:'Provides operational visibility into system dependencies. Helps identify and diagnose integration failures.', flow:'PAS > CRM > Billing > Claims > Compliance > Reporting. Each service shows health status and last sync time.' },
   'api-log': { title:'API Log', what:'A record of all API calls made to and from PAS, including request/response payloads, status codes, and execution times.', why:'Essential for debugging integration issues. Provides traceability for compliance.', flow:'Captures inbound and outbound API calls. Includes correlation IDs for end-to-end tracing.' },
   'reports': { title:'Reports', what:'Pre-built analytical reports covering premium distribution, quote status, UW performance, aging receivables, and more.', why:'Provides business intelligence for management decisions.', flow:'Accessed from sidebar. Each report can be run on-demand.' },
   'admin': { title:'Administration', what:'System configuration area for managing users, roles, permissions, and system settings.', why:'Controls who has access to what. Configures system-wide behavior.', flow:'Accessed by Super Admin and System Admin users. Changes are audited.' },
   'endorsement-req-queue': { title:'Endorsement Request Queue', what:'Inbound queue of endorsement requests received from MGA API. Each request represents a mid-term policy change requested by the MGA on behalf of the insured.', why:'Provides a structured review and processing workflow for endorsement requests. Ensures all changes are validated, approved, and properly executed with full audit trail.', flow:'MGA API → RECEIVED → VALIDATED → ASSIGNED → IN_REVIEW → APPROVED/REJECTED → PROCESSED → COMPLETED. Each step is tracked with correlation ID.' },
-  'policies': { title:'Policies', what:'Dedicated view of all issued policies (quotes with assigned policy numbers). Shows policy metadata, coverages, premium breakdown, and full transaction history.', why:'Provides a policy-centric view separate from the quote-centric workflow. Makes it easy to view policy details and lifecycle events in one place.', flow:'Policies list → Select a policy → Policy Detail (header + details + coverage + premium + transaction timeline with type filters).' }
+  'policies': { title:'Policies', what:'Dedicated view of all issued policies (quotes with assigned policy numbers). Shows policy metadata, coverages, premium breakdown, and full transaction history.', why:'Provides a policy-centric view separate from the quote-centric workflow. Makes it easy to view policy details and lifecycle events in one place.', flow:'Policies list → Select a policy → Policy Detail (header + details + coverage + premium + transaction timeline with type filters).' },
+  'insured-name': { title:'Insured Name', what:'The legal entity or individual protected by the insurance policy — the named insured.', why:'Primary identifier for the policyholder. Used for policy documents, billing, claims, and regulatory reporting.', flow:'Captured at quote creation from the application. Changes mid-term (e.g., name change) require an endorsement.' },
+  'fein': { title:'FEIN (Federal EIN)', what:'The 9-digit Federal Employer Identification Number (EIN/Tax ID) assigned by the IRS to a business.', why:'Uniquely identifies the business for underwriting, tax reporting (1099 forms), claims handling, and regulatory filings.', flow:'Provided during submission and verified against IRS records. A FEIN change mid-term requires an endorsement.' },
+  'policy-term': { title:'Policy Term', what:'The period of time for which the policy provides coverage — commonly 12 months.', why:'Defines the premium period and coverage boundary. Renewal is required to continue coverage beyond the term.', flow:'Runs from the Effective Date to the Expiration Date. A renewal creates a new term; cancellation shortens the term.' },
+  'issue-date': { title:'Issue Date', what:'The date on which the policy was formally issued and bound by PAS.', why:'Marks the official start of the policy record — policy number assignment, billing activation, and document generation begin here.', flow:'Set when the Issue Policy action is completed (POST /policy/issue). Distinct from the coverage Effective Date.' },
+  'created-date': { title:'Created Date', what:'The date/time the quote record was first created in PAS.', why:'Tracks the age of the submission and supports SLA/turnaround monitoring for underwriting.', flow:'Automatically stamped when the quote is created. Never modified — audit trails preserve the original timestamp.' },
+  'approved-date': { title:'Approved Date', what:'The date on which underwriting approved the quote, moving it to APPROVED status.', why:'Marks eligibility to Issue Policy and starts the approved-to-issue pipeline on the dashboard.', flow:'Set when the UW approves the submission. Precedes the Issue Date when the policy is bound.' },
+  'payment-method': { title:'Payment Method', what:'How the insured remits premium — e.g., ACH, Credit Card, Check, or Premium Finance.', why:'Drives billing installments, cash application, commission timing, and dunning (late payment) rules.', flow:'Selected at quote creation and confirmed at issue. Changes mid-term require an endorsement and billing update.' },
+  'base-premium': { title:'Base Premium', what:'The starting premium computed from the rating basis (e.g., revenue, payroll) times the filed rate, before any modifications, credits, taxes, or fees.', why:'Foundation of the entire premium calculation. Every subsequent adjustment builds on this value.', flow:'Computed by the rating engine at quote creation. Then adjusted by Experience Mod and Schedule Credit to reach the subtotal.' },
+  'premium-subtotal': { title:'Premium Subtotal', what:'Base Premium after applying the Experience Mod factor and Schedule Credit/Debit — the pure risk premium before statutory taxes and fees.', why:'Represents the carrier\u2019s net pricing of the risk. Taxes and fees are layered on top of this figure.', flow:'Base Premium \u00d7 Experience Mod \u00d7 (1 \u2212 Schedule Credit) = Premium Subtotal. SLA Tax and Stamping Fee are then added.' },
+  'sla-tax': { title:'SLA Tax (Surplus Lines Tax)', what:'A statutory tax imposed by the state on premiums written in the surplus lines market (shown here at 3.6%).', why:'Legally required revenue for the state. Rates vary by state and must be remitted on a schedule set by the state.', flow:'Calculated as a percentage of the Premium Subtotal and remitted monthly/quarterly to the appropriate state authority.' },
+  'stamping-fee': { title:'Stamping Fee', what:'A fee charged by the state surplus lines stamping office to process and file the surplus lines policy (shown here at 1.5%).', why:'Covers the regulatory filing/administration cost of the surplus lines transaction and is mandated by state law.', flow:'Calculated as a percentage of the Premium Subtotal and remitted to the stamping office with the filing.' },
+  'total-annual-premium': { title:'Total Annual Premium', what:'The final annual amount charged for the policy — Premium Subtotal plus SLA Tax plus Stamping Fee.', why:'The billed amount. Drives billing installments, agent commission, taxes remittance, and statutory premium reporting.', flow:'Premium Subtotal + SLA Tax + Stamping Fee = Total Annual Premium. Split into installments per the Billing Plan.' },
+  'transaction-type': { title:'Transaction Type', what:'The kind of lifecycle event recorded — ISSUE, ENDORSEMENT, RENEWAL, CANCELLATION, or REINSTATEMENT.', why:'Determines how the event affects policy terms, premium, coverage, and downstream services.', flow:'Assigned when a lifecycle action executes and recorded append-only in the Transaction History.' },
+  'transaction-status': { title:'Transaction Status', what:'The state of a transaction — typically COMPLETED once all downstream steps finish successfully.', why:'Confirms the action was fully processed across policy, billing, document, and audit services.', flow:'Created on execution and marked COMPLETED after the database update and event publication succeed.' },
+  'source-system': { title:'Source System', what:'The system or API that originated the transaction — PAS, MGA API, Policy Service, etc.', why:'Identifies the origin of each event for traceability, SLAs, and troubleshooting integration issues.', flow:'Assigned by the initiating service when the transaction is created and logged in the API Log.' },
+  'event-id': { title:'Event ID (Correlation ID)', what:'A unique identifier published with each lifecycle event, used to trace the action end-to-end across services.', why:'Links a transaction to the event-bus messages and downstream side-effects it triggers (billing, documents, notifications).', flow:'Generated at transaction creation and carried through the API log and all downstream service calls.' },
+  'transaction-summary': { title:'Transaction Summary', what:'A short, human-readable description of what the transaction changed or did.', why:'Provides quick context without opening full records — useful for audits and service desks.', flow:'Auto-generated by the system when the transaction is recorded.' },
+  'audit-timestamp': { title:'Audit Timestamp', what:'The date and time a data change was recorded in the audit log.', why:'Establishes a verifiable chronology of all system changes — essential for compliance and investigations.', flow:'Captured automatically at the moment a create/update/delete operation commits.' },
+  'audit-user': { title:'Audit User', what:'The user or system account that performed the recorded change.', why:'Provides accountability — every change can be attributed to a specific actor.', flow:'Derived from the authenticated session or service identity at the time of the change.' },
+  'audit-field': { title:'Audit Field', what:'The specific data element that was modified (e.g., Status, Premium, Effective Date).', why:'Shows exactly what changed, making the audit trail actionable and precise.', flow:'Captured by comparing the old and new values of the modified field.' },
+  'audit-old-value': { title:'Old Value', what:'The prior value of the field before the change was made.', why:'Enables reconstruction of history, rollback analysis, and dispute resolution.', flow:'Stored immutably when the change commits — never overwritten.' },
+  'audit-new-value': { title:'New Value', what:'The value of the field after the change was applied.', why:'Shows the current state transition and what the record now contains.', flow:'Recorded at commit time alongside the old value and timestamp.' },
+  'audit-entity': { title:'Audit Entity', what:'The type of record affected by the change — Quote, Policy, Notice, Transaction, etc.', why:'Groups audit entries by business object for targeted investigation.', flow:'Derived from the module/table being modified.' },
+  'audit-entity-id': { title:'Entity ID', what:'The unique identifier of the specific record that was changed.', why:'Points directly to the affected record, linking audit history to live data.', flow:'Stored with each audit entry at commit time.' },
+  'audit-details': { title:'Audit Details', what:'A free-form description of the change, including old → new values where applicable.', why:'Adds context beyond structured fields so the change is self-explanatory.', flow:'Composed by the system when the audit entry is created.' },
+  'note': { title:'Note', what:'An internal free-form comment attached to a quote or policy.', why:'Captures underwriting/service context and decision rationale not stored in structured fields.', flow:'Created by authorized users over the life of the policy and retained for the full record lifetime.' },
+  'cancel-description': { title:'Detailed Reason', what:'A free-text explanation of why the policy is being cancelled.', why:'Supports underwriting review, regulatory record keeping, and MGA communication of the cancellation.', flow:'Entered during cancellation processing and included on the cancellation notice.' },
+  'earned-premium': { title:'Earned Premium', what:'The portion of the annual premium that the carrier has \u201cearned\u201d for coverage already provided up to the cancellation date.', why:'Determines how much premium the carrier keeps when a policy is cancelled mid-term.', flow:'Calculated as the premium prorated by the elapsed portion of the policy term (adjustable for Short Rate).' },
+  'unearned-premium': { title:'Unearned Premium', what:'The portion of the premium for coverage that has not yet been provided — the amount owed back to the insured upon cancellation.', why:'The basis for the return premium credited to the insured on cancellation.', flow:'Annual Premium \u2212 Earned Premium = Unearned Premium. Returned (or offset) when the cancellation executes.' },
+  'return-premium': { title:'Return Premium', what:'The refund due to the insured for the unused portion of the policy premium at cancellation.', why:'Ensures the insured only pays for coverage actually provided — a legal and regulatory requirement.', flow:'Equal to the unearned premium (reduced for Short Rate cancellations) and reversed at reinstatement if applicable.' },
+  'notice-id': { title:'Notice ID', what:'Unique identifier for a generated notice — format NTC-NNN.', why:'Tracks each notice through the MGA → Broker → Insured confirmation workflow.', flow:'Assigned when the notice is created for a renewal, cancellation, or reinstatement.' },
+  'notice-type': { title:'Notice Type', what:'The kind of notice — RENEWAL_OFFER, CANCELLATION_NOTICE, or REINSTATEMENT_OFFER.', why:'Determines the workflow, documents, and MGA decision options for the notice.', flow:'Set at notice creation based on the lifecycle action being processed.' },
+  'notice-status': { title:'Notice Status', what:'The current stage of the notice — DRAFT, GENERATED, SENT, MGA_ACKNOWLEDGED, WITH_BROKER, INSURED_REVIEW, INSURED_DECISION, ACCEPTED, REJECTED, EXPIRED, EXECUTED.', why:'Shows where the MGA → Broker → Insured confirmation workflow stands and what action is next.', flow:'DRAFT → GENERATED → SENT → MGA_ACKNOWLEDGED → WITH_BROKER → INSURED_REVIEW → INSURED_DECISION → ACCEPTED/REJECTED → EXECUTED (+ EXPIRED).' },
+  'notice-events': { title:'Notice Events / Record', what:'The append-only timeline of everything that happened to a notice — who did what, and when — from draft through executed/expired.', why:'Provides the full audit record for every offer, satisfying compliance and traceability. This is how PAS proves what the insured decided and who recorded it.', flow:'Each stage transition (Generated, Sent, MGA Acknowledged, With Broker, Insured Review, Insured Decision, Recorded, Executed/Expired) appends an event with timestamp, actor, and note.' },
+  'offer-number': { title:'Offer Number', what:'The sequence number of a renewal offer for a given policy — Offer 1, Offer 2, etc.', why:'Multiple offers can be issued within the expiry period (e.g., after a decline or no-response). The number tracks how many offers a policy has received.', flow:'Computed from the count of RENEWAL_OFFER notices for the policy. Each new offer increments the number. New offers can only be issued while the policy is ACTIVE and not yet expired.' },
+  'insured-confirmation': { title:'Insured Confirmation', what:'The decision returned by the insured (via broker → MGA) for an offer — ACCEPT or DECLINE.', why:'PAS never chooses Accept/Reject; it records whatever decision the insured returned. This keeps the PAS screen faithful to the real chain.', flow:'Offer flows PAS → MGA → Broker → Insured. The insured confirms/declines, the decision returns to PAS, and PAS records it (Record Response). If no response arrives, the offer expires and the policy may expire at term end.' },
+  'expired-policy': { title:'Expired Policy', what:'A policy whose term has ended without an accepted renewal. Status moves from ACTIVE to EXPIRED.', why:'An expired policy has no coverage; it must be renewed or reissued before coverage can continue.', flow:'Automatic: when the expiration date passes with no accepted renewal, the policy flips to EXPIRED and an EXPIRATION transaction is created. Manual: PAS can also "Mark as Expired" an ACTIVE policy. Pending renewal offers for that policy also expire.' },
+  'proposed-values': { title:'Proposed Values', what:'The new terms being offered by PAS to the MGA — proposed premium, effective date, and expiration date.', why:'Lets the MGA compare the current policy against the proposed change before deciding.', flow:'Prepared by PAS, sent with the notice, and applied to the policy only after MGA acceptance.' },
+  'priority': { title:'Priority', what:'The urgency of an endorsement request — High, Medium, or Low.', why:'Drives routing, SLA targets, and review order so critical changes are handled first.', flow:'Assigned when the request is received and visible on the queue and review screen.' },
+  'requested-by': { title:'Requested By', what:'The party that originated the request — typically the MGA acting on behalf of the insured.', why:'Identifies the requester for accountability and follow-up.', flow:'Captured from the inbound API payload when the request is created.' },
+  'requested-date': { title:'Requested Date', what:'The date the request was received by PAS.', why:'Starts SLA tracking for review and processing turnaround.', flow:'Set when the inbound request is ingested into the queue.' },
+  'source-reference': { title:'Source Reference', what:'The request reference number used by the source system for the endorsement request.', why:'Enables cross-referencing between PAS and the MGA\u2019s own records.', flow:'Passed through from the inbound API payload and echoed in the transaction and logs.' },
+  'correlation-id': { title:'Correlation ID', what:'A unique trace ID tying an inbound request to all its downstream processing — transactions, events, and API calls.', why:'Provides end-to-end tracing across systems for debugging and audits.', flow:'Generated/assigned at request ingestion and propagated through every service call.' },
+  'assigned-to': { title:'Assigned To', what:'The user or team the endorsement request is assigned to for review.', why:'Ensures ownership and prevents requests from being left unattended.', flow:'Set during the review workflow when the request is picked up.' },
+  'reviewed-by': { title:'Reviewed By', what:'The user who performed the final review and decision on the request.', why:'Provides accountability for approvals and rejections.', flow:'Recorded when the Approve/Reject decision is submitted.' },
+  'endorsement-premium-impact': { title:'Endorsement Premium Impact', what:'The dollar change in annual premium caused by the endorsement — based on the endorsement type.', why:'Shows the financial effect of the change before it is approved.', flow:'Calculated by the (simulated) Rating Service using the endorsement type and current policy data, then applied to the premium.' },
+  'endorsement-request-id': { title:'Request ID', what:'Unique identifier for an endorsement request in the inbound queue — e.g., ENDO-2026-001.', why:'Tracks each request through RECEIVED → VALIDATED → ASSIGNED → IN_REVIEW → APPROVED/REJECTED → PROCESSED → COMPLETED.', flow:'Assigned when the MGA API pushes the request into PAS.' },
+  'amount-due': { title:'Amount Due', what:'The outstanding payment amount for a billing installment.', why:'Tracks how much the insured owes and when it is due — drives collection and cancellation processes.', flow:'Populated from the Billing Service schedule and updated as payments are applied.' },
+  'due-date': { title:'Due Date', what:'The date on which an installment payment must be received.', why:'Drives dunning/grace periods and late-payment cancellation processes.', flow:'Defined in the billing schedule at issue; managed by the Billing Service.' },
+  'billing-status': { title:'Billing Status', what:'The payment state of an installment — Upcoming, Paid, or Overdue.', why:'Shows collection health and flags accounts that may proceed to cancellation.', flow:'Maintained by the Billing Service; PAS displays reference data only.' },
+  'billing-method': { title:'Billing Method', what:'How a payment was made — e.g., ACH, Credit Card, or Check.', why:'Used for cash application, reconciliation, and payment history.', flow:'Recorded by the Billing Service at the time of payment.' },
+  'payment-reference': { title:'Payment Reference', what:'The bank/reference identifier of a processed payment (e.g., ACH trace number).', why:'Links the payment to external records for reconciliation and disputes.', flow:'Generated by the payment processor and displayed on receipts.' },
+  'document': { title:'Document', what:'A policy file or record managed by the Document Service — applications, policy forms, endorsements, correspondence, claims, and certificates.', why:'Organized so records are easy to retrieve and retain per compliance schedules.', flow:'Documents are managed by the Document Service; PAS displays reference-only metadata.' },
+  'uploaded-by': { title:'Uploaded By', what:'The user or system that uploaded the document into the repository.', why:'Provides accountability and provenance for each file.', flow:'Recorded when the document is uploaded by the Document Service.' },
+  'api-direction': { title:'API Direction', what:'Whether the API call was Inbound (received by PAS) or Outbound (sent by PAS).', why:'Shows the flow of data between PAS and its integrations.', flow:'Determined by which side initiated the request.' },
+  'api-endpoint': { title:'API Endpoint', what:'The HTTP route called — e.g., POST /policy/issue or GET /quotes/{id}.', why:'Identifies the exact operation being logged for troubleshooting.', flow:'Captured from the request at execution time.' },
+  'api-method': { title:'API Method', what:'The HTTP verb used — GET, POST, PUT, PATCH, or DELETE.', why:'Shows the type of operation performed against the endpoint.', flow:'Derived from the HTTP request.' },
+  'api-status': { title:'API Status', what:'The HTTP response status code (200, 201, 400, 500, etc.).', why:'Indicates success or failure and guides troubleshooting of failed integrations.', flow:'Returned by the responding service and logged with the correlation ID.' },
+  'api-duration': { title:'API Duration', what:'The time taken to complete the API call, in milliseconds.', why:'Surface performance problems and SLA breaches in integrations.', flow:'Measured between request dispatch and response receipt.' },
+  'api-retries': { title:'Retries', what:'The number of times a failed API call was automatically retried.', why:'Shows the resilience behavior of the integration and how many attempts were needed.', flow:'Incremented by the retry mechanism before success or final failure.' },
+  'api-correlation-id': { title:'Correlation ID (API)', what:'The trace ID shared across all API calls belonging to one business operation.', why:'Enables end-to-end tracing of a single transaction across multiple services.', flow:'Assigned at the start of the operation and echoed in every log entry and payload.' },
+  'api-payload': { title:'Payload', what:'The request/response JSON body exchanged in the API call.', why:'Provides evidence of exactly what was sent and received — essential for debugging and compliance.', flow:'Captured at request/response time and viewable from the API log.' },
+  'user-name': { title:'User', what:'The display name of a system user account.', why:'Identifies who is using the system for accountability and activity attribution.', flow:'Maintained in the Admin user directory.' },
+  'user-email': { title:'Email', what:'The registered email for the user account, used for login and notifications.', why:'Primary authentication identifier and contact channel.', flow:'Must be unique; configured in Admin and used in the login flow.' },
+  'user-role': { title:'Role', what:'The access role assigned to the user (e.g., Super Admin, Underwriter).', why:'Determines which screens, actions, and data the user can access.', flow:'Assigned in Admin and enforced at login by the permission matrix.' },
+  'user-status': { title:'User Status', what:'Whether the user account is Active, Inactive, or Suspended.', why:'Controls whether the user can sign in and perform actions.', flow:'Managed by administrators; changes are audited.' },
+  'last-login': { title:'Last Login', what:'The most recent date/time the user successfully signed in.', why:'Helps identify inactive accounts and supports security reviews.', flow:'Updated automatically at each successful login.' },
+  'role': { title:'Role', what:'A named set of permissions controlling access to system functions — e.g., Super Admin, System Admin, Underwriter.', why:'Enforces least-privilege access so users only see what their job requires.', flow:'Defined in Admin and assigned to users at account setup.' },
+  'role-permissions': { title:'Permissions', what:'The specific capabilities granted to a role — which modules and actions the role can perform.', why:'Determines the blast radius of each role and enforces segregation of duties.', flow:'Configured per role in Admin and checked on every action.' },
+  'underwriting': { title:'Underwriting', what:'The process of evaluating a risk, setting its terms and pricing, and deciding whether to accept it.', why:'Core risk-selection function that drives portfolio quality and profitability.', flow:'UW reviews the submission, applies guidelines and rating, and approves or declines — moving the quote toward issue.' },
+  'transactions': { title:'Transactions', what:'A chronological, append-only record of every lifecycle event performed on quotes and policies.', why:'Provides a complete audit trail and powers volume analytics and reconciliation.', flow:'Each action (issue, endorse, renew, cancel, reinstate) creates a transaction and publishes an event.' },
+  'doc-status': { title:'Document Status', what:'The state of a document in its lifecycle — Final, Draft, Generated, Pending, or Signed.', why:'Shows whether a document is authoritative and ready for distribution.', flow:'Managed by the Document Service; status updates as documents are generated and finalized.' },
+  'uw-decision': { title:'UW Decision', what:'The underwriter\u2019s ruling on a renewal — Approve as Proposed, Approve with Changes, or Decline Renewal.', why:'Determines whether the renewal offer is sent to the MGA and with what terms.', flow:'UW reviews rate adequacy and selects a decision before the offer is submitted to the MGA.' },
+  'cancel-reason': { title:'Cancellation Reason', what:'The coded reason for cancelling a policy — Non-Payment, Underwriting Non-Renewal, Insured Request, Duplicate Coverage, or Fraud.', why:'Standardizes why policies are cancelled for reporting, underwriting, and compliance.', flow:'Selected during cancellation processing and carried on the notice and transaction.' },
+  'cancel-notice': { title:'Cancellation Notice', what:'The notice period given to the insured/MGA before the cancellation takes effect — e.g., 10-day or 30-day.', why:'Statutory notice periods protect the insured and allow time to remedy or replace coverage.', flow:'Determined by reason and jurisdiction; the effective date is set accordingly.' },
+  'cancel-impact': { title:'Premium Impact', what:'The financial effect of the cancellation — how much premium is earned, unearned, and returned to the insured.', why:'Shows the monetary consequence of cancellation before it is executed.', flow:'Calculated from the cancellation type (Flat, Pro-Rata, Short Rate) and the cancellation effective date.' },
+  'reinstatement-fee': { title:'Reinstatement Fee', what:'A flat fee charged to reinstate a cancelled policy (default $250).', why:'Covers the administrative cost of reinstatement and discourages cancel/reinstate churn.', flow:'Assessed when the reinstatement is approved and included in the total due today.' },
+  'reinstate-reason': { title:'Reinstatement Reason', what:'The reason the cancelled policy is being brought back to active — payment received, UW reversal, or dispute resolved.', why:'Documents the rationale for reinstatement for audit and control purposes.', flow:'Selected during reinstatement processing and recorded on the transaction.' },
+  'past-due-balance': { title:'Past Due Balance', what:'Any outstanding premium owed before reinstatement can complete.', why:'Reinstatement typically requires outstanding balances to be settled first.', flow:'Verified against the Billing Service before the reinstatement is approved.' },
+  'total-due-today': { title:'Total Due Today', what:'The amount payable at reinstatement — reinstatement fee plus any past due balance.', why:'Defines the collection requirement before the policy is restored to active.', flow:'Reinstatement Fee + Past Due Balance = Total Due Today.' },
+  'policy-field': { title:'Policy Field', what:'A data field on the policy that is being changed by the endorsement — e.g., limits, coverage, or address.', why:'Identifies exactly what will change so reviewers can assess the impact.', flow:'Captured from the source system request and shown in the comparison table.' },
+  'current-value': { title:'Current Value', what:'The existing value of the field on the policy before the endorsement.', why:'Provides the baseline for comparing what is changing.', flow:'Read from the current policy record when the endorsement request arrives.' },
+  'premium-change': { title:'Premium Change', what:'The difference between the current and proposed premium — increase or decrease in dollars and percent.', why:'Shows the financial impact of the change for UW and MGA review.', flow:'Calculated as Proposed minus Current.' },
+  'uw-decision-reason': { title:'UW Decision Reason', what:'The justification an underwriter records when approving, changing, or declining a renewal offer.', why:'Documents the decision rationale for audit and downstream MGA communication.', flow:'Recorded on the renewal form before the offer is submitted to the MGA.' }
 };
 
 // ---------- STATE ----------
@@ -454,7 +594,7 @@ let quoteSearchFilter = 'all';
 // ---------- HELPERS ----------
 const fmt = n => '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits:0});
 const chip = (status, label) => {
-  const map = { ACTIVE:'active', APPROVED:'approved', CANCELLED:'cancelled', EXPIRED:'expired', COMPLETED:'active', PENDING:'pending', FAILED:'cancelled', DRAFT:'pending', GENERATED:'submitted', SENT:'info', ACKNOWLEDGED:'submitted', DELIVERED:'endorsed', ACCEPTED:'approved', REJECTED:'declined', EXECUTED:'active', Paid:'active', Overdue:'cancelled', Upcoming:'submitted', Final:'active', Draft:'pending', 'In Review':'pending', New:'submitted', Active:'active', RECEIVED:'submitted', VALIDATED:'info', ASSIGNED:'pending', PROCESSED:'active' };
+  const map = { ACTIVE:'active', APPROVED:'approved', CANCELLED:'cancelled', EXPIRED:'expired', COMPLETED:'active', PENDING:'pending', FAILED:'cancelled', DRAFT:'pending', GENERATED:'submitted', SENT:'info', ACKNOWLEDGED:'submitted', DELIVERED:'endorsed', ACCEPTED:'approved', REJECTED:'declined', EXECUTED:'active', MGA_ACKNOWLEDGED:'submitted', WITH_BROKER:'info', INSURED_REVIEW:'pending', INSURED_DECISION:'endorsed', Paid:'active', Overdue:'cancelled', Upcoming:'submitted', Final:'active', Draft:'pending', 'In Review':'pending', New:'submitted', Active:'active', RECEIVED:'submitted', VALIDATED:'info', ASSIGNED:'pending', PROCESSED:'active' };
   const c = map[status] || 'active';
   return `<span class="chip chip-${c}"><span class="chip-dot"></span>${label||status}</span>`;
 };
@@ -588,7 +728,7 @@ function advanceWizard(wizId) {
 function renderQuotes() {
   const container = document.getElementById('quotes-table-body');
   if (!container) return;
-  let list = QUOTES;
+  let list = QUOTES.filter(q => q.status === 'APPROVED');
 
   const filter = window._quoteFilter || 'all';
   if (filter !== 'all') {
@@ -632,8 +772,11 @@ function renderQuotes() {
     </tr>`;
   }).join('');
 
+  const approvedCount = QUOTES.filter(q => q.status === 'APPROVED').length;
   document.querySelectorAll('#screen-quotes .filter-chip').forEach(c => {
-    c.classList.toggle('active', c.dataset.filter === filter);
+    const label = c.dataset.filter === 'all' ? 'All' : (c.dataset.filter.charAt(0).toUpperCase() + c.dataset.filter.slice(1));
+    c.textContent = `${label} (${approvedCount})`;
+    c.classList.toggle('active', c.dataset.filter === 'approved');
   });
 }
 
@@ -655,7 +798,7 @@ function renderDashboard() {
   const inForce = activeQuotes.reduce((s, q) => s + q.premium, 0);
   const avgPremium = active > 0 ? Math.round(inForce / active) : 0;
   const pendingNotices = NOTICES.filter(n => n.status !== 'EXECUTED' && n.status !== 'REJECTED' && n.status !== 'EXPIRED').length;
-  const pendingDecisions = NOTICES.filter(n => n.status === 'DELIVERED').length;
+  const pendingDecisions = NOTICES.filter(n => n.status === 'INSURED_DECISION').length;
   const renewalsDue30 = QUOTES.filter(q => q.status === 'ACTIVE' && q.policyNumber && (d => d >= 0 && d <= 30)(Math.ceil((new Date(q.expiration) - today) / (1000*60*60*24)))).length;
   const openEndorse = ENDORSEMENT_REQUESTS.filter(r => !['COMPLETED','PROCESSED'].includes(r.status)).length;
 
@@ -724,14 +867,15 @@ function renderDashboard() {
   });
   const agentSorted = Object.entries(agentData).sort((a, b) => b[1] - a[1]).slice(0, 5);
   const agentEl = document.getElementById('dash-agents');
-  if (agentEl) agentEl.innerHTML = `<table class="data-table"><thead><tr><th>#</th><th>Agent</th><th>Premium</th></tr></thead><tbody>${agentSorted.map(([a, p], i) =>
+  if (agentEl) agentEl.innerHTML = `<table class="data-table"><thead><tr><th>#</th><th>Agent <i class="info-btn info-btn-sm" onclick="showInfo('agent')">i</i></th><th>Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></th></tr></thead><tbody>${agentSorted.map(([a, p], i) =>
     `<tr><td>${i + 1}</td><td>${a}</td><td style="font-weight:600;">${fmt(p)}</td></tr>`
   ).join('')}</tbody></table>`;
 
   // Notice Pipeline
   const noticeData = {};
-  const noticeOrder = ['DRAFT','SENT','DELIVERED','EXECUTED','REJECTED','EXPIRED'];
-  const noticeColors = {DRAFT:'var(--gray)',SENT:'var(--info)',DELIVERED:'var(--accent)',EXECUTED:'var(--success)',REJECTED:'var(--danger)',EXPIRED:'var(--text-muted)'};
+  const noticeOrder = ['DRAFT','GENERATED','SENT','MGA_ACKNOWLEDGED','WITH_BROKER','INSURED_REVIEW','INSURED_DECISION','ACCEPTED','REJECTED','EXECUTED','EXPIRED'];
+  const noticeColors = {DRAFT:'var(--gray)',GENERATED:'var(--info)',SENT:'var(--info)',MGA_ACKNOWLEDGED:'var(--info)',WITH_BROKER:'var(--accent)',INSURED_REVIEW:'var(--accent)',INSURED_DECISION:'var(--purple)',ACCEPTED:'var(--success)',REJECTED:'var(--danger)',EXECUTED:'var(--success)',EXPIRED:'var(--text-muted)'};
+  const noticeLabels = {DRAFT:'Draft',GENERATED:'Generated',SENT:'Sent',MGA_ACKNOWLEDGED:'MGA Ack',WITH_BROKER:'With Broker',INSURED_REVIEW:'Insured Review',INSURED_DECISION:'Insured Decision',ACCEPTED:'Accepted',REJECTED:'Rejected',EXECUTED:'Executed',EXPIRED:'Expired'};
   NOTICES.forEach(n => {
     if (!noticeData[n.status]) noticeData[n.status] = 0;
     noticeData[n.status]++;
@@ -739,7 +883,7 @@ function renderDashboard() {
   const noticeMax = Math.max(...Object.values(noticeData), 1);
   const noticeEl = document.getElementById('dash-notice-pipeline');
   if (noticeEl) noticeEl.innerHTML = noticeOrder.filter(s => noticeData[s]).map(s =>
-    `<div class="chart-row"><span class="cr-label">${s.charAt(0)+s.slice(1).toLowerCase()}</span>
+    `<div class="chart-row"><span class="cr-label">${noticeLabels[s]||s}</span>
      <div class="cr-track"><div class="cr-fill" style="width:${(noticeData[s]/noticeMax*100).toFixed(1)}%;background:${noticeColors[s]};min-width:20px;">${noticeData[s]}</div></div>
      <span class="cr-value">${noticeData[s]}</span></div>`
   ).join('');
@@ -855,14 +999,17 @@ function renderPolicies() {
   const policies = QUOTES.filter(q => q.policyNumber);
   const totalActive = policies.filter(q => q.status === 'ACTIVE').length;
   const totalCancelled = policies.filter(q => q.status === 'CANCELLED').length;
+  const totalExpired = policies.filter(q => q.status === 'EXPIRED').length;
   const totalPremium = policies.reduce((s, q) => s + q.premium, 0);
 
   window._policyTxnFilter = 'All';
   window._policyContext = null;
   const search = (window._policySearch || '').toLowerCase();
   const lobFilter = window._policyLob || 'All Lines of Business';
+  const statusFilter = window._policyStatus || 'All';
   const filtered = policies.filter(q => {
     if (lobFilter !== 'All Lines of Business' && q.lob !== lobFilter) return false;
+    if (statusFilter !== 'All' && q.status !== statusFilter) return false;
     if (search && !q.policyNumber.toLowerCase().includes(search) && !q.id.toLowerCase().includes(search) && !q.insuredName.toLowerCase().includes(search)) return false;
     return true;
   });
@@ -871,17 +1018,23 @@ function renderPolicies() {
     <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Policies</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Select a policy to view details</span></div>
     <div class="page-header"><div style="display:flex;align-items:center;gap:12px;"><button class="btn btn-ghost btn-sm" onclick="showScreen('dashboard')"><i class="fas fa-arrow-left"></i></button><h1>Policies <i class="info-btn" onclick="showInfo('policies')">i</i></h1></div><div class="actions"><span style="font-size:12px;color:var(--text-muted);">${policies.length} policies — ${fmt(totalPremium)} total premium</span></div></div>
     <div class="summary-card glass" style="margin-bottom:12px;">
-      <div class="sc-item"><div class="sc-label">Total Policies</div><div class="sc-value">${policies.length}</div></div>
-      <div class="sc-item"><div class="sc-label">Active</div><div class="sc-value" style="color:var(--success);">${totalActive}</div></div>
-      <div class="sc-item"><div class="sc-label">Cancelled</div><div class="sc-value" style="color:var(--danger);">${totalCancelled}</div></div>
-      <div class="sc-item"><div class="sc-label">In-Force Premium</div><div class="sc-value" style="color:var(--accent);">${fmt(totalPremium)}</div></div>
+      <div class="sc-item"><div class="sc-label">Total Policies <i class="info-btn info-btn-sm" onclick="showInfo('policy-status')">i</i></div><div class="sc-value">${policies.length}</div></div>
+      <div class="sc-item"><div class="sc-label">Active <i class="info-btn info-btn-sm" onclick="showInfo('policy-status')">i</i></div><div class="sc-value" style="color:var(--success);">${totalActive}</div></div>
+      <div class="sc-item"><div class="sc-label">Cancelled <i class="info-btn info-btn-sm" onclick="showInfo('policy-status')">i</i></div><div class="sc-value" style="color:var(--danger);">${totalCancelled}</div></div>
+      <div class="sc-item"><div class="sc-label">In-Force Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></div><div class="sc-value" style="color:var(--accent);">${fmt(totalPremium)}</div></div>
     </div>
     <div class="card glass mb-md"><div class="form-row">
       <div class="form-group"><input class="form-input" type="text" id="ps-search" placeholder="Search by Policy #, Quote ID, or Insured Name..." value="${window._policySearch || ''}" oninput="window._policySearch=this.value;renderPolicies();"></div>
       <div class="form-group"><select class="form-input" id="ps-lob" onchange="window._policyLob=this.value;renderPolicies();">${['All Lines of Business','General Liability','Professional Liability','Auto Liability','Property','Workers Compensation','Package'].map(o => `<option${o === lobFilter ? ' selected' : ''}>${o}</option>`).join('')}</select></div>
     </div></div>
+    <div class="filter-bar">
+      <span class="filter-chip${statusFilter === 'All' ? ' active' : ''}" data-status="All" onclick="window._policyStatus='All';renderPolicies();">All (${policies.length})</span>
+      <span class="filter-chip${statusFilter === 'ACTIVE' ? ' active' : ''}" data-status="ACTIVE" onclick="window._policyStatus='ACTIVE';renderPolicies();">Active (${totalActive})</span>
+      <span class="filter-chip${statusFilter === 'CANCELLED' ? ' active' : ''}" data-status="CANCELLED" onclick="window._policyStatus='CANCELLED';renderPolicies();">Cancelled (${totalCancelled})</span>
+      <span class="filter-chip${statusFilter === 'EXPIRED' ? ' active' : ''}" data-status="EXPIRED" onclick="window._policyStatus='EXPIRED';renderPolicies();">Expired (${totalExpired})</span>
+    </div>
     <div class="card glass">
-      <table class="data-table"><thead><tr><th>Policy #</th><th>Quote ID</th><th>Insured</th><th>LOB</th><th>Status</th><th>Effective</th><th>Expiration</th><th>Issue Date</th><th>Premium</th><th>Actions</th></tr></thead><tbody>
+      <table class="data-table"><thead><tr><th>Policy # <i class="info-btn info-btn-sm" onclick="showInfo('policy-number')">i</i></th><th>Quote ID <i class="info-btn info-btn-sm" onclick="showInfo('quote-id')">i</i></th><th>Insured <i class="info-btn info-btn-sm" onclick="showInfo('insured-name')">i</i></th><th>LOB <i class="info-btn info-btn-sm" onclick="showInfo('lob')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('policy-status')">i</i></th><th>Effective <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></th><th>Expiration <i class="info-btn info-btn-sm" onclick="showInfo('expiration-date')">i</i></th><th>Issue Date <i class="info-btn info-btn-sm" onclick="showInfo('issue-date')">i</i></th><th>Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></th><th>Actions</th></tr></thead><tbody>
         ${filtered.length === 0 ? '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text-muted);">No policies found</td></tr>' :
           filtered.map(q => `<tr style="cursor:pointer;"><td class="col-id" onclick="selectedPolicyId='${q.id}';renderPolicies();">${q.policyNumber}</td>
             <td class="col-id" onclick="selectedPolicyId='${q.id}';renderPolicies();">${q.id}</td>
@@ -913,10 +1066,11 @@ function renderPolicyDetail(id) {
   const isCancelled = q.status === 'CANCELLED';
   const txnFilter = window._policyTxnFilter || 'All';
   const txns = TRANSACTIONS.filter(t => t.quoteId === id && (txnFilter === 'All' || t.type === txnFilter));
+  const notices = NOTICES.filter(n => n.quoteId === id);
 
-  const typeIcons = { ISSUE:'fa-file-contract', ENDORSEMENT:'fa-pen-alt', RENEWAL:'fa-sync-alt', CANCELLATION:'fa-ban', REINSTATEMENT:'fa-undo-alt' };
-  const typeColors = { ISSUE:'var(--success)', ENDORSEMENT:'var(--cyan)', RENEWAL:'var(--purple)', CANCELLATION:'var(--danger)', REINSTATEMENT:'var(--warning)' };
-  const filterChips = ['All', 'ISSUE', 'ENDORSEMENT', 'RENEWAL', 'CANCELLATION', 'REINSTATEMENT'];
+  const typeIcons = { ISSUE:'fa-file-contract', ENDORSEMENT:'fa-pen-alt', RENEWAL:'fa-sync-alt', CANCELLATION:'fa-ban', REINSTATEMENT:'fa-undo-alt', EXPIRATION:'fa-calendar-times' };
+  const typeColors = { ISSUE:'var(--success)', ENDORSEMENT:'var(--cyan)', RENEWAL:'var(--purple)', CANCELLATION:'var(--danger)', REINSTATEMENT:'var(--warning)', EXPIRATION:'var(--text-muted)' };
+  const filterChips = ['All', 'ISSUE', 'ENDORSEMENT', 'RENEWAL', 'CANCELLATION', 'REINSTATEMENT', 'EXPIRATION'];
 
   const billing = BILLING_SCHEDULES[id] || [];
 
@@ -960,47 +1114,64 @@ function renderPolicyDetail(id) {
           ${isActive && renewEligible ? `<button class="btn btn-success btn-sm" onclick="selectedQuoteId='${q.id}';_policyContext='policies';showScreen('renewal')"><i class="fas fa-sync-alt"></i> Renew</button>` : ''}
           ${isActive && !renewEligible ? `<button class="btn btn-success btn-sm" style="opacity:0.4;pointer-events:none;" title="Renewal available within 30 days of expiration"><i class="fas fa-sync-alt"></i> Renew</button>` : ''}
           ${isActive ? `<button class="btn btn-danger btn-sm" onclick="selectedQuoteId='${q.id}';_policyContext='policies';showScreen('cancellation')"><i class="fas fa-ban"></i> Cancel</button>` : ''}
+          ${isActive ? `<button class="btn btn-secondary btn-sm" style="border-color:var(--text-muted);color:var(--text-muted);" onclick="expirePolicy('${q.id}')" title="Mark policy as EXPIRED"><i class="fas fa-calendar-times"></i> Mark as Expired</button>` : ''}
           ${isCancelled ? `<button class="btn btn-warning btn-sm" onclick="selectedQuoteId='${q.id}';_policyContext='policies';showScreen('reinstatement')"><i class="fas fa-undo-alt"></i> Reinstate</button>` : ''}
         </div>
       </div>
     </div>
 
     <div class="card glass mb-md">
-      <div class="card-title">Policy Details</div>
+      <div class="card-title">Policy Details <i class="info-btn" onclick="showInfo('quote-status')">i</i></div>
       <div class="detail-grid">
-        <div class="detail-item"><div class="di-label">Insured Name</div><div class="di-value">${q.insuredName}</div></div>
-        <div class="detail-item"><div class="di-label">FEIN</div><div class="di-value font-mono">${q.fein}</div></div>
-        <div class="detail-item"><div class="di-label">Line of Business</div><div class="di-value">${q.lob}</div></div>
-        <div class="detail-item"><div class="di-label">Agent / Broker</div><div class="di-value">${q.agent}</div></div>
-        <div class="detail-item"><div class="di-label">Underwriter</div><div class="di-value">${q.uw}</div></div>
-        <div class="detail-item"><div class="di-label">MGA</div><div class="di-value">${q.mga}</div></div>
-        <div class="detail-item"><div class="di-label">Effective Date</div><div class="di-value">${q.effective}</div></div>
-        <div class="detail-item"><div class="di-label">Expiration Date</div><div class="di-value">${q.expiration}</div></div>
-        <div class="detail-item"><div class="di-label">Issue Date</div><div class="di-value">${q.issueDate || '-'}</div></div>
-        <div class="detail-item"><div class="di-label">Policy Term</div><div class="di-value">${q.term}</div></div>
-        <div class="detail-item"><div class="di-label">Billing Plan</div><div class="di-value">${q.billingPlan}</div></div>
-        <div class="detail-item"><div class="di-label">Payment Method</div><div class="di-value">${q.paymentMethod}</div></div>
+        <div class="detail-item"><div class="di-label">Insured Name <i class="info-btn info-btn-sm" onclick="showInfo('insured-name')">i</i></div><div class="di-value">${q.insuredName}</div></div>
+        <div class="detail-item"><div class="di-label">FEIN <i class="info-btn info-btn-sm" onclick="showInfo('fein')">i</i></div><div class="di-value font-mono">${q.fein}</div></div>
+        <div class="detail-item"><div class="di-label">Line of Business <i class="info-btn info-btn-sm" onclick="showInfo('lob')">i</i></div><div class="di-value">${q.lob}</div></div>
+        <div class="detail-item"><div class="di-label">Agent / Broker <i class="info-btn info-btn-sm" onclick="showInfo('agent')">i</i></div><div class="di-value">${q.agent}</div></div>
+        <div class="detail-item"><div class="di-label">Underwriter <i class="info-btn info-btn-sm" onclick="showInfo('underwriter')">i</i></div><div class="di-value">${q.uw}</div></div>
+        <div class="detail-item"><div class="di-label">MGA <i class="info-btn info-btn-sm" onclick="showInfo('mga')">i</i></div><div class="di-value">${q.mga}</div></div>
+        <div class="detail-item"><div class="di-label">Effective Date <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></div><div class="di-value">${q.effective}</div></div>
+        <div class="detail-item"><div class="di-label">Expiration Date <i class="info-btn info-btn-sm" onclick="showInfo('expiration-date')">i</i></div><div class="di-value">${q.expiration}</div></div>
+        <div class="detail-item"><div class="di-label">Issue Date <i class="info-btn info-btn-sm" onclick="showInfo('issue-date')">i</i></div><div class="di-value">${q.issueDate || '-'}</div></div>
+        <div class="detail-item"><div class="di-label">Policy Term <i class="info-btn info-btn-sm" onclick="showInfo('policy-term')">i</i></div><div class="di-value">${q.term}</div></div>
+        <div class="detail-item"><div class="di-label">Billing Plan <i class="info-btn info-btn-sm" onclick="showInfo('billing-plan')">i</i></div><div class="di-value">${q.billingPlan}</div></div>
+        <div class="detail-item"><div class="di-label">Payment Method <i class="info-btn info-btn-sm" onclick="showInfo('payment-method')">i</i></div><div class="di-value">${q.paymentMethod}</div></div>
       </div>
     </div>
 
     <div class="grid-2 mb-md">
       <div class="card glass">
-        <div class="card-title">Coverage</div>
-        <table class="data-table"><thead><tr><th>Coverage</th><th>Limit</th><th>Deductible</th><th>Premium</th><th>Rating Basis</th></tr></thead><tbody>
+        <div class="card-title">Coverage <i class="info-btn" onclick="showInfo('coverage')">i</i></div>
+        <table class="data-table"><thead><tr><th>Coverage <i class="info-btn info-btn-sm" onclick="showInfo('coverage')">i</i></th><th>Limit <i class="info-btn info-btn-sm" onclick="showInfo('coverage-limit')">i</i></th><th>Deductible <i class="info-btn info-btn-sm" onclick="showInfo('deductible')">i</i></th><th>Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></th><th>Rating Basis <i class="info-btn info-btn-sm" onclick="showInfo('rating-basis')">i</i></th></tr></thead><tbody>
           <tr><td>${q.coverage || q.lob}</td><td>${fmt(q.limit)}</td><td>${fmt(q.deductible)}</td><td>${fmt(Math.round(q.basePremium * q.modFactor * (1 - (q.scheduleCredit||0))))}</td><td>${q.ratingBasis}</td></tr>
         </tbody></table>
       </div>
       <div class="card glass">
-        <div class="card-title">Premium Breakdown</div>
+        <div class="card-title">Premium Breakdown <i class="info-btn" onclick="showInfo('premium-breakdown')">i</i></div>
         <div class="premium-breakdown">
-          <div class="pb-row"><span class="pb-label">Base Premium</span><span class="pb-value">${fmt(q.basePremium)}</span></div>
-          <div class="pb-row"><span class="pb-label">Experience Mod</span><span class="pb-value">${q.modFactor}</span></div>
-          <div class="pb-row"><span class="pb-label">Schedule Credit</span><span class="pb-value">-${Math.round((q.scheduleCredit||0)*100)}%</span></div>
-          <div class="pb-row"><span class="pb-label">SLA Tax (3.6%)</span><span class="pb-value">${fmt(q.slaTax)}</span></div>
-          <div class="pb-row"><span class="pb-label">Stamping Fee (1.5%)</span><span class="pb-value">${fmt(q.stampingFee)}</span></div>
-          <div class="pb-row total"><span class="pb-label">Total Annual Premium</span><span class="pb-value">${fmt(q.premium)}</span></div>
+          <div class="pb-row"><span class="pb-label">Base Premium <i class="info-btn info-btn-sm" onclick="showInfo('base-premium')">i</i></span><span class="pb-value">${fmt(q.basePremium)}</span></div>
+          <div class="pb-row"><span class="pb-label">Experience Mod <i class="info-btn info-btn-sm" onclick="showInfo('experience-mod')">i</i></span><span class="pb-value">${q.modFactor}</span></div>
+          <div class="pb-row"><span class="pb-label">Schedule Credit <i class="info-btn info-btn-sm" onclick="showInfo('schedule-credit')">i</i></span><span class="pb-value">-${Math.round((q.scheduleCredit||0)*100)}%</span></div>
+          <div class="pb-row"><span class="pb-label">SLA Tax (3.6%) <i class="info-btn info-btn-sm" onclick="showInfo('sla-tax')">i</i></span><span class="pb-value">${fmt(q.slaTax)}</span></div>
+          <div class="pb-row"><span class="pb-label">Stamping Fee (1.5%) <i class="info-btn info-btn-sm" onclick="showInfo('stamping-fee')">i</i></span><span class="pb-value">${fmt(q.stampingFee)}</span></div>
+          <div class="pb-row total"><span class="pb-label">Total Annual Premium <i class="info-btn info-btn-sm" onclick="showInfo('total-annual-premium')">i</i></span><span class="pb-value">${fmt(q.premium)}</span></div>
         </div>
       </div>
+    </div>
+
+    <div class="card glass">
+      <div class="card-title" style="margin-bottom:8px;">Offers &amp; Notices History <i class="info-btn" onclick="showInfo('notice-management')">i</i></div>
+      ${notices.length === 0 ? '<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:13px;">No notices or offers for this policy yet.</div>' :
+        `<table class="data-table"><thead><tr><th>Notice <i class="info-btn info-btn-sm" onclick="showInfo('notice-id')">i</i></th><th>Type <i class="info-btn info-btn-sm" onclick="showInfo('notice-type')">i</i></th><th>Offer # <i class="info-btn info-btn-sm" onclick="showInfo('offer-number')">i</i></th><th>Proposed Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></th><th>Proposed Term <i class="info-btn info-btn-sm" onclick="showInfo('proposed-values')">i</i></th><th>Insured Decision <i class="info-btn info-btn-sm" onclick="showInfo('insured-confirmation')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('notice-status')">i</i></th><th>Actions</th></tr></thead><tbody>
+          ${notices.map(nn => {
+            const pv = nn.proposedValues;
+            const offerList = NOTICES.filter(x => x.quoteId === id && x.type === 'RENEWAL_OFFER');
+            const offerIdx = offerList.indexOf(nn) + 1;
+            const decisionTxt = nn.status === 'INSURED_DECISION' ? (nn.insuredDecision === 'ACCEPT' ? '✓ ACCEPT (pending record)' : '✗ DECLINE (pending record)')
+              : nn.decision === 'ACCEPTED' ? '✓ ACCEPT' : nn.decision === 'REJECTED' ? '✗ DECLINE' : nn.status === 'EXPIRED' ? '⌛ No response' : '—';
+            const decisionColor = decisionTxt.indexOf('ACCEPT') !== -1 ? 'var(--success)' : decisionTxt.indexOf('DECLINE') !== -1 ? 'var(--danger)' : 'var(--text-muted)';
+            return `<tr><td class="col-id">${nn.id}</td><td>${nn.type.replace(/_/g,' ')}</td><td>${nn.type === 'RENEWAL_OFFER' ? '#' + offerIdx : '—'}</td><td>${fmt(pv ? pv.premium : nn.premium)}</td><td style="font-size:12px;color:var(--text-muted);">${pv ? pv.effectiveDate + ' → ' + pv.expirationDate : '—'}</td><td style="color:${decisionColor};font-size:12px;">${decisionTxt}</td><td>${chip(nn.status)}</td><td class="actions-cell"><button class="btn btn-ghost btn-xs" onclick="openNoticeDetail('${nn.id}')"><i class="fas fa-stream"></i> Timeline</button></td></tr>`;
+          }).join('')}
+        </tbody></table>`}
     </div>
 
     <div class="card glass">
@@ -1008,7 +1179,7 @@ function renderPolicyDetail(id) {
       <div class="filter-bar" style="margin-bottom:12px;">
         ${filterChips.map(f => `<span class="filter-chip${txnFilter === f ? ' active' : ''}" onclick="window._policyTxnFilter='${f}';renderPolicyDetail('${id}');">${f}${f === 'All' ? ' (' + TRANSACTIONS.filter(t=>t.quoteId===id).length + ')' : ' (' + TRANSACTIONS.filter(t=>t.quoteId===id&&t.type===f).length + ')'}</span>`).join('')}
       </div>
-      <table class="data-table"><thead><tr><th>Date</th><th>Transaction #</th><th>Type</th><th>Event ID</th><th>Effective Date</th><th>Summary</th><th>Status</th></tr></thead><tbody>
+      <table class="data-table"><thead><tr><th>Date <i class="info-btn info-btn-sm" onclick="showInfo('transaction')">i</i></th><th>Transaction # <i class="info-btn info-btn-sm" onclick="showInfo('transaction')">i</i></th><th>Type <i class="info-btn info-btn-sm" onclick="showInfo('transaction-type')">i</i></th><th>Event ID <i class="info-btn info-btn-sm" onclick="showInfo('event-id')">i</i></th><th>Effective Date <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></th><th>Summary <i class="info-btn info-btn-sm" onclick="showInfo('transaction-summary')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('transaction-status')">i</i></th></tr></thead><tbody>
         ${txns.length === 0 ? '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted);">No transactions found for this filter</td></tr>' :
           txns.sort((a,b) => b.createdAt.localeCompare(a.createdAt)).map(t => `<tr>
             <td style="font-size:12px;color:var(--text-muted);">${t.createdAt}</td>
@@ -1048,13 +1219,13 @@ function renderEndorsementReqQueue() {
 
   container.innerHTML = `
     <div class="summary-card glass" style="margin-bottom:12px;">
-      ${statusOrder.map(s => `<div class="sc-item"><div class="sc-label">${statusLabels[s]}</div><div class="sc-value">${chip(s, statusCounts[s]||0)}</div></div>`).join('')}
+      ${statusOrder.map(s => `<div class="sc-item"><div class="sc-label">${statusLabels[s]} <i class="info-btn info-btn-sm" onclick="showInfo('endorsement')">i</i></div><div class="sc-value">${chip(s, statusCounts[s]||0)}</div></div>`).join('')}
     </div>
     <div class="card glass" style="padding:12px;margin-bottom:12px;background:var(--accent-dim);border-radius:var(--radius-sm);">
       <div style="font-size:12px;color:var(--text-muted);"><strong>Integration:</strong> Consumes: MGA API, Policy Service &nbsp;|&nbsp; Produces: <code>PolicyEndorsed</code> event &nbsp;|&nbsp; Uses: Document Service, Audit Service, Billing Service<br><strong>Event Flow:</strong> Inbound API → Queue → Review → Approve → Update Policy → Transaction → PolicyEndorsedEvent → Billing → Document → Audit → Reporting</div>
     </div>
     <div class="card glass">
-      <table class="data-table"><thead><tr><th>Request ID</th><th>Quote</th><th>Policy #</th><th>Type</th><th>Priority</th><th>Status</th><th>Requested By</th><th>Date</th><th>Actions</th></tr></thead><tbody>
+      <table class="data-table"><thead><tr><th>Request ID <i class="info-btn info-btn-sm" onclick="showInfo('endorsement-request-id')">i</i></th><th>Quote <i class="info-btn info-btn-sm" onclick="showInfo('quote-id')">i</i></th><th>Policy # <i class="info-btn info-btn-sm" onclick="showInfo('policy-number')">i</i></th><th>Type <i class="info-btn info-btn-sm" onclick="showInfo('endorsement')">i</i></th><th>Priority <i class="info-btn info-btn-sm" onclick="showInfo('priority')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('quote-status')">i</i></th><th>Requested By <i class="info-btn info-btn-sm" onclick="showInfo('requested-by')">i</i></th><th>Date <i class="info-btn info-btn-sm" onclick="showInfo('requested-date')">i</i></th><th>Actions</th></tr></thead><tbody>
         ${ENDORSEMENT_REQUESTS.length === 0 ? '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-muted);">No endorsement requests received</td></tr>' :
         ENDORSEMENT_REQUESTS.map(r => {
           const q = QUOTES.find(x => x.id === r.quoteId);
@@ -1124,28 +1295,28 @@ function renderEndorsementReview(reqId) {
 
       <div id="tab-endor-overview" class="tab-content active">
         <div class="detail-grid">
-          <div class="detail-item"><div class="di-label">Request ID</div><div class="di-value font-mono">${r.id}</div></div>
-          <div class="detail-item"><div class="di-label">Quote ID</div><div class="di-value font-mono">${r.quoteId}</div></div>
-          <div class="detail-item"><div class="di-label">Policy Number</div><div class="di-value font-mono">${r.policyNumber || 'N/A'}</div></div>
-          <div class="detail-item"><div class="di-label">Insured</div><div class="di-value">${q ? q.insuredName : '-'}</div></div>
-          <div class="detail-item"><div class="di-label">Endorsement Type</div><div class="di-value">${r.requestType}</div></div>
-          <div class="detail-item"><div class="di-label">Priority</div><div class="di-value"><span style="color:${r.priority === 'High' ? 'var(--danger)' : r.priority === 'Medium' ? 'var(--warning)' : 'var(--text-secondary)'};">${r.priority}</span></div></div>
-          <div class="detail-item"><div class="di-label">Source System</div><div class="di-value">${r.sourceSystem}</div></div>
-          <div class="detail-item"><div class="di-label">Source Reference</div><div class="di-value font-mono">${r.sourceReference}</div></div>
-          <div class="detail-item"><div class="di-label">Requested By</div><div class="di-value">${r.requestedBy}</div></div>
-          <div class="detail-item"><div class="di-label">Requested Date</div><div class="di-value">${r.requestedDate}</div></div>
-          <div class="detail-item"><div class="di-label">Effective Date</div><div class="di-value">${r.effectiveDate}</div></div>
-          <div class="detail-item"><div class="di-label">Correlation ID</div><div class="di-value font-mono" style="font-size:11px;">${r.correlationId}</div></div>
-          <div class="detail-item"><div class="di-label">Status</div><div class="di-value">${chip(r.status)}</div></div>
-          ${r.assignedTo ? `<div class="detail-item"><div class="di-label">Assigned To</div><div class="di-value">${r.assignedTo}</div></div>` : ''}
-          ${r.reviewedBy ? `<div class="detail-item"><div class="di-label">Reviewed By</div><div class="di-value">${r.reviewedBy}</div></div>` : ''}
-          ${r.decision ? `<div class="detail-item"><div class="di-label">Decision</div><div class="di-value">${chip(r.decision)}</div></div>` : ''}
+          <div class="detail-item"><div class="di-label">Request ID <i class="info-btn info-btn-sm" onclick="showInfo('endorsement-request-id')">i</i></div><div class="di-value font-mono">${r.id}</div></div>
+          <div class="detail-item"><div class="di-label">Quote ID <i class="info-btn info-btn-sm" onclick="showInfo('quote-id')">i</i></div><div class="di-value font-mono">${r.quoteId}</div></div>
+          <div class="detail-item"><div class="di-label">Policy Number <i class="info-btn info-btn-sm" onclick="showInfo('policy-number')">i</i></div><div class="di-value font-mono">${r.policyNumber || 'N/A'}</div></div>
+          <div class="detail-item"><div class="di-label">Insured <i class="info-btn info-btn-sm" onclick="showInfo('insured-name')">i</i></div><div class="di-value">${q ? q.insuredName : '-'}</div></div>
+          <div class="detail-item"><div class="di-label">Endorsement Type <i class="info-btn info-btn-sm" onclick="showInfo('endorsement')">i</i></div><div class="di-value">${r.requestType}</div></div>
+          <div class="detail-item"><div class="di-label">Priority <i class="info-btn info-btn-sm" onclick="showInfo('priority')">i</i></div><div class="di-value"><span style="color:${r.priority === 'High' ? 'var(--danger)' : r.priority === 'Medium' ? 'var(--warning)' : 'var(--text-secondary)'};">${r.priority}</span></div></div>
+          <div class="detail-item"><div class="di-label">Source System <i class="info-btn info-btn-sm" onclick="showInfo('source-system')">i</i></div><div class="di-value">${r.sourceSystem}</div></div>
+          <div class="detail-item"><div class="di-label">Source Reference <i class="info-btn info-btn-sm" onclick="showInfo('source-reference')">i</i></div><div class="di-value font-mono">${r.sourceReference}</div></div>
+          <div class="detail-item"><div class="di-label">Requested By <i class="info-btn info-btn-sm" onclick="showInfo('requested-by')">i</i></div><div class="di-value">${r.requestedBy}</div></div>
+          <div class="detail-item"><div class="di-label">Requested Date <i class="info-btn info-btn-sm" onclick="showInfo('requested-date')">i</i></div><div class="di-value">${r.requestedDate}</div></div>
+          <div class="detail-item"><div class="di-label">Effective Date <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></div><div class="di-value">${r.effectiveDate}</div></div>
+          <div class="detail-item"><div class="di-label">Correlation ID <i class="info-btn info-btn-sm" onclick="showInfo('correlation-id')">i</i></div><div class="di-value font-mono" style="font-size:11px;">${r.correlationId}</div></div>
+          <div class="detail-item"><div class="di-label">Status <i class="info-btn info-btn-sm" onclick="showInfo('quote-status')">i</i></div><div class="di-value">${chip(r.status)}</div></div>
+          ${r.assignedTo ? `<div class="detail-item"><div class="di-label">Assigned To <i class="info-btn info-btn-sm" onclick="showInfo('assigned-to')">i</i></div><div class="di-value">${r.assignedTo}</div></div>` : ''}
+          ${r.reviewedBy ? `<div class="detail-item"><div class="di-label">Reviewed By <i class="info-btn info-btn-sm" onclick="showInfo('reviewed-by')">i</i></div><div class="di-value">${r.reviewedBy}</div></div>` : ''}
+          ${r.decision ? `<div class="detail-item"><div class="di-label">Decision <i class="info-btn info-btn-sm" onclick="showInfo('endorsement')">i</i></div><div class="di-value">${chip(r.decision)}</div></div>` : ''}
         </div>
       </div>
 
       <div id="tab-endor-comparison" class="tab-content">
         ${r.changedFields.length === 0 ? '<p style="color:var(--text-muted);padding:16px;">No changed fields recorded for this request.</p>' :
-        `<table class="data-table"><thead><tr><th>Field</th><th>Current Value</th><th>Requested Value</th></tr></thead><tbody>
+        `        <table class="data-table"><thead><tr><th>Field <i class="info-btn info-btn-sm" onclick="showInfo('policy-field')">i</i></th><th>Current Value <i class="info-btn info-btn-sm" onclick="showInfo('current-value')">i</i></th><th>Requested Value <i class="info-btn info-btn-sm" onclick="showInfo('proposed-values')">i</i></th></tr></thead><tbody>
           ${r.changedFields.map(f => `
             <tr style="background:var(--warning-bg);">
               <td style="font-weight:600;">${f.charAt(0).toUpperCase() + f.slice(1).replace(/([A-Z])/g,' $1')}</td>
@@ -1171,9 +1342,9 @@ function renderEndorsementReview(reqId) {
 
       <div id="tab-endor-premium" class="tab-content">
         <div class="premium-breakdown">
-          <div class="pb-row"><span class="pb-label">Current Annual Premium</span><span class="pb-value">${q ? fmt(q.premium) : '-'}</span></div>
-          <div class="pb-row"><span class="pb-label">Endorsement Premium Impact</span><span class="pb-value" style="color:${premiumImpact >= 0 ? 'var(--success)' : 'var(--danger)'};">${premiumImpact >= 0 ? '+' : ''}${fmt(premiumImpact)}</span></div>
-          <div class="pb-row total"><span class="pb-label">New Annual Premium</span><span class="pb-value" style="color:var(--accent);">${fmt(newPremium)}</span></div>
+          <div class="pb-row"><span class="pb-label">Current Annual Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></span><span class="pb-value">${q ? fmt(q.premium) : '-'}</span></div>
+          <div class="pb-row"><span class="pb-label">Endorsement Premium Impact <i class="info-btn info-btn-sm" onclick="showInfo('endorsement-premium-impact')">i</i></span><span class="pb-value" style="color:${premiumImpact >= 0 ? 'var(--success)' : 'var(--danger)'};">${premiumImpact >= 0 ? '+' : ''}${fmt(premiumImpact)}</span></div>
+          <div class="pb-row total"><span class="pb-label">New Annual Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></span><span class="pb-value" style="color:var(--accent);">${fmt(newPremium)}</span></div>
         </div>
         <div style="margin-top:12px;padding:12px;background:var(--accent-dim);border-radius:var(--radius-sm);font-size:12px;color:var(--text-muted);">
           <i class="fas fa-info-circle"></i> Premium recalculated by <strong>Rating Service (simulated)</strong>. This is a standard rating calculation based on the endorsement type and current policy data. Actual premium may vary based on full rating engine evaluation.
@@ -1347,7 +1518,10 @@ function renderRenewal() {
   }
 
   const daysLeft = Math.ceil((new Date(q.expiration) - new Date()) / (1000*60*60*24));
-  const hasOffer = NOTICES.some(n => n.quoteId === selectedQuoteId && n.type === 'RENEWAL_OFFER' && n.status !== 'REJECTED' && n.status !== 'EXPIRED');
+  const offers = NOTICES.filter(n => n.quoteId === selectedQuoteId && n.type === 'RENEWAL_OFFER');
+  const nextOfferNo = offers.length + 1;
+  const lastRejected = offers.filter(n => n.status === 'REJECTED' || n.status === 'EXPIRED');
+  const hasOpenOffer = offers.some(n => n.status !== 'REJECTED' && n.status !== 'EXPIRED');
   const defaultEffective = new Date(new Date(q.expiration).getTime() + 86400000).toISOString().slice(0,10);
   const defaultExpiration = new Date(new Date(defaultEffective).getTime() + 365*86400000).toISOString().slice(0,10);
   const proposedBase = Math.round(q.basePremium * 1.04);
@@ -1363,27 +1537,29 @@ function renderRenewal() {
     <div class="card glass mb-md">
       <div class="flex-between">
         <div>
-          <div style="display:flex;align-items:center;gap:12px;">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
             <h1 style="font-size:22px;">Renewal Quote</h1>
-            ${hasOffer ? `<span class="chip chip-success"><span class="chip-dot"></span>Offer Sent</span>` : `<span class="chip chip-pending"><span class="chip-dot"></span>Draft</span>`}
+            ${hasOpenOffer ? `<span class="chip chip-success"><span class="chip-dot"></span>Offer in Progress</span>` : `<span class="chip chip-pending"><span class="chip-dot"></span>Draft</span>`}
+            <span class="chip" style="background:var(--accent-dim);color:var(--accent);"><span class="chip-dot" style="background:var(--accent);"></span>Next: Offer #${nextOfferNo}</span>
           </div>
           <p style="font-size:13px;color:var(--text-secondary);margin-top:4px;">${q.id} / ${q.insuredName} — Expires: ${q.expiration} (${daysLeft} days remaining)</p>
+          ${lastRejected.length ? `<div style="margin-top:10px;padding:10px 12px;background:var(--warning-bg);border-radius:var(--radius-sm);font-size:12px;color:var(--warning);"><i class="fas fa-info-circle"></i> Previous offer(s) ${lastRejected.map(x=>x.id).join(', ')} ${lastRejected.some(x=>x.status==='EXPIRED') ? 'expired (insured did not respond)' : 'declined by the insured'} — a new offer can be issued while the policy is active and not yet expired.</div>` : ''}
         </div>
       </div>
     </div>
     <div class="card glass">
       <div class="card-title">Policy Details <i class="info-btn" onclick="showInfo('quote-status')">i</i></div>
       <div class="summary-card glass-sm">
-        <div class="sc-item"><div class="sc-label">Insured</div><div class="sc-value">${q.insuredName}</div></div>
-        <div class="sc-item"><div class="sc-label">FEIN</div><div class="sc-value">${q.fein}</div></div>
-        <div class="sc-item"><div class="sc-label">Broker / Agent</div><div class="sc-value">${q.agent}</div></div>
-        <div class="sc-item"><div class="sc-label">MGA</div><div class="sc-value">${q.mga}</div></div>
-        <div class="sc-item"><div class="sc-label">Line of Business</div><div class="sc-value">${q.lob}</div></div>
-        <div class="sc-item"><div class="sc-label">Term</div><div class="sc-value">${q.term}</div></div>
-        <div class="sc-item"><div class="sc-label">Premium</div><div class="sc-value">${fmt(q.premium)}</div></div>
-        <div class="sc-item"><div class="sc-label">Effective</div><div class="sc-value">${q.effective}</div></div>
-        <div class="sc-item"><div class="sc-label">Expiration</div><div class="sc-value">${q.expiration}</div></div>
-        <div class="sc-item"><div class="sc-label">Billing Plan</div><div class="sc-value">${q.billingPlan}</div></div>
+        <div class="sc-item"><div class="sc-label">Insured <i class="info-btn info-btn-sm" onclick="showInfo('insured-name')">i</i></div><div class="sc-value">${q.insuredName}</div></div>
+        <div class="sc-item"><div class="sc-label">FEIN <i class="info-btn info-btn-sm" onclick="showInfo('fein')">i</i></div><div class="sc-value">${q.fein}</div></div>
+        <div class="sc-item"><div class="sc-label">Broker / Agent <i class="info-btn info-btn-sm" onclick="showInfo('agent')">i</i></div><div class="sc-value">${q.agent}</div></div>
+        <div class="sc-item"><div class="sc-label">MGA <i class="info-btn info-btn-sm" onclick="showInfo('mga')">i</i></div><div class="sc-value">${q.mga}</div></div>
+        <div class="sc-item"><div class="sc-label">Line of Business <i class="info-btn info-btn-sm" onclick="showInfo('lob')">i</i></div><div class="sc-value">${q.lob}</div></div>
+        <div class="sc-item"><div class="sc-label">Term <i class="info-btn info-btn-sm" onclick="showInfo('policy-term')">i</i></div><div class="sc-value">${q.term}</div></div>
+        <div class="sc-item"><div class="sc-label">Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></div><div class="sc-value">${fmt(q.premium)}</div></div>
+        <div class="sc-item"><div class="sc-label">Effective <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></div><div class="sc-value">${q.effective}</div></div>
+        <div class="sc-item"><div class="sc-label">Expiration <i class="info-btn info-btn-sm" onclick="showInfo('expiration-date')">i</i></div><div class="sc-value">${q.expiration}</div></div>
+        <div class="sc-item"><div class="sc-label">Billing Plan <i class="info-btn info-btn-sm" onclick="showInfo('billing-plan')">i</i></div><div class="sc-value">${q.billingPlan}</div></div>
       </div>
     </div>
 
@@ -1401,31 +1577,31 @@ function renderRenewal() {
             <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Current: ${fmt(q.premium)} | <span id="ren-premium-change" style="font-weight:600;color:${change >= 0 ? 'var(--danger)' : 'var(--success)'};">${change >= 0 ? '+' : ''}${fmt(change)} (${pctChange}%)</span></div>
           </div>
           <div class="form-group">
-            <label class="form-label">New Effective Date</label>
+            <label class="form-label">New Effective Date <i class="info-btn" onclick="showInfo('effective-date')">i</i></label>
             <input id="ren-effective-date" class="form-input" type="date" value="${defaultEffective}">
           </div>
           <div class="form-group">
-            <label class="form-label">New Expiration Date</label>
+            <label class="form-label">New Expiration Date <i class="info-btn" onclick="showInfo('expiration-date')">i</i></label>
             <input id="ren-expiration-date" class="form-input" type="date" value="${defaultExpiration}">
           </div>
         </div>
-        <table class="data-table"><thead><tr><th>Component</th><th>Current</th><th>Proposed</th><th>Change</th></tr></thead><tbody>
-          <tr><td>Base Premium</td><td>${fmt(q.basePremium)}</td><td>${fmt(proposedBase)}</td><td style="color:var(--${proposedBase >= q.basePremium ? 'danger' : 'success'});">${proposedBase >= q.basePremium ? '+' : ''}${fmt(proposedBase - q.basePremium)}</td></tr>
-          <tr><td>Experience Mod</td><td>${q.modFactor}</td><td>${proposedMod}</td><td style="color:var(--${proposedMod <= q.modFactor ? 'success' : 'danger'});">${proposedMod <= q.modFactor ? '' : '+'}${(proposedMod - q.modFactor).toFixed(2)}</td></tr>
-          <tr><td>Schedule Credit</td><td>-${Math.round((q.scheduleCredit||0)*100)}%</td><td>-${Math.round(proposedCredit*100)}%</td><td style="color:var(--success);">-${Math.round((proposedCredit - (q.scheduleCredit||0))*100)}%</td></tr>
-          <tr><td style="font-weight:600;">Total Premium</td><td style="font-weight:600;">${fmt(q.premium)}</td><td style="font-weight:600;color:var(--accent);">${fmt(proposedTotal)}</td><td style="font-weight:600;color:var(--${change >= 0 ? 'danger' : 'success'});">${change >= 0 ? '+' : ''}${fmt(change)} (${pctChange}%)</td></tr>
+        <table class="data-table"><thead><tr><th>Component <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></th><th>Current <i class="info-btn info-btn-sm" onclick="showInfo('current-value')">i</i></th><th>Proposed <i class="info-btn info-btn-sm" onclick="showInfo('proposed-values')">i</i></th><th>Change <i class="info-btn info-btn-sm" onclick="showInfo('premium-change')">i</i></th></tr></thead><tbody>
+          <tr><td>Base Premium <i class="info-btn info-btn-sm" onclick="showInfo('base-premium')">i</i></td><td>${fmt(q.basePremium)}</td><td>${fmt(proposedBase)}</td><td style="color:var(--${proposedBase >= q.basePremium ? 'danger' : 'success'});">${proposedBase >= q.basePremium ? '+' : ''}${fmt(proposedBase - q.basePremium)}</td></tr>
+          <tr><td>Experience Mod <i class="info-btn info-btn-sm" onclick="showInfo('experience-mod')">i</i></td><td>${q.modFactor}</td><td>${proposedMod}</td><td style="color:var(--${proposedMod <= q.modFactor ? 'success' : 'danger'});">${proposedMod <= q.modFactor ? '' : '+'}${(proposedMod - q.modFactor).toFixed(2)}</td></tr>
+          <tr><td>Schedule Credit <i class="info-btn info-btn-sm" onclick="showInfo('schedule-credit')">i</i></td><td>-${Math.round((q.scheduleCredit||0)*100)}%</td><td>-${Math.round(proposedCredit*100)}%</td><td style="color:var(--success);">-${Math.round((proposedCredit - (q.scheduleCredit||0))*100)}%</td></tr>
+          <tr><td style="font-weight:600;">Total Premium <i class="info-btn info-btn-sm" onclick="showInfo('total-annual-premium')">i</i></td><td style="font-weight:600;">${fmt(q.premium)}</td><td style="font-weight:600;color:var(--accent);">${fmt(proposedTotal)}</td><td style="font-weight:600;color:var(--${change >= 0 ? 'danger' : 'success'});">${change >= 0 ? '+' : ''}${fmt(change)} (${pctChange}%)</td></tr>
         </tbody></table>
-        <div class="flex-between mt-md"><span style="font-size:13px;color:var(--text-muted);"><i class="fas fa-info-circle"></i> PAS can adjust premium up or down. MGA will review and accept/reject the offer.</span></div>
+        <div class="flex-between mt-md"><span style="font-size:13px;color:var(--text-muted);"><i class="fas fa-info-circle"></i> Flow: MGA → Broker → Insured. The offer auto-tracks through each stage and the insured's decision (simulated on this account) returns to PAS for recording. PAS does not choose Accept/Reject.</span></div>
       </div>
       <div id="tab-ren-forms" class="tab-content">
         <div style="font-size:13px;color:var(--text-muted);padding:8px 0;">Renewal documents pending generation</div>
-        <div class="doc-item disabled"><div class="doc-icon" style="background:var(--bg-light);color:var(--text-muted);"><i class="fas fa-file-alt"></i></div><div class="doc-info"><div class="doc-name">Renewal Quote Summary</div><div class="doc-meta">Not yet generated</div></div><span class="chip" style="background:var(--glass-bg);color:var(--text-muted);">Pending</span></div>
-        <div class="doc-item disabled"><div class="doc-icon" style="background:var(--bg-light);color:var(--text-muted);"><i class="fas fa-file-alt"></i></div><div class="doc-info"><div class="doc-name">Renewal Application</div><div class="doc-meta">Not yet generated</div></div><span class="chip" style="background:var(--glass-bg);color:var(--text-muted);">Pending</span></div>
+        <div class="doc-item disabled"><div class="doc-icon" style="background:var(--bg-light);color:var(--text-muted);"><i class="fas fa-file-alt"></i></div><div class="doc-info"><div class="doc-name">Renewal Quote Summary <i class="info-btn info-btn-sm" onclick="showInfo('document-type')">i</i></div><div class="doc-meta">Not yet generated</div></div><span class="chip" style="background:var(--glass-bg);color:var(--text-muted);">Pending</span></div>
+        <div class="doc-item disabled"><div class="doc-icon" style="background:var(--bg-light);color:var(--text-muted);"><i class="fas fa-file-alt"></i></div><div class="doc-info"><div class="doc-name">Renewal Application <i class="info-btn info-btn-sm" onclick="showInfo('document-type')">i</i></div><div class="doc-meta">Not yet generated</div></div><span class="chip" style="background:var(--glass-bg);color:var(--text-muted);">Pending</span></div>
       </div>
       <div id="tab-ren-approval" class="tab-content">
         <div class="form-group"><label class="form-label">UW Decision <i class="info-btn" onclick="showInfo('uw-decision')">i</i></label><select id="ren-decision" class="form-input"><option value="">-- Select Decision --</option><option value="Approve as Proposed">Approve as Proposed</option><option value="Approve with Changes">Approve with Changes</option><option value="Decline Renewal">Decline Renewal</option></select></div>
         <div class="field-error" id="ren-decision-error"></div>
-        <div class="form-group"><label class="form-label">Notes</label><textarea id="ren-notes" class="form-input" rows="3">Rate adequacy review completed. Recommended: Approve.</textarea></div>
+        <div class="form-group"><label class="form-label">Notes <i class="info-btn" onclick="showInfo('note')">i</i></label><textarea id="ren-notes" class="form-input" rows="3">Rate adequacy review completed. Recommended: Approve.</textarea></div>
         <div id="ren-validation-summary" style="margin-top:12px;display:none;"></div>
         <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;" onclick="submitRenewal()"><i class="fas fa-paper-plane"></i> Send Offer to MGA</button>
       </div>
@@ -1487,34 +1663,34 @@ function renderCancellation() {
     <div class="card glass">
       <div class="card-title">Policy Details <i class="info-btn" onclick="showInfo('quote-status')">i</i></div>
       <div class="summary-card glass-sm">
-        <div class="sc-item"><div class="sc-label">Insured</div><div class="sc-value">${q.insuredName}</div></div>
-        <div class="sc-item"><div class="sc-label">FEIN</div><div class="sc-value">${q.fein}</div></div>
-        <div class="sc-item"><div class="sc-label">Broker / Agent</div><div class="sc-value">${q.agent}</div></div>
-        <div class="sc-item"><div class="sc-label">MGA</div><div class="sc-value">${q.mga}</div></div>
-        <div class="sc-item"><div class="sc-label">Line of Business</div><div class="sc-value">${q.lob}</div></div>
-        <div class="sc-item"><div class="sc-label">Term</div><div class="sc-value">${q.term}</div></div>
-        <div class="sc-item"><div class="sc-label">Premium</div><div class="sc-value">${fmt(q.premium)}</div></div>
-        <div class="sc-item"><div class="sc-label">Effective</div><div class="sc-value">${q.effective}</div></div>
-        <div class="sc-item"><div class="sc-label">Expiration</div><div class="sc-value">${q.expiration}</div></div>
-        <div class="sc-item"><div class="sc-label">Billing Plan</div><div class="sc-value">${q.billingPlan}</div></div>
+        <div class="sc-item"><div class="sc-label">Insured <i class="info-btn info-btn-sm" onclick="showInfo('insured-name')">i</i></div><div class="sc-value">${q.insuredName}</div></div>
+        <div class="sc-item"><div class="sc-label">FEIN <i class="info-btn info-btn-sm" onclick="showInfo('fein')">i</i></div><div class="sc-value">${q.fein}</div></div>
+        <div class="sc-item"><div class="sc-label">Broker / Agent <i class="info-btn info-btn-sm" onclick="showInfo('agent')">i</i></div><div class="sc-value">${q.agent}</div></div>
+        <div class="sc-item"><div class="sc-label">MGA <i class="info-btn info-btn-sm" onclick="showInfo('mga')">i</i></div><div class="sc-value">${q.mga}</div></div>
+        <div class="sc-item"><div class="sc-label">Line of Business <i class="info-btn info-btn-sm" onclick="showInfo('lob')">i</i></div><div class="sc-value">${q.lob}</div></div>
+        <div class="sc-item"><div class="sc-label">Term <i class="info-btn info-btn-sm" onclick="showInfo('policy-term')">i</i></div><div class="sc-value">${q.term}</div></div>
+        <div class="sc-item"><div class="sc-label">Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></div><div class="sc-value">${fmt(q.premium)}</div></div>
+        <div class="sc-item"><div class="sc-label">Effective <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></div><div class="sc-value">${q.effective}</div></div>
+        <div class="sc-item"><div class="sc-label">Expiration <i class="info-btn info-btn-sm" onclick="showInfo('expiration-date')">i</i></div><div class="sc-value">${q.expiration}</div></div>
+        <div class="sc-item"><div class="sc-label">Billing Plan <i class="info-btn info-btn-sm" onclick="showInfo('billing-plan')">i</i></div><div class="sc-value">${q.billingPlan}</div></div>
       </div>
     </div>
     <div class="card glass">
       <div class="form-grid">
         <div class="form-group"><label class="form-label">Cancellation Type <i class="info-btn" onclick="showInfo('cancellation')">i</i></label><select id="cancel-type" class="form-input" onchange="updateCancelPreview()"><option value="">-- Select --</option><option value="Flat">Flat</option><option value="Pro-Rata">Pro-Rata</option><option value="Short Rate">Short Rate</option><option value="Non-Renewal">Non-Renewal</option></select><div class="field-error" id="cancel-type-error"></div></div>
-        <div class="form-group"><label class="form-label">Effective Date</label><input id="cancel-effective-date" class="form-input" type="date" value="${today.toISOString().slice(0,10)}"><div class="field-error" id="cancel-date-error"></div></div>
+        <div class="form-group"><label class="form-label">Effective Date <i class="info-btn" onclick="showInfo('effective-date')">i</i></label><input id="cancel-effective-date" class="form-input" type="date" value="${today.toISOString().slice(0,10)}"><div class="field-error" id="cancel-date-error"></div></div>
         <div class="form-group"><label class="form-label">Reason Code <i class="info-btn" onclick="showInfo('cancel-reason')">i</i></label><select id="cancel-reason" class="form-input"><option value="">-- Select --</option><option value="Non-Payment">Non-Payment</option><option value="Underwriting Non-Renewal">Underwriting Non-Renewal</option><option value="Insured Request">Insured Request</option><option value="Duplicate Coverage">Duplicate Coverage</option><option value="Fraud">Fraud</option></select><div class="field-error" id="cancel-reason-error"></div></div>
         <div class="form-group"><label class="form-label">Notice Sent <i class="info-btn" onclick="showInfo('cancel-notice')">i</i></label><select id="cancel-notice" class="form-input"><option value="None">None</option><option value="10-Day Notice" selected>10-Day Notice</option><option value="30-Day Notice">30-Day Notice</option></select></div>
-        <div class="form-group full-width"><label class="form-label">Detailed Reason</label><textarea id="cancel-description" class="form-input" rows="3">Insured failed to make payment. Notice sent. No response received.</textarea><div class="field-error" id="cancel-desc-error"></div></div>
+        <div class="form-group full-width"><label class="form-label">Detailed Reason <i class="info-btn" onclick="showInfo('cancel-description')">i</i></label><textarea id="cancel-description" class="form-input" rows="3">Insured failed to make payment. Notice sent. No response received.</textarea><div class="field-error" id="cancel-desc-error"></div></div>
       </div>
     </div>
     <div class="card glass mt-md">
       <div class="card-title">Premium Impact <i class="info-btn" onclick="showInfo('cancel-impact')">i</i></div>
       <div id="cancel-impact-content">
-        <div class="pb-row"><span class="pb-label">Annual Premium</span><span class="pb-value">${fmt(q.premium)}</span></div>
-        <div class="pb-row"><span class="pb-label">Earned Premium (to date)</span><span class="pb-value">${fmt(earnedPremium)}</span></div>
-        <div class="pb-row"><span class="pb-label">Unearned Premium</span><span class="pb-value">${fmt(unearnedPremium)}</span></div>
-        <div class="pb-row total"><span class="pb-label">Return Premium</span><span class="pb-value" style="color:var(--danger);">-${fmt(unearnedPremium)}</span></div>
+        <div class="pb-row"><span class="pb-label">Annual Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></span><span class="pb-value">${fmt(q.premium)}</span></div>
+        <div class="pb-row"><span class="pb-label">Earned Premium (to date) <i class="info-btn info-btn-sm" onclick="showInfo('earned-premium')">i</i></span><span class="pb-value">${fmt(earnedPremium)}</span></div>
+        <div class="pb-row"><span class="pb-label">Unearned Premium <i class="info-btn info-btn-sm" onclick="showInfo('unearned-premium')">i</i></span><span class="pb-value">${fmt(unearnedPremium)}</span></div>
+        <div class="pb-row total"><span class="pb-label">Return Premium <i class="info-btn info-btn-sm" onclick="showInfo('return-premium')">i</i></span><span class="pb-value" style="color:var(--danger);">-${fmt(unearnedPremium)}</span></div>
       </div>
     </div>
     <div id="cancel-validation-summary" style="margin-top:12px;display:none;"></div>
@@ -1544,10 +1720,10 @@ function updateCancelPreview() {
   const impactContent = document.getElementById('cancel-impact-content');
   if (impactContent) {
     impactContent.innerHTML = `
-      <div class="pb-row"><span class="pb-label">Annual Premium</span><span class="pb-value">${fmt(q.premium)}</span></div>
-      <div class="pb-row"><span class="pb-label">Earned Premium (to ${effectiveDate})</span><span class="pb-value">${fmt(earnedPremium)}</span></div>
-      <div class="pb-row"><span class="pb-label">Unearned Premium</span><span class="pb-value">${fmt(unearnedPremium)}</span></div>
-      <div class="pb-row total"><span class="pb-label">Return Premium</span><span class="pb-value" style="color:var(--danger);">-${fmt(unearnedPremium)}</span></div>`;
+      <div class="pb-row"><span class="pb-label">Annual Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></span><span class="pb-value">${fmt(q.premium)}</span></div>
+      <div class="pb-row"><span class="pb-label">Earned Premium (to ${effectiveDate}) <i class="info-btn info-btn-sm" onclick="showInfo('earned-premium')">i</i></span><span class="pb-value">${fmt(earnedPremium)}</span></div>
+      <div class="pb-row"><span class="pb-label">Unearned Premium <i class="info-btn info-btn-sm" onclick="showInfo('unearned-premium')">i</i></span><span class="pb-value">${fmt(unearnedPremium)}</span></div>
+      <div class="pb-row total"><span class="pb-label">Return Premium <i class="info-btn info-btn-sm" onclick="showInfo('return-premium')">i</i></span><span class="pb-value" style="color:var(--danger);">-${fmt(unearnedPremium)}</span></div>`;
   }
 }
 
@@ -1602,25 +1778,25 @@ function renderReinstatement() {
     <div class="card glass">
       <div class="card-title">Policy Details <i class="info-btn" onclick="showInfo('quote-status')">i</i></div>
       <div class="summary-card glass-sm">
-        <div class="sc-item"><div class="sc-label">Insured</div><div class="sc-value">${q.insuredName}</div></div>
-        <div class="sc-item"><div class="sc-label">FEIN</div><div class="sc-value">${q.fein}</div></div>
-        <div class="sc-item"><div class="sc-label">Broker / Agent</div><div class="sc-value">${q.agent}</div></div>
-        <div class="sc-item"><div class="sc-label">MGA</div><div class="sc-value">${q.mga}</div></div>
-        <div class="sc-item"><div class="sc-label">Line of Business</div><div class="sc-value">${q.lob}</div></div>
-        <div class="sc-item"><div class="sc-label">Term</div><div class="sc-value">${q.term}</div></div>
-        <div class="sc-item"><div class="sc-label">Premium</div><div class="sc-value">${fmt(q.premium)}</div></div>
-        <div class="sc-item"><div class="sc-label">Effective</div><div class="sc-value">${q.effective}</div></div>
-        <div class="sc-item"><div class="sc-label">Expiration</div><div class="sc-value">${q.expiration}</div></div>
-        <div class="sc-item"><div class="sc-label">Billing Plan</div><div class="sc-value">${q.billingPlan}</div></div>
+        <div class="sc-item"><div class="sc-label">Insured <i class="info-btn info-btn-sm" onclick="showInfo('insured-name')">i</i></div><div class="sc-value">${q.insuredName}</div></div>
+        <div class="sc-item"><div class="sc-label">FEIN <i class="info-btn info-btn-sm" onclick="showInfo('fein')">i</i></div><div class="sc-value">${q.fein}</div></div>
+        <div class="sc-item"><div class="sc-label">Broker / Agent <i class="info-btn info-btn-sm" onclick="showInfo('agent')">i</i></div><div class="sc-value">${q.agent}</div></div>
+        <div class="sc-item"><div class="sc-label">MGA <i class="info-btn info-btn-sm" onclick="showInfo('mga')">i</i></div><div class="sc-value">${q.mga}</div></div>
+        <div class="sc-item"><div class="sc-label">Line of Business <i class="info-btn info-btn-sm" onclick="showInfo('lob')">i</i></div><div class="sc-value">${q.lob}</div></div>
+        <div class="sc-item"><div class="sc-label">Term <i class="info-btn info-btn-sm" onclick="showInfo('policy-term')">i</i></div><div class="sc-value">${q.term}</div></div>
+        <div class="sc-item"><div class="sc-label">Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></div><div class="sc-value">${fmt(q.premium)}</div></div>
+        <div class="sc-item"><div class="sc-label">Effective <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></div><div class="sc-value">${q.effective}</div></div>
+        <div class="sc-item"><div class="sc-label">Expiration <i class="info-btn info-btn-sm" onclick="showInfo('expiration-date')">i</i></div><div class="sc-value">${q.expiration}</div></div>
+        <div class="sc-item"><div class="sc-label">Billing Plan <i class="info-btn info-btn-sm" onclick="showInfo('billing-plan')">i</i></div><div class="sc-value">${q.billingPlan}</div></div>
       </div>
     </div>
     <div class="card glass">
       <div class="card-title">Quote Information <i class="info-btn" onclick="showInfo('reinstatement')">i</i></div>
       <div class="summary-card glass-sm">
-        <div class="sc-item"><div class="sc-label">Original Effective</div><div class="sc-value">${q.effective}</div></div>
-        <div class="sc-item"><div class="sc-label">Original Expiration</div><div class="sc-value">${q.expiration}</div></div>
-        <div class="sc-item"><div class="sc-label">Annual Premium</div><div class="sc-value">${fmt(q.premium)}</div></div>
-        <div class="sc-item"><div class="sc-label">Cancellation Reason</div><div class="sc-value" style="font-size:14px;">Non-Payment</div></div>
+        <div class="sc-item"><div class="sc-label">Original Effective <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></div><div class="sc-value">${q.effective}</div></div>
+        <div class="sc-item"><div class="sc-label">Original Expiration <i class="info-btn info-btn-sm" onclick="showInfo('expiration-date')">i</i></div><div class="sc-value">${q.expiration}</div></div>
+        <div class="sc-item"><div class="sc-label">Annual Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></div><div class="sc-value">${fmt(q.premium)}</div></div>
+        <div class="sc-item"><div class="sc-label">Cancellation Reason <i class="info-btn info-btn-sm" onclick="showInfo('cancel-reason')">i</i></div><div class="sc-value" style="font-size:14px;">Non-Payment</div></div>
       </div>
       ${!withinWindow ? `<div style="margin-top:12px;padding:12px;background:var(--danger-bg);border-radius:var(--radius-sm);color:var(--danger);font-size:13px;"><i class="fas fa-exclamation-triangle"></i> Reinstatement window (30 days) has passed. Senior UW approval required.</div>` : ''}
     </div>
@@ -1629,19 +1805,19 @@ function renderReinstatement() {
       <div class="card-title">Reinstatement Details <i class="info-btn" onclick="showInfo('reinstatement-window')">i</i></div>
       <div class="form-grid">
         <div class="form-group"><label class="form-label">Reinstatement Effective Date <i class="info-btn" onclick="showInfo('effective-date')">i</i></label><input id="reinstate-effective-date" class="form-input" type="date" value="${today.toISOString().slice(0,10)}"><div class="field-error" id="reinstate-date-error"></div></div>
-        <div class="form-group"><label class="form-label">Reinstatement Reason</label><select id="reinstate-reason" class="form-input"><option value="">-- Select --</option><option value="Payment Received — Full Balance">Payment Received — Full Balance</option><option value="Payment Received — Partial Agreement">Payment Received — Partial Agreement</option><option value="Underwriting Review Reversal">Underwriting Review Reversal</option><option value="Insured Dispute Resolved">Insured Dispute Resolved</option></select><div class="field-error" id="reinstate-reason-error"></div></div>
+        <div class="form-group"><label class="form-label">Reinstatement Reason <i class="info-btn" onclick="showInfo('reinstate-reason')">i</i></label><select id="reinstate-reason" class="form-input"><option value="">-- Select --</option><option value="Payment Received — Full Balance">Payment Received — Full Balance</option><option value="Payment Received — Partial Agreement">Payment Received — Partial Agreement</option><option value="Underwriting Review Reversal">Underwriting Review Reversal</option><option value="Insured Dispute Resolved">Insured Dispute Resolved</option></select><div class="field-error" id="reinstate-reason-error"></div></div>
         <div class="form-group"><label class="form-label">Reinstatement Fee <i class="info-btn" onclick="showInfo('reinstatement-fee')">i</i></label><input class="form-input" value="$250.00" readonly></div>
-        <div class="form-group"><label class="form-label">Return Premium Reversal</label><input class="form-input" value="${fmt(Math.round(q.premium * 0.3))}" readonly></div>
-        <div class="form-group full-width"><label class="form-label">UW Notes</label><textarea id="reinstate-notes" class="form-input" rows="3">Insured has resolved outstanding issues. Reinstatement ${withinWindow ? 'within 30-day window' : 'requires senior UW approval'}.</textarea></div>
+        <div class="form-group"><label class="form-label">Return Premium Reversal <i class="info-btn" onclick="showInfo('return-premium')">i</i></label><input class="form-input" value="${fmt(Math.round(q.premium * 0.3))}" readonly></div>
+        <div class="form-group full-width"><label class="form-label">UW Notes <i class="info-btn" onclick="showInfo('uw-notes')">i</i></label><textarea id="reinstate-notes" class="form-input" rows="3">Insured has resolved outstanding issues. Reinstatement ${withinWindow ? 'within 30-day window' : 'requires senior UW approval'}.</textarea></div>
       </div>
     </div>
 
     <div class="card glass mt-md">
-      <div class="card-title">Reinstatement Impact</div>
-      <div class="pb-row"><span class="pb-label">Premium to be Reinstated</span><span class="pb-value">${fmt(q.premium)}</span></div>
-      <div class="pb-row"><span class="pb-label">Reinstatement Fee</span><span class="pb-value" style="color:var(--warning);">$250</span></div>
-      <div class="pb-row"><span class="pb-label">Past Due Balance</span><span class="pb-value" style="color:var(--success);">$0.00 (Paid)</span></div>
-      <div class="pb-row total"><span class="pb-label">Total Due Today</span><span class="pb-value" style="color:var(--warning);">$250</span></div>
+      <div class="card-title">Reinstatement Impact <i class="info-btn" onclick="showInfo('reinstatement-window')">i</i></div>
+      <div class="pb-row"><span class="pb-label">Premium to be Reinstated <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></span><span class="pb-value">${fmt(q.premium)}</span></div>
+      <div class="pb-row"><span class="pb-label">Reinstatement Fee <i class="info-btn info-btn-sm" onclick="showInfo('reinstatement-fee')">i</i></span><span class="pb-value" style="color:var(--warning);">$250</span></div>
+      <div class="pb-row"><span class="pb-label">Past Due Balance <i class="info-btn info-btn-sm" onclick="showInfo('past-due-balance')">i</i></span><span class="pb-value" style="color:var(--success);">$0.00 (Paid)</span></div>
+      <div class="pb-row total"><span class="pb-label">Total Due Today <i class="info-btn info-btn-sm" onclick="showInfo('total-due-today')">i</i></span><span class="pb-value" style="color:var(--warning);">$250</span></div>
     </div>
 
     <div id="reinstate-validation-summary" style="margin-top:12px;display:none;"></div>
@@ -1687,9 +1863,10 @@ function submitRenewal() {
   const proposedCredit = q.scheduleCredit || 0;
 
   const ntcId = 'NTC-' + String(NOTICES.length+1).padStart(3,'0');
+  const insuredDecision = Math.random() < 0.75 ? 'ACCEPT' : 'DECLINE';
   NOTICES.push({
-    id:ntcId, quoteId:selectedQuoteId, policyNumber:q.policyNumber, type:'RENEWAL_OFFER', status:'DRAFT',
-    generatedDate:null, sentDate:null, acknowledgedDate:null, deliveredDate:null,
+    id:ntcId, quoteId:selectedQuoteId, policyNumber:q.policyNumber, type:'RENEWAL_OFFER', status:'DRAFT', insuredDecision:insuredDecision,
+    generatedDate:null, sentDate:null, acknowledgedDate:null, withBrokerDate:null, insuredReviewDate:null, deliveredDate:null,
     decisionDate:null, decision:null, premium:q.premium, coverage:q.coverage,
     proposedValues: {
       premium: proposedPremium,
@@ -1699,14 +1876,15 @@ function submitRenewal() {
       effectiveDate: proposedEffective,
       expirationDate: proposedExpiration
     },
-    createdDate:new Date().toISOString().slice(0,10)
+    createdDate:new Date().toISOString().slice(0,10),
+    events:[{ step:'DRAFT', at:new Date().toLocaleString(), actor:'Akhilesh-Salman-Policy', note:'Renewal offer created for ' + q.insuredName + ' — insured response simulated as ' + insuredDecision }]
   });
 
   ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'Akhilesh-Salman-Policy', action:'Updated', module:'Quote', entity:selectedQuoteId, details:'Renewal offer created — ' + decision + ', Premium: ' + fmt(proposedPremium) + ', Notice: ' + ntcId});
   saveData();
   renderRenewal();
   setTimeout(() => {
-    alert('Renewal offer sent to MGA!\nPolicy: ' + q.policyNumber + '\nProposed Premium: ' + fmt(proposedPremium) + '\nEffective: ' + proposedEffective + '\nNotice: ' + ntcId + '\nGo to Notice Management for MGA workflow.');
+    alert('Renewal offer created (Draft)!\nPolicy: ' + q.policyNumber + '\nProposed Premium: ' + fmt(proposedPremium) + '\nEffective: ' + proposedEffective + '\nNotice: ' + ntcId + '\n\nGo to Notice Management, generate it, then "Send & Track" — the MGA → Broker → Insured chain will advance automatically. Insured decision is simulated.');
     showScreen('notice-management');
   }, 300);
 }
@@ -1740,10 +1918,11 @@ function submitCancellation() {
   // Create cancellation notice
   const ntcId = 'NTC-' + String(NOTICES.length+1).padStart(3,'0');
   NOTICES.push({
-    id:ntcId, quoteId:selectedQuoteId, policyNumber:q.policyNumber, type:'CANCELLATION_NOTICE', status:'DRAFT',
-    generatedDate:null, sentDate:null, acknowledgedDate:null, deliveredDate:null,
+    id:ntcId, quoteId:selectedQuoteId, policyNumber:q.policyNumber, type:'CANCELLATION_NOTICE', status:'DRAFT', insuredDecision:'ACCEPT',
+    generatedDate:null, sentDate:null, acknowledgedDate:null, withBrokerDate:null, insuredReviewDate:null, deliveredDate:null,
     decisionDate:null, decision:null, premium:q.premium, coverage:q.coverage,
-    createdDate:new Date().toISOString().slice(0,10)
+    createdDate:new Date().toISOString().slice(0,10),
+    events:[{ step:'DRAFT', at:new Date().toLocaleString(), actor:'Akhilesh-Salman-Policy', note:'Cancellation notice created for ' + q.insuredName }]
   });
 
   window._cancelStatus = 'submitted';
@@ -1784,10 +1963,11 @@ function submitReinstatement(approved) {
   if (approved) {
     const ntcId = 'NTC-' + String(NOTICES.length+1).padStart(3,'0');
     NOTICES.push({
-      id:ntcId, quoteId:selectedQuoteId, policyNumber:q.policyNumber, type:'REINSTATEMENT_OFFER', status:'DRAFT',
-      generatedDate:null, sentDate:null, acknowledgedDate:null, deliveredDate:null,
+      id:ntcId, quoteId:selectedQuoteId, policyNumber:q.policyNumber, type:'REINSTATEMENT_OFFER', status:'DRAFT', insuredDecision:'ACCEPT',
+      generatedDate:null, sentDate:null, acknowledgedDate:null, withBrokerDate:null, insuredReviewDate:null, deliveredDate:null,
       decisionDate:null, decision:null, premium:q.premium, coverage:q.coverage,
-      createdDate:new Date().toISOString().slice(0,10)
+      createdDate:new Date().toISOString().slice(0,10),
+      events:[{ step:'DRAFT', at:new Date().toLocaleString(), actor:'Akhilesh-Salman-Policy', note:'Reinstatement offer created for ' + q.insuredName }]
     });
     ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'Akhilesh-Salman-Policy', action:'Updated', module:'Quote', entity:selectedQuoteId, details:'Reinstatement initiated — Notice: ' + ntcId});
   }
@@ -2113,7 +2293,7 @@ function renderAdmin() {
   const settingsContainer = document.getElementById('admin-settings-body');
   if (settingsContainer) {
     settingsContainer.innerHTML = SYSTEM_SETTINGS.map(s => `<div class="detail-item">
-      <div class="di-label">${s.key.replace(/_/g,' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase())}</div>
+      <div class="di-label">${s.key.replace(/_/g,' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase())} <i class="info-btn info-btn-sm" onclick="showInfo('admin')">i</i></div>
       <div class="di-value">${s.value}</div>
     </div>`).join('');
   }
@@ -2176,27 +2356,27 @@ function renderQuoteDetails(id) {
 
       <div id="tab-qd-details" class="tab-content active">
         <div class="detail-grid">
-          <div class="detail-item"><div class="di-label">Insured Name</div><div class="di-value">${q.insuredName}</div></div>
-          <div class="detail-item"><div class="di-label">FEIN</div><div class="di-value font-mono">${q.fein}</div></div>
-          <div class="detail-item"><div class="di-label">Line of Business</div><div class="di-value">${q.lob}</div></div>
-          <div class="detail-item"><div class="di-label">MGA</div><div class="di-value">${q.mga}</div></div>
-          <div class="detail-item"><div class="di-label">Agent / Broker</div><div class="di-value">${q.agent}</div></div>
-          <div class="detail-item"><div class="di-label">Underwriter</div><div class="di-value">${q.uw}</div></div>
-          <div class="detail-item"><div class="di-label">Effective Date</div><div class="di-value">${q.effective}</div></div>
-          <div class="detail-item"><div class="di-label">Expiration Date</div><div class="di-value">${q.expiration}</div></div>
-          <div class="detail-item"><div class="di-label">Policy Term</div><div class="di-value">${q.term}</div></div>
-          <div class="detail-item"><div class="di-label">Status</div><div class="di-value">${chip(q.status)}</div></div>
-          <div class="detail-item"><div class="di-label">Issue Date</div><div class="di-value">${q.issueDate || 'Not issued'}</div></div>
-          <div class="detail-item"><div class="di-label">Policy Number</div><div class="di-value font-mono">${q.policyNumber || 'N/A'}</div></div>
-          <div class="detail-item"><div class="di-label">Billing Plan</div><div class="di-value">${q.billingPlan}</div></div>
-          <div class="detail-item"><div class="di-label">Payment Method</div><div class="di-value">${q.paymentMethod}</div></div>
-          <div class="detail-item"><div class="di-label">Created Date</div><div class="di-value">${q.createdDate}</div></div>
-          <div class="detail-item"><div class="di-label">Approved Date</div><div class="di-value">${q.approvedDate || '-'}</div></div>
+          <div class="detail-item"><div class="di-label">Insured Name <i class="info-btn info-btn-sm" onclick="showInfo('insured-name')">i</i></div><div class="di-value">${q.insuredName}</div></div>
+          <div class="detail-item"><div class="di-label">FEIN <i class="info-btn info-btn-sm" onclick="showInfo('fein')">i</i></div><div class="di-value font-mono">${q.fein}</div></div>
+          <div class="detail-item"><div class="di-label">Line of Business <i class="info-btn info-btn-sm" onclick="showInfo('lob')">i</i></div><div class="di-value">${q.lob}</div></div>
+          <div class="detail-item"><div class="di-label">MGA <i class="info-btn info-btn-sm" onclick="showInfo('mga')">i</i></div><div class="di-value">${q.mga}</div></div>
+          <div class="detail-item"><div class="di-label">Agent / Broker <i class="info-btn info-btn-sm" onclick="showInfo('agent')">i</i></div><div class="di-value">${q.agent}</div></div>
+          <div class="detail-item"><div class="di-label">Underwriter <i class="info-btn info-btn-sm" onclick="showInfo('underwriter')">i</i></div><div class="di-value">${q.uw}</div></div>
+          <div class="detail-item"><div class="di-label">Effective Date <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></div><div class="di-value">${q.effective}</div></div>
+          <div class="detail-item"><div class="di-label">Expiration Date <i class="info-btn info-btn-sm" onclick="showInfo('expiration-date')">i</i></div><div class="di-value">${q.expiration}</div></div>
+          <div class="detail-item"><div class="di-label">Policy Term <i class="info-btn info-btn-sm" onclick="showInfo('policy-term')">i</i></div><div class="di-value">${q.term}</div></div>
+          <div class="detail-item"><div class="di-label">Status <i class="info-btn info-btn-sm" onclick="showInfo('quote-status')">i</i></div><div class="di-value">${chip(q.status)}</div></div>
+          <div class="detail-item"><div class="di-label">Issue Date <i class="info-btn info-btn-sm" onclick="showInfo('issue-date')">i</i></div><div class="di-value">${q.issueDate || 'Not issued'}</div></div>
+          <div class="detail-item"><div class="di-label">Policy Number <i class="info-btn info-btn-sm" onclick="showInfo('policy-number')">i</i></div><div class="di-value font-mono">${q.policyNumber || 'N/A'}</div></div>
+          <div class="detail-item"><div class="di-label">Billing Plan <i class="info-btn info-btn-sm" onclick="showInfo('billing-plan')">i</i></div><div class="di-value">${q.billingPlan}</div></div>
+          <div class="detail-item"><div class="di-label">Payment Method <i class="info-btn info-btn-sm" onclick="showInfo('payment-method')">i</i></div><div class="di-value">${q.paymentMethod}</div></div>
+          <div class="detail-item"><div class="di-label">Created Date <i class="info-btn info-btn-sm" onclick="showInfo('created-date')">i</i></div><div class="di-value">${q.createdDate}</div></div>
+          <div class="detail-item"><div class="di-label">Approved Date <i class="info-btn info-btn-sm" onclick="showInfo('approved-date')">i</i></div><div class="di-value">${q.approvedDate || '-'}</div></div>
         </div>
       </div>
 
       <div id="tab-qd-coverages" class="tab-content">
-        <table class="data-table"><thead><tr><th>Coverage</th><th>Limit</th><th>Deductible</th><th>Premium</th><th>Rating Basis</th></tr></thead><tbody>
+        <table class="data-table"><thead><tr><th>Coverage <i class="info-btn info-btn-sm" onclick="showInfo('coverage')">i</i></th><th>Limit <i class="info-btn info-btn-sm" onclick="showInfo('coverage-limit')">i</i></th><th>Deductible <i class="info-btn info-btn-sm" onclick="showInfo('deductible')">i</i></th><th>Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></th><th>Rating Basis <i class="info-btn info-btn-sm" onclick="showInfo('rating-basis')">i</i></th></tr></thead><tbody>
           <tr><td>${q.coverage}</td><td>${fmt(q.limit)}</td><td>${fmt(q.deductible)}</td><td>${fmt(Math.round(q.basePremium * q.modFactor * (1-q.scheduleCredit)))}</td><td>${q.ratingBasis}</td></tr>
           <tr><td>Employment Practices Liability</td><td>${fmt(1000000)}</td><td>${fmt(25000)}</td><td>${fmt(25000)}</td><td>Per Claim</td></tr>
           <tr><td>Hired & Non-Owned Auto</td><td>${fmt(1000000)}</td><td>${fmt(5000)}</td><td>${fmt(12500)}</td><td>Per Occurrence</td></tr>
@@ -2205,18 +2385,18 @@ function renderQuoteDetails(id) {
 
       <div id="tab-qd-premium" class="tab-content">
         <div class="premium-breakdown">
-          <div class="pb-row"><span class="pb-label">Base Premium</span><span class="pb-value">${fmt(q.basePremium)}</span></div>
-          <div class="pb-row"><span class="pb-label">Experience Mod</span><span class="pb-value">${q.modFactor} (${fmt(Math.round(q.basePremium - q.basePremium * q.modFactor))})</span></div>
-          <div class="pb-row"><span class="pb-label">Schedule Credit</span><span class="pb-value">-${Math.round(q.scheduleCredit*100)}% (${fmt(Math.round(q.basePremium * q.modFactor * q.scheduleCredit))})</span></div>
-          <div class="pb-row"><span class="pb-label">Premium Subtotal</span><span class="pb-value">${fmt(Math.round(q.basePremium * q.modFactor * (1 - q.scheduleCredit)))}</span></div>
-          <div class="pb-row"><span class="pb-label">SLA Tax (3.6%)</span><span class="pb-value">${fmt(q.slaTax)}</span></div>
-          <div class="pb-row"><span class="pb-label">Stamping Fee (1.5%)</span><span class="pb-value">${fmt(q.stampingFee)}</span></div>
-          <div class="pb-row total"><span class="pb-label">Total Annual Premium</span><span class="pb-value">${fmt(q.premium)}</span></div>
+          <div class="pb-row"><span class="pb-label">Base Premium <i class="info-btn info-btn-sm" onclick="showInfo('base-premium')">i</i></span><span class="pb-value">${fmt(q.basePremium)}</span></div>
+          <div class="pb-row"><span class="pb-label">Experience Mod <i class="info-btn info-btn-sm" onclick="showInfo('experience-mod')">i</i></span><span class="pb-value">${q.modFactor} (${fmt(Math.round(q.basePremium - q.basePremium * q.modFactor))})</span></div>
+          <div class="pb-row"><span class="pb-label">Schedule Credit <i class="info-btn info-btn-sm" onclick="showInfo('schedule-credit')">i</i></span><span class="pb-value">-${Math.round(q.scheduleCredit*100)}% (${fmt(Math.round(q.basePremium * q.modFactor * q.scheduleCredit))})</span></div>
+          <div class="pb-row"><span class="pb-label">Premium Subtotal <i class="info-btn info-btn-sm" onclick="showInfo('premium-subtotal')">i</i></span><span class="pb-value">${fmt(Math.round(q.basePremium * q.modFactor * (1 - q.scheduleCredit)))}</span></div>
+          <div class="pb-row"><span class="pb-label">SLA Tax (3.6%) <i class="info-btn info-btn-sm" onclick="showInfo('sla-tax')">i</i></span><span class="pb-value">${fmt(q.slaTax)}</span></div>
+          <div class="pb-row"><span class="pb-label">Stamping Fee (1.5%) <i class="info-btn info-btn-sm" onclick="showInfo('stamping-fee')">i</i></span><span class="pb-value">${fmt(q.stampingFee)}</span></div>
+          <div class="pb-row total"><span class="pb-label">Total Annual Premium <i class="info-btn info-btn-sm" onclick="showInfo('total-annual-premium')">i</i></span><span class="pb-value">${fmt(q.premium)}</span></div>
         </div>
       </div>
 
       <div id="tab-qd-transactions" class="tab-content">
-        ${trans.length ? `<table class="data-table"><thead><tr><th>Transaction #</th><th>Type</th><th>Effective Date</th><th>Status</th><th>Source</th><th>Event ID</th><th>Summary</th></tr></thead><tbody>
+        ${trans.length ? `<table class="data-table"><thead><tr><th>Transaction # <i class="info-btn info-btn-sm" onclick="showInfo('transaction')">i</i></th><th>Type <i class="info-btn info-btn-sm" onclick="showInfo('transaction-type')">i</i></th><th>Effective Date <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('transaction-status')">i</i></th><th>Source <i class="info-btn info-btn-sm" onclick="showInfo('source-system')">i</i></th><th>Event ID <i class="info-btn info-btn-sm" onclick="showInfo('event-id')">i</i></th><th>Summary <i class="info-btn info-btn-sm" onclick="showInfo('transaction-summary')">i</i></th></tr></thead><tbody>
           ${trans.map(t => `<tr><td class="col-id">${t.transactionNo}</td><td>${t.type}</td><td>${t.effectiveDate}</td><td>${chip(t.status)}</td><td>${t.sourceSystem}</td><td style="font-size:11px;color:var(--text-muted);">${t.eventId}</td><td style="font-size:12px;">${t.summary}</td></tr>`).join('')}
         </tbody></table>` : '<div style="padding:20px;text-align:center;color:var(--text-muted);">No transactions for this quote</div>'}
       </div>
@@ -2224,7 +2404,7 @@ function renderQuoteDetails(id) {
       <div id="tab-qd-docs" class="tab-content">
         ${docs.length ? docs.map(d => `
           <div class="doc-item"><div class="doc-icon" style="background:var(--accent-dim);color:var(--accent);"><i class="fas fa-file-pdf"></i></div>
-            <div class="doc-info"><div class="doc-name">${d.name}</div><div class="doc-meta">${d.type} — ${d.uploadedBy} — ${d.date}</div></div>
+            <div class="doc-info"><div class="doc-name">${d.name} <i class="info-btn info-btn-sm" onclick="showInfo('document-type')">i</i></div><div class="doc-meta">${d.type} — ${d.uploadedBy} — ${d.date}</div></div>
             ${chip(d.status)}
           </div>`).join('') : '<div style="padding:20px;text-align:center;color:var(--text-muted);">No documents for this quote</div>'}
       </div>
@@ -2234,13 +2414,13 @@ function renderQuoteDetails(id) {
           <div class="note-card glass-sm" style="margin-bottom:8px;">
             <div class="nc-header"><div class="nc-author"><div class="nc-avatar">${n.author.split(' ').map(w=>w[0]).join('')}</div>
               <div><div class="nc-name">${n.author}</div><div class="nc-role">${n.role}</div></div>
-            </div><span class="nc-time">${n.timestamp}</span></div>
+            </div><span class="nc-time">${n.timestamp} <i class="info-btn info-btn-sm" onclick="showInfo('note')">i</i></span></div>
             <div class="nc-text">${n.content}</div>
           </div>`).join('') : '<div style="padding:20px;text-align:center;color:var(--text-muted);">No notes for this quote</div>'}
       </div>
 
       <div id="tab-qd-audit" class="tab-content">
-        ${audits.length ? `<table class="data-table"><thead><tr><th>Timestamp</th><th>User</th><th>Field</th><th>Old Value</th><th>New Value</th></tr></thead><tbody>
+        ${audits.length ? `<table class="data-table"><thead><tr><th>Timestamp <i class="info-btn info-btn-sm" onclick="showInfo('audit-timestamp')">i</i></th><th>User <i class="info-btn info-btn-sm" onclick="showInfo('audit-user')">i</i></th><th>Field <i class="info-btn info-btn-sm" onclick="showInfo('audit-field')">i</i></th><th>Old Value <i class="info-btn info-btn-sm" onclick="showInfo('audit-old-value')">i</i></th><th>New Value <i class="info-btn info-btn-sm" onclick="showInfo('audit-new-value')">i</i></th></tr></thead><tbody>
           ${audits.map(a => `<tr><td style="font-size:12px;color:var(--text-muted);">${a.timestamp}</td><td>${a.user}</td><td>${a.field}</td><td style="color:var(--text-muted);">${a.oldValue || '-'}</td><td>${a.newValue}</td></tr>`).join('')}
         </tbody></table>` : '<div style="padding:20px;text-align:center;color:var(--text-muted);">No audit records for this quote</div>'}
       </div>
@@ -2253,10 +2433,10 @@ function renderTransactions() {
   if (!container) return;
   const summaryEl = document.querySelector('#screen-transactions .summary-card');
   if (summaryEl) {
-    const counts = { ISSUE:0, ENDORSEMENT:0, RENEWAL:0, CANCELLATION:0, REINSTATEMENT:0 };
+    const counts = { ISSUE:0, ENDORSEMENT:0, RENEWAL:0, CANCELLATION:0, REINSTATEMENT:0, EXPIRATION:0 };
     TRANSACTIONS.forEach(t => { if (counts[t.type] !== undefined) counts[t.type]++; });
     summaryEl.innerHTML = Object.entries(counts).map(([k,v]) =>
-      `<div class="sc-item"><div class="sc-label">${k}</div><div class="sc-value">${v}</div></div>`
+      `<div class="sc-item"><div class="sc-label">${k} <i class="info-btn info-btn-sm" onclick="showInfo('transaction')">i</i></div><div class="sc-value">${v}</div></div>`
     ).join('');
   }
   container.innerHTML = TRANSACTIONS.map(t => {
@@ -2269,16 +2449,16 @@ function renderTransactions() {
 function renderNoticeManagement() {
   const container = document.getElementById('notices-body');
   if (!container) return;
-  const pendingDecisions = NOTICES.filter(n => n.status === 'DELIVERED').length;
+  const pendingDecisions = NOTICES.filter(n => n.status === 'INSURED_DECISION').length;
   const summary = document.querySelector('#screen-notice-management .summary-card');
   if (summary) {
     const draft = NOTICES.filter(n => n.status === 'DRAFT').length;
-    const sent = NOTICES.filter(n => n.status === 'SENT').length;
+    const inChain = NOTICES.filter(n => ['SENT','MGA_ACKNOWLEDGED','WITH_BROKER','INSURED_REVIEW'].includes(n.status)).length;
     const executed = NOTICES.filter(n => n.status === 'EXECUTED').length;
-    summary.innerHTML = `<div class="sc-item"><div class="sc-label">Draft</div><div class="sc-value" style="color:var(--warning);">${draft}</div></div>
-      <div class="sc-item"><div class="sc-label">Sent to MGA</div><div class="sc-value" style="color:var(--info);">${sent}</div></div>
-      <div class="sc-item"><div class="sc-label">Pending Decision</div><div class="sc-value" style="color:var(--purple);">${pendingDecisions}</div></div>
-      <div class="sc-item"><div class="sc-label">Executed</div><div class="sc-value" style="color:var(--success);">${executed}</div></div>`;
+    summary.innerHTML = `<div class="sc-item"><div class="sc-label">Draft <i class="info-btn info-btn-sm" onclick="showInfo('notice-status')">i</i></div><div class="sc-value" style="color:var(--warning);">${draft}</div></div>
+      <div class="sc-item"><div class="sc-label">In MGA / Broker Chain <i class="info-btn info-btn-sm" onclick="showInfo('notice-status')">i</i></div><div class="sc-value" style="color:var(--info);">${inChain}</div></div>
+      <div class="sc-item"><div class="sc-label">Pending Insured Decision <i class="info-btn info-btn-sm" onclick="showInfo('notice-status')">i</i></div><div class="sc-value" style="color:var(--purple);">${pendingDecisions}</div></div>
+      <div class="sc-item"><div class="sc-label">Executed <i class="info-btn info-btn-sm" onclick="showInfo('notice-status')">i</i></div><div class="sc-value" style="color:var(--success);">${executed}</div></div>`;
   }
   container.innerHTML = NOTICES.map(n => {
     const q = QUOTES.find(x => x.id === n.quoteId);
@@ -2288,20 +2468,30 @@ function renderNoticeManagement() {
     const pv = n.proposedValues;
     const pnStr = q && q.policyNumber ? `<span style="font-family:monospace;font-size:11px;color:var(--text-secondary);">${q.policyNumber}</span>` : '';
     const propStr = pv ? '<div style="line-height:1.5;">'+pnStr+'<br><span style="font-size:12px;color:var(--accent);font-weight:600;">'+fmt(pv.premium)+'</span><br><span style="font-size:10px;color:var(--text-muted);">'+pv.effectiveDate+' → '+pv.expirationDate+'</span></div>' : '<div style="line-height:1.5;">'+pnStr+'<br><span>'+fmt(n.premium)+'</span></div>';
-    return `<tr><td class="col-id">${n.id}</td>
+    const offerList = NOTICES.filter(x => x.quoteId === n.quoteId && x.type === 'RENEWAL_OFFER');
+    const offerNo = offerList.length;
+    const offerIdx = offerList.indexOf(n) + 1;
+    const offerTag = n.type === 'RENEWAL_OFFER' ? `<div style="margin-top:3px;"><span style="font-size:10px;font-weight:600;color:var(--accent);background:var(--accent-dim);padding:1px 6px;border-radius:4px;">Offer ${offerIdx}/${offerNo}</span></div>` : '';
+    const statusLabel = { MGA_ACKNOWLEDGED:'MGA Acknowledged', WITH_BROKER:'With Broker', INSURED_REVIEW:'Insured Review', INSURED_DECISION:'Insured Decision' }[n.status] || n.status;
+    let actions = `<button class="btn btn-ghost btn-xs" onclick="openNoticeDetail('${n.id}')"><i class="fas fa-stream"></i> Details</button>`;
+    if (n.status === 'DRAFT') actions += `<button class="btn btn-primary btn-xs" onclick="generateNotice('${n.id}')">Generate</button>`;
+    else if (n.status === 'GENERATED') actions += `<button class="btn btn-info btn-xs" onclick="sendNotice('${n.id}')">Send to MGA</button>`;
+    else if (n.status === 'SENT') actions += `<button class="btn btn-info btn-xs" onclick="startNoticeChain('${n.id}')"><i class="fas fa-play"></i> Send &amp; Track</button>`;
+    else if (['MGA_ACKNOWLEDGED','WITH_BROKER','INSURED_REVIEW'].includes(n.status)) actions += `<span class="chip chip-info"><span class="chip-dot"></span>⏳ MGA → Broker → Insured</span><button class="btn btn-ghost btn-xs" onclick="resumeNoticeChain('${n.id}')">Continue</button>`;
+    else if (n.status === 'INSURED_DECISION') actions += `
+        ${n.insuredDecision === 'ACCEPT' ? `<span class="chip chip-success"><span class="chip-dot"></span>✓ Insured: ACCEPT</span>` : `<span class="chip chip-declined"><span class="chip-dot"></span>✗ Insured: DECLINE</span>`}
+        <button class="btn btn-success btn-xs" onclick="recordNoticeResponse('${n.id}')"><i class="fas fa-check"></i> Record Response</button>
+        <button class="btn btn-secondary btn-xs" onclick="simulateNoResponse('${n.id}')" style="border-color:var(--text-muted);color:var(--text-muted);">No-Response</button>`;
+    else if (n.status === 'EXECUTED') actions += '<span style="font-size:11px;color:var(--success);">✓ Executed</span>';
+    else if (n.status === 'REJECTED') actions += '<span style="font-size:11px;color:var(--danger);">✗ Rejected</span>';
+    else if (n.status === 'EXPIRED') actions += '<span style="font-size:11px;color:var(--text-muted);">⌛ Expired</span>';
+    return `<tr><td class="col-id">${n.id}${offerTag}</td>
       <td><span style="color:${typeColors[n.type]}"><i class="fas ${typeIcon[n.type]}"></i></span> ${typeLabels[n.type]||n.type}</td>
       <td class="col-id">${n.quoteId}${q && q.policyNumber ? '<br><span style="color:var(--text-muted);font-size:11px;">'+q.policyNumber+'</span>' : ''}</td>
       <td>${q ? q.insuredName : '-'}</td>
       <td>${propStr}</td>
-      <td>${chip(n.status)}</td>
-      <td class="actions-cell">${n.status === 'DRAFT' ? `<button class="btn btn-primary btn-xs" onclick="generateNotice('${n.id}')">Generate</button>` : ''}
-        ${n.status === 'GENERATED' ? `<button class="btn btn-info btn-xs" onclick="sendNotice('${n.id}')">Send to MGA</button>` : ''}
-        ${n.status === 'SENT' ? `<button class="btn btn-info btn-xs" onclick="acknowledgeNotice('${n.id}')">Acknowledge</button>` : ''}
-        ${n.status === 'ACKNOWLEDGED' ? `<button class="btn btn-info btn-xs" onclick="deliverNotice('${n.id}')">Mark Delivered</button>` : ''}
-        ${n.status === 'DELIVERED' ? `<button class="btn btn-success btn-xs" onclick="acceptNotice('${n.id}')">Accept</button><button class="btn btn-danger btn-xs" onclick="rejectNotice('${n.id}')">Reject</button><button class="btn btn-secondary btn-xs" onclick="expireNotice('${n.id}')" style="border-color:var(--text-muted);color:var(--text-muted);">Expire</button>` : ''}
-        ${n.status === 'EXECUTED' ? '<span style="font-size:11px;color:var(--success);">✓ Executed</span>' : ''}
-        ${n.status === 'REJECTED' ? '<span style="font-size:11px;color:var(--danger);">✗ Rejected</span>' : ''}
-        ${n.status === 'EXPIRED' ? '<span style="font-size:11px;color:var(--text-muted);">⌛ Expired</span>' : ''}</td></tr>`;
+      <td>${chip(n.status, statusLabel)}</td>
+      <td class="actions-cell">${actions}</td></tr>`;
   }).join('');
 }
 
@@ -2310,6 +2500,8 @@ function generateNotice(id) {
   if (!n) return;
   n.status = 'GENERATED';
   n.generatedDate = new Date().toISOString().slice(0,10);
+  if (!n.events) n.events = [];
+  n.events.push({ step:'GENERATED', at:new Date().toLocaleString(), actor:'Akhilesh-Salman-Policy', note:'Notice generated — ' + n.type });
   ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'Akhilesh-Salman-Policy', action:'Generated', module:'Notice', entity:id, details:'Notice generated — ' + n.type});
   saveData();
   renderNoticeManagement();
@@ -2320,29 +2512,113 @@ function sendNotice(id) {
   if (!n) return;
   n.status = 'SENT';
   n.sentDate = new Date().toISOString().slice(0,10);
+  if (!n.events) n.events = [];
+  n.events.push({ step:'SENT', at:new Date().toLocaleString(), actor:'Akhilesh-Salman-Policy', note:'Notice sent to MGA — ' + n.type });
   ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'Akhilesh-Salman-Policy', action:'Sent', module:'Notice', entity:id, details:'Notice sent to MGA — ' + n.type});
   saveData();
   renderNoticeManagement();
 }
 
-function acknowledgeNotice(id) {
-  const n = NOTICES.find(x => x.id === id);
-  if (!n) return;
-  n.status = 'ACKNOWLEDGED';
-  n.acknowledgedDate = new Date().toISOString().slice(0,10);
-  ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'System', action:'Acknowledged', module:'Notice', entity:id, details:'MGA acknowledged notice — ' + n.type});
-  saveData();
-  renderNoticeManagement();
+function advanceNoticeStep(n, next, dateField, actor, note) {
+  n.status = next;
+  n[dateField] = new Date().toISOString().slice(0,10);
+  if (!n.events) n.events = [];
+  n.events.push({ step:next, at:new Date().toLocaleString(), actor:actor, note:note });
 }
 
-function deliverNotice(id) {
+const noticeChains = {};
+
+function runNoticeSteps(id, steps) {
+  if (noticeChains[id]) return;
+  noticeChains[id] = true;
+  let delay = 400;
+  steps.forEach((s, i) => {
+    setTimeout(() => {
+      const cur = NOTICES.find(x => x.id === id);
+      if (noticeChains[id] !== true || !cur) return;
+      advanceNoticeStep(cur, s.next, s.dateField, s.actor, s.note);
+      ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'System', action:s.next, module:'Notice', entity:id, details:s.note + ' — ' + cur.type});
+      saveData();
+      renderNoticeManagement();
+      if (i === steps.length - 1) delete noticeChains[id];
+    }, delay);
+    delay += 1500;
+  });
+}
+
+function noticeStepDefs(n, q) {
+  return {
+    MGA_ACKNOWLEDGED: { dateField:'acknowledgedDate', actor: q ? q.mga : 'MGA', note:'MGA acknowledged receipt of notice' },
+    WITH_BROKER: { dateField:'withBrokerDate', actor: q ? q.agent : 'Broker', note:'Notice routed to broker for insured outreach' },
+    INSURED_REVIEW: { dateField:'insuredReviewDate', actor: q ? q.agent : 'Broker', note:'Notice presented to insured for review' },
+    INSURED_DECISION: { dateField:'deliveredDate', actor: q ? q.insuredName : 'Insured', note:'Insured decision returned — ' + (n.insuredDecision === 'DECLINE' ? 'DECLINE' : 'ACCEPT') }
+  };
+}
+
+function startNoticeChain(id) {
+  const n = NOTICES.find(x => x.id === id);
+  if (!n || n.status !== 'SENT') return;
+  const q = QUOTES.find(x => x.id === n.quoteId);
+  const defs = noticeStepDefs(n, q);
+  runNoticeSteps(id, ['MGA_ACKNOWLEDGED','WITH_BROKER','INSURED_REVIEW','INSURED_DECISION'].map(s => ({ next: s, ...defs[s] })));
+}
+
+function resumeNoticeChain(id) {
   const n = NOTICES.find(x => x.id === id);
   if (!n) return;
-  n.status = 'DELIVERED';
-  n.deliveredDate = new Date().toISOString().slice(0,10);
-  ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'System', action:'Delivered', module:'Notice', entity:id, details:'MGA delivered decision — ' + n.type});
-  saveData();
-  renderNoticeManagement();
+  const order = ['MGA_ACKNOWLEDGED','WITH_BROKER','INSURED_REVIEW','INSURED_DECISION'];
+  const idx = order.indexOf(n.status);
+  if (idx === -1) return;
+  const q = QUOTES.find(x => x.id === n.quoteId);
+  const defs = noticeStepDefs(n, q);
+  runNoticeSteps(id, order.slice(idx + 1).map(s => ({ next: s, ...defs[s] })));
+}
+
+function recordNoticeResponse(id) {
+  const n = NOTICES.find(x => x.id === id);
+  if (!n) return;
+  if (n.insuredDecision === 'DECLINE') rejectNotice(id);
+  else acceptNotice(id);
+}
+
+function openNoticeDetail(id) {
+  const n = NOTICES.find(x => x.id === id);
+  if (!n) return;
+  const q = QUOTES.find(x => x.id === n.quoteId);
+  document.getElementById('ntc-modal-id').textContent = n.id;
+  document.getElementById('ntc-modal-insured').textContent = q ? q.insuredName : '-';
+  document.getElementById('ntc-modal-quote').textContent = n.quoteId + (q && q.policyNumber ? ' / ' + q.policyNumber : '');
+  document.getElementById('ntc-modal-type').textContent = n.type;
+  document.getElementById('ntc-modal-status').innerHTML = chip(n.status);
+  const pv = n.proposedValues;
+  const offerList = NOTICES.filter(x => x.quoteId === n.quoteId && x.type === 'RENEWAL_OFFER');
+  document.getElementById('ntc-modal-offer').textContent = n.type === 'RENEWAL_OFFER' ? ('Offer ' + (offerList.indexOf(n) + 1) + ' of ' + offerList.length) : '—';
+  document.getElementById('ntc-modal-premium').textContent = fmt(pv ? pv.premium : n.premium);
+  document.getElementById('ntc-modal-dates').textContent = pv ? (pv.effectiveDate + ' → ' + pv.expirationDate) : (q ? q.effective + ' → ' + q.expiration : '-');
+  const decBox = document.getElementById('ntc-modal-decision');
+  if (n.status === 'INSURED_DECISION') {
+    decBox.style.display = 'block';
+    decBox.innerHTML = n.insuredDecision === 'ACCEPT'
+      ? '<div style="font-size:14px;color:var(--success);font-weight:600;"><i class="fas fa-check-circle"></i> Insured confirmed (via MGA/Broker): ACCEPT — PAS records this response.</div>'
+      : '<div style="font-size:14px;color:var(--danger);font-weight:600;"><i class="fas fa-times-circle"></i> Insured decision (via MGA/Broker): DECLINE — PAS records this response.</div>';
+  } else {
+    decBox.style.display = 'none';
+  }
+  const events = n.events || [];
+  document.getElementById('ntc-modal-timeline').innerHTML = events.length
+    ? events.map(e => `
+        <div class="timeline-item">
+          <div class="tl-dot ${e.step === 'EXECUTED' ? 'active' : e.step === 'REJECTED' || e.step === 'EXPIRED' ? 'cancelled' : ''}"></div>
+          <div class="tl-date">${e.at}</div>
+          <div class="tl-title">${e.step.replace(/_/g, ' ')}</div>
+          <div class="tl-desc">${e.note} — <span style="color:var(--text-muted);">${e.actor}</span></div>
+        </div>`).join('')
+    : '<div style="padding:12px;color:var(--text-muted);font-size:13px;">No events recorded yet.</div>';
+  document.getElementById('ntc-modal').classList.add('open');
+}
+
+function closeNoticeDetail() {
+  document.getElementById('ntc-modal').classList.remove('open');
 }
 
 function acceptNotice(id) {
@@ -2394,7 +2670,9 @@ function acceptNotice(id) {
     TRANSACTIONS.push({ id:'TXN-' + String(TRANSACTIONS.length+1).padStart(3,'0'), transactionNo:'TXN-2026-' + String(TRANSACTIONS.length+1).padStart(4,'0'), quoteId:q.id, type:'REINSTATEMENT', status:'COMPLETED', sourceSystem:'PAS', eventId:'EVT-POLICY-REINSTATED-' + String(TRANSACTIONS.length+1).padStart(3,'0'), eventStatus:'PUBLISHED', effectiveDate:new Date().toISOString().slice(0,10), requestedBy:'System', approvedBy:'System', processedAt:new Date().toISOString(), correlationId:'CORR-' + String(TRANSACTIONS.length+1).padStart(3,'0'), summary:'Reinstatement executed via notice ' + id + ' for ' + q.insuredName, createdAt:new Date().toISOString().slice(0,10) });
   }
   n.status = 'EXECUTED';
-  ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'Akhilesh-Salman-Policy', action:'Approved', module:'Notice', entity:id, details:'Notice accepted and executed — ' + n.type + ' for ' + q.insuredName});
+  if (!n.events) n.events = [];
+  n.events.push({ step:'ACCEPTED', at:new Date().toLocaleString(), actor:'Akhilesh-Salman-Policy', note:'PAS recorded insured response — ACCEPT, then executed: ' + n.type + ' for ' + q.insuredName });
+  ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'Akhilesh-Salman-Policy', action:'Recorded', module:'Notice', entity:id, details:'Insured response ACCEPT recorded and notice executed — ' + n.type + ' for ' + q.insuredName});
   saveData();
   renderNoticeManagement();
 }
@@ -2405,7 +2683,9 @@ function rejectNotice(id) {
   n.status = 'REJECTED';
   n.decision = 'REJECTED';
   n.decisionDate = new Date().toISOString().slice(0,10);
-  ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'Akhilesh-Salman-Policy', action:'Declined', module:'Notice', entity:id, details:'Notice rejected by MGA — ' + n.type});
+  if (!n.events) n.events = [];
+  n.events.push({ step:'REJECTED', at:new Date().toLocaleString(), actor:'Akhilesh-Salman-Policy', note:'PAS recorded insured response — DECLINE for ' + n.type });
+  ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'Akhilesh-Salman-Policy', action:'Recorded', module:'Notice', entity:id, details:'Insured response DECLINE recorded — ' + n.type + '. Policy remains ACTIVE; a new offer can be issued.'});
   saveData();
   renderNoticeManagement();
 }
@@ -2416,9 +2696,60 @@ function expireNotice(id) {
   n.status = 'EXPIRED';
   n.decision = 'EXPIRED';
   n.decisionDate = new Date().toISOString().slice(0,10);
+  if (!n.events) n.events = [];
+  n.events.push({ step:'EXPIRED', at:new Date().toLocaleString(), actor:'Akhilesh-Salman-Policy', note:'Notice expired — no confirmed response from insured' });
   ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'Akhilesh-Salman-Policy', action:'Expired', module:'Notice', entity:id, details:'Notice expired — ' + n.type + '. No action taken on quote.'});
   saveData();
   renderNoticeManagement();
+}
+
+function simulateNoResponse(id) {
+  if (!confirm('Simulate "No Response" for this offer?\nThe insured never confirmed within the response window, so the offer will expire.')) return;
+  expireNotice(id);
+}
+
+function expirePolicy(id) {
+  if (!confirm('Mark this policy as Expired?\nThe policy will move to EXPIRED status and an EXPIRATION transaction + audit record will be created.')) return;
+  const q = QUOTES.find(x => x.id === id);
+  if (!q) return;
+  q.status = 'EXPIRED';
+  TRANSACTIONS.push({ id:'TXN-' + String(TRANSACTIONS.length+1).padStart(3,'0'), transactionNo:'TXN-2026-' + String(TRANSACTIONS.length+1).padStart(4,'0'), quoteId:q.id, type:'EXPIRATION', status:'COMPLETED', sourceSystem:'PAS', eventId:'EVT-POLICY-EXPIRED-' + String(TRANSACTIONS.length+1).padStart(3,'0'), eventStatus:'PUBLISHED', effectiveDate:new Date().toISOString().slice(0,10), requestedBy:'Akhilesh-Salman-Policy', approvedBy:'System', processedAt:new Date().toISOString(), correlationId:'CORR-' + String(TRANSACTIONS.length+1).padStart(3,'0'), summary:'Policy marked as expired for ' + q.insuredName, createdAt:new Date().toISOString().slice(0,10) });
+  ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'Akhilesh-Salman-Policy', action:'Expired', module:'Policy', entity:q.id, details:'Policy marked as EXPIRED for ' + q.insuredName});
+  AUDIT_LOGS.unshift({timestamp:new Date().toISOString().replace('T',' ').slice(0,19), user:'Akhilesh-Salman-Policy', entity:'Quote', entityId:q.id, field:'Status', oldValue:'ACTIVE', newValue:'EXPIRED', ip:'10.0.1.45'});
+  NOTICES.filter(n => n.quoteId === q.id && ['SENT','MGA_ACKNOWLEDGED','WITH_BROKER','INSURED_REVIEW','INSURED_DECISION'].includes(n.status)).forEach(n => {
+    n.status = 'EXPIRED';
+    n.decision = 'EXPIRED';
+    n.decisionDate = new Date().toISOString().slice(0,10);
+    if (!n.events) n.events = [];
+    n.events.push({ step:'EXPIRED', at:new Date().toLocaleString(), actor:'Akhilesh-Salman-Policy', note:'Offer expired — policy marked EXPIRED with no confirmed decision' });
+  });
+  saveData();
+  renderPolicyDetail(id);
+}
+
+function checkExpiredPolicies() {
+  const today = new Date();
+  let changed = false;
+  QUOTES.forEach(q => {
+    if (q.status !== 'ACTIVE') return;
+    const exp = new Date(q.expiration);
+    if (exp >= today) return;
+    const hasRenewed = NOTICES.some(n => n.quoteId === q.id && n.type === 'RENEWAL_OFFER' && (n.status === 'EXECUTED' || n.decision === 'ACCEPTED'));
+    if (hasRenewed) return;
+    q.status = 'EXPIRED';
+    TRANSACTIONS.push({ id:'TXN-' + String(TRANSACTIONS.length+1).padStart(3,'0'), transactionNo:'TXN-2026-' + String(TRANSACTIONS.length+1).padStart(4,'0'), quoteId:q.id, type:'EXPIRATION', status:'COMPLETED', sourceSystem:'PAS', eventId:'EVT-POLICY-EXPIRED-' + String(TRANSACTIONS.length+1).padStart(3,'0'), eventStatus:'PUBLISHED', effectiveDate:q.expiration, requestedBy:'System', approvedBy:'System', processedAt:new Date().toISOString(), correlationId:'CORR-' + String(TRANSACTIONS.length+1).padStart(3,'0'), summary:'Policy expired at term end — no accepted renewal for ' + q.insuredName, createdAt:q.expiration });
+    ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'System', action:'Expired', module:'Policy', entity:q.id, details:'Policy auto-expired — term ended ' + q.expiration + ' for ' + q.insuredName});
+    AUDIT_LOGS.unshift({timestamp:new Date().toISOString().replace('T',' ').slice(0,19), user:'System', entity:'Quote', entityId:q.id, field:'Status', oldValue:'ACTIVE', newValue:'EXPIRED', ip:'System'});
+    NOTICES.filter(n => n.quoteId === q.id && ['SENT','MGA_ACKNOWLEDGED','WITH_BROKER','INSURED_REVIEW','INSURED_DECISION'].includes(n.status)).forEach(n => {
+      n.status = 'EXPIRED';
+      n.decision = 'EXPIRED';
+      n.decisionDate = q.expiration;
+      if (!n.events) n.events = [];
+      n.events.push({ step:'EXPIRED', at:q.expiration + ' 23:59', actor:'System', note:'Offer expired — policy term ended with no confirmed decision' });
+    });
+    changed = true;
+  });
+  if (changed) saveData();
 }
 
 // ======== TRANSACTIONS SCREEN ========
@@ -2430,8 +2761,8 @@ function renderTransactions() {
     container.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted);">No transactions found</td></tr>';
     return;
   }
-  const typeIcons = { ISSUE:'fa-file-contract', ENDORSEMENT:'fa-pen-alt', RENEWAL:'fa-sync-alt', CANCELLATION:'fa-ban', REINSTATEMENT:'fa-undo-alt' };
-  const typeColors = { ISSUE:'var(--success)', ENDORSEMENT:'var(--cyan)', RENEWAL:'var(--purple)', CANCELLATION:'var(--danger)', REINSTATEMENT:'var(--warning)' };
+  const typeIcons = { ISSUE:'fa-file-contract', ENDORSEMENT:'fa-pen-alt', RENEWAL:'fa-sync-alt', CANCELLATION:'fa-ban', REINSTATEMENT:'fa-undo-alt', EXPIRATION:'fa-calendar-times' };
+  const typeColors = { ISSUE:'var(--success)', ENDORSEMENT:'var(--cyan)', RENEWAL:'var(--purple)', CANCELLATION:'var(--danger)', REINSTATEMENT:'var(--warning)', EXPIRATION:'var(--text-muted)' };
   container.innerHTML = txns.map(t => {
     const q = QUOTES.find(x => x.id === t.quoteId);
     return `<tr><td class="col-id">${t.transactionNo}</td>
@@ -2461,7 +2792,7 @@ function renderIntegrationMonitor() {
   container.innerHTML = services.map(s => {
     const statusColor = s.status === 'Healthy' ? 'var(--success)' : s.status === 'Warning' ? 'var(--warning)' : 'var(--danger)';
     const bgColor = s.status === 'Healthy' ? 'var(--success-bg)' : s.status === 'Warning' ? 'var(--warning-bg)' : 'var(--danger-bg)';
-    return `<div class="service-card glass-sm"><div class="sc-top"><div style="display:flex;align-items:center;gap:12px;"><div style="width:40px;height:40px;border-radius:10px;background:${bgColor};display:flex;align-items:center;justify-content:center;color:${statusColor};"><i class="fas ${s.icon}"></i></div><div><div style="font-weight:600;font-size:14px;">${s.name}</div><div style="font-size:12px;color:var(--text-muted);">${s.lastSync}</div></div></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:${statusColor};"></div><span style="font-size:13px;font-weight:600;color:${statusColor};">${s.status}</span></div></div></div>`;
+    return `<div class="service-card glass-sm"><div class="sc-top"><div style="display:flex;align-items:center;gap:12px;"><div style="width:40px;height:40px;border-radius:10px;background:${bgColor};display:flex;align-items:center;justify-content:center;color:${statusColor};"><i class="fas ${s.icon}"></i></div><div><div style="font-weight:600;font-size:14px;">${s.name} <i class="info-btn info-btn-sm" onclick="showInfo('integration-monitor')">i</i></div><div style="font-size:12px;color:var(--text-muted);">${s.lastSync}</div></div></div><div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:${statusColor};"></div><span style="font-size:13px;font-weight:600;color:${statusColor};">${s.status}</span></div></div></div>`;
   }).join('');
 }
 
@@ -2501,10 +2832,10 @@ function renderReports() {
   const activeCount = QUOTES.filter(q => q.status === 'ACTIVE').length;
   const summary = document.querySelector('#screen-reports .summary-card');
   if (summary) {
-    summary.innerHTML = `<div class="sc-item"><div class="sc-label">Total Quotes</div><div class="sc-value">${totalQuotes}</div></div>
-      <div class="sc-item"><div class="sc-label">Total Premium</div><div class="sc-value" style="color:var(--success);">${fmt(totalPremium)}</div></div>
-      <div class="sc-item"><div class="sc-label">Approved</div><div class="sc-value" style="color:var(--info);">${approvedCount}</div></div>
-      <div class="sc-item"><div class="sc-label">Active</div><div class="sc-value">${activeCount}</div></div>`;
+    summary.innerHTML = `<div class="sc-item"><div class="sc-label">Total Quotes <i class="info-btn info-btn-sm" onclick="showInfo('quote-id')">i</i></div><div class="sc-value">${totalQuotes}</div></div>
+      <div class="sc-item"><div class="sc-label">Total Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></div><div class="sc-value" style="color:var(--success);">${fmt(totalPremium)}</div></div>
+      <div class="sc-item"><div class="sc-label">Approved <i class="info-btn info-btn-sm" onclick="showInfo('quote-status')">i</i></div><div class="sc-value" style="color:var(--info);">${approvedCount}</div></div>
+      <div class="sc-item"><div class="sc-label">Active <i class="info-btn info-btn-sm" onclick="showInfo('policy-status')">i</i></div><div class="sc-value">${activeCount}</div></div>`;
   }
 }
 
@@ -2568,6 +2899,7 @@ function confirmIssue() {
 // ======== INIT ========
 document.addEventListener('DOMContentLoaded', function() {
   loadData();
+  checkExpiredPolicies();
   document.querySelectorAll('.modal-overlay').forEach(m => {
     m.addEventListener('click', function(e) {
       if (e.target === this) this.classList.remove('open');

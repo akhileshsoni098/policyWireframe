@@ -91,8 +91,8 @@
     <div class="kpi-card glass"><div class="kpi-top"><div><div class="kpi-label">Active Policies <i class="info-btn" onclick="showInfo('policy-status')">i</i></div><div class="kpi-value">0</div></div><div class="kpi-icon" style="background:var(--success-bg);color:var(--success);"><i class="fas fa-file-contract"></i></div></div><div class="kpi-trend up"><i class="fas fa-arrow-up"></i> In force</div></div>
     <div class="kpi-card glass"><div class="kpi-top"><div><div class="kpi-label">In-Force Premium <i class="info-btn" onclick="showInfo('premium')">i</i></div><div class="kpi-value">$0</div></div><div class="kpi-icon" style="background:var(--purple-bg);color:var(--purple);"><i class="fas fa-dollar-sign"></i></div></div><div class="kpi-trend up"><i class="fas fa-arrow-up"></i> Total annual</div></div>
     <div class="kpi-card glass"><div class="kpi-top"><div><div class="kpi-label">Avg Premium <i class="info-btn" onclick="showInfo('premium')">i</i></div><div class="kpi-value">$0</div></div><div class="kpi-icon" style="background:var(--cyan-bg);color:var(--cyan);"><i class="fas fa-chart-line"></i></div></div><div class="kpi-trend"><i class="fas fa-info-circle"></i> Per active policy</div></div>
-    <div class="kpi-card glass"><div class="kpi-top"><div><div class="kpi-label">Pending Notices <i class="info-btn" onclick="showInfo('notice-management')">i</i></div><div class="kpi-value">0</div></div><div class="kpi-icon" style="background:var(--warning-bg);color:var(--warning);"><i class="fas fa-bell"></i></div></div><div class="kpi-trend"><i class="fas fa-info-circle"></i> Awaiting MGA action</div></div>
-    <div class="kpi-card glass"><div class="kpi-top"><div><div class="kpi-label">Pending Decisions <i class="info-btn" onclick="showInfo('notice-management')">i</i></div><div class="kpi-value">0</div></div><div class="kpi-icon" style="background:var(--danger-bg);color:var(--danger);"><i class="fas fa-hourglass-half"></i></div></div><div class="kpi-trend"><i class="fas fa-info-circle"></i> MGA decisions needed</div></div>
+    <div class="kpi-card glass"><div class="kpi-top"><div><div class="kpi-label">Pending Notices <i class="info-btn" onclick="showInfo('notice-management')">i</i></div><div class="kpi-value">0</div></div><div class="kpi-icon" style="background:var(--warning-bg);color:var(--warning);"><i class="fas fa-bell"></i></div></div><div class="kpi-trend"><i class="fas fa-info-circle"></i> Awaiting MGA / Broker / Insured action</div></div>
+    <div class="kpi-card glass"><div class="kpi-top"><div><div class="kpi-label">Pending Decisions <i class="info-btn" onclick="showInfo('notice-management')">i</i></div><div class="kpi-value">0</div></div><div class="kpi-icon" style="background:var(--danger-bg);color:var(--danger);"><i class="fas fa-hourglass-half"></i></div></div><div class="kpi-trend"><i class="fas fa-info-circle"></i> Insured decisions to record</div></div>
     <div class="kpi-card glass"><div class="kpi-top"><div><div class="kpi-label">Renewals Due (30d) <i class="info-btn" onclick="showInfo('renewal')">i</i></div><div class="kpi-value">0</div></div><div class="kpi-icon" style="background:var(--warning-bg);color:var(--warning);"><i class="fas fa-sync-alt"></i></div></div><div class="kpi-trend warning"><i class="fas fa-exclamation-triangle"></i> Within renewal window</div></div>
     <div class="kpi-card glass"><div class="kpi-top"><div><div class="kpi-label">Open Endorse Reqs <i class="info-btn" onclick="showInfo('endorsement')">i</i></div><div class="kpi-value">0</div></div><div class="kpi-icon" style="background:var(--purple-bg);color:var(--purple);"><i class="fas fa-pen-alt"></i></div></div><div class="kpi-trend"><i class="fas fa-info-circle"></i> Pending review</div></div>
   </div>
@@ -140,11 +140,11 @@
   </div>
   <div class="grid-2">
     <div class="card glass"><div class="card-title">Recent Activity <i class="info-btn" onclick="showInfo('activity-log')">i</i></div>
-      <table class="data-table"><thead><tr><th>Time</th><th>User</th><th>Action</th><th>Entity</th></tr></thead><tbody id="dash-activity">
+      <table class="data-table"><thead><tr><th>Time <i class="info-btn info-btn-sm" onclick="showInfo('audit-timestamp')">i</i></th><th>User <i class="info-btn info-btn-sm" onclick="showInfo('user-name')">i</i></th><th>Action <i class="info-btn info-btn-sm" onclick="showInfo('activity-log')">i</i></th><th>Entity <i class="info-btn info-btn-sm" onclick="showInfo('audit-entity')">i</i></th></tr></thead><tbody id="dash-activity">
       </tbody></table>
     </div>
     <div class="card glass"><div class="card-title">Upcoming Renewals <i class="info-btn" onclick="showInfo('renewal')">i</i></div>
-      <table class="data-table"><thead><tr><th>Policy</th><th>Insured</th><th>Expiration</th><th>Days Left</th></tr></thead><tbody id="dash-renewals">
+      <table class="data-table"><thead><tr><th>Policy <i class="info-btn info-btn-sm" onclick="showInfo('policy-number')">i</i></th><th>Insured <i class="info-btn info-btn-sm" onclick="showInfo('insured-name')">i</i></th><th>Expiration <i class="info-btn info-btn-sm" onclick="showInfo('expiration-date')">i</i></th><th>Days Left <i class="info-btn info-btn-sm" onclick="showInfo('renewal')">i</i></th></tr></thead><tbody id="dash-renewals">
       </tbody></table>
     </div>
   </div>
@@ -159,31 +159,51 @@
     <div class="form-group"><select class="form-input" id="qs-lob"><option>All Lines of Business</option><option>General Liability</option><option>Professional Liability</option><option>Auto Liability</option><option>Property</option><option>Workers Compensation</option><option>Package</option></select></div>
   </div></div>
   <div class="filter-bar">
-    <span class="filter-chip active" data-filter="all" onclick="filterQuotes('all')">All (12)</span><span class="filter-chip" data-filter="approved" onclick="filterQuotes('approved')">Approved (3)</span><span class="filter-chip" data-filter="active" onclick="filterQuotes('active')">Active (7)</span><span class="filter-chip" data-filter="cancelled" onclick="filterQuotes('cancelled')">Cancelled (2)</span><span class="filter-chip" data-filter="expired" onclick="filterQuotes('expired')">Expired (0)</span>
+    <span class="filter-chip active" data-filter="approved" onclick="filterQuotes('approved')">Approved (0)</span><!-- <span class="filter-chip" data-filter="all" onclick="filterQuotes('all')">All</span><span class="filter-chip" data-filter="active" onclick="filterQuotes('active')">Active</span><span class="filter-chip" data-filter="cancelled" onclick="filterQuotes('cancelled')">Cancelled</span><span class="filter-chip" data-filter="expired" onclick="filterQuotes('expired')">Expired</span> -->
   </div>
   <div class="card glass">
-    <table class="data-table"><thead><tr><th>Quote ID <i class="info-btn info-btn-sm" onclick="showInfo('quote-id')">i</i></th><th>Insured</th><th>LOB <i class="info-btn info-btn-sm" onclick="showInfo('lob')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('quote-status')">i</i></th><th>Effective <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></th><th>Expiration <i class="info-btn info-btn-sm" onclick="showInfo('expiration-date')">i</i></th><th>Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></th><th>Policy #</th><th>Actions</th></tr></thead><tbody id="quotes-table-body">
+    <table class="data-table"><thead><tr><th>Quote ID <i class="info-btn info-btn-sm" onclick="showInfo('quote-id')">i</i></th><th>Insured <i class="info-btn info-btn-sm" onclick="showInfo('insured-name')">i</i></th><th>LOB <i class="info-btn info-btn-sm" onclick="showInfo('lob')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('quote-status')">i</i></th><th>Effective <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></th><th>Expiration <i class="info-btn info-btn-sm" onclick="showInfo('expiration-date')">i</i></th><th>Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></th><th>Policy # <i class="info-btn info-btn-sm" onclick="showInfo('policy-number')">i</i></th><th>Actions</th></tr></thead><tbody id="quotes-table-body">
     </tbody></table>
   </div>
 </div>
 
 <!-- 8. NOTICE MANAGEMENT -->
 <div id="screen-notice-management" class="screen">
-  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Notice Management</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> MGA Decision</span></div>
+  <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Notice Management</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Insured Confirmation</span></div>
   <div class="page-header"><div style="display:flex;align-items:center;gap:12px;"><button class="btn btn-ghost btn-sm" onclick="showScreen('dashboard')"><i class="fas fa-arrow-left"></i></button><h1>Notice Management <i class="info-btn" onclick="showInfo('notice-management')">i</i></h1></div><div class="actions"><span style="font-size:12px;color:var(--text-muted);">Owned by PAS — Workflow</span></div></div>
   <div class="summary-card glass">
-    <div class="sc-item"><div class="sc-label">Draft</div><div class="sc-value" style="color:var(--warning);">-</div></div>
-    <div class="sc-item"><div class="sc-label">Sent to MGA</div><div class="sc-value" style="color:var(--info);">-</div></div>
-    <div class="sc-item"><div class="sc-label">Pending Decision</div><div class="sc-value" style="color:var(--purple);">-</div></div>
-    <div class="sc-item"><div class="sc-label">Executed</div><div class="sc-value" style="color:var(--success);">-</div></div>
+    <div class="sc-item"><div class="sc-label">Draft <i class="info-btn info-btn-sm" onclick="showInfo('notice-status')">i</i></div><div class="sc-value" style="color:var(--warning);">-</div></div>
+    <div class="sc-item"><div class="sc-label">In MGA / Broker Chain <i class="info-btn info-btn-sm" onclick="showInfo('notice-status')">i</i></div><div class="sc-value" style="color:var(--info);">-</div></div>
+    <div class="sc-item"><div class="sc-label">Pending Insured Decision <i class="info-btn info-btn-sm" onclick="showInfo('notice-status')">i</i></div><div class="sc-value" style="color:var(--purple);">-</div></div>
+    <div class="sc-item"><div class="sc-label">Executed <i class="info-btn info-btn-sm" onclick="showInfo('notice-status')">i</i></div><div class="sc-value" style="color:var(--success);">-</div></div>
   </div>
   <div class="card glass">
-    <div class="card-title">Notice Flow: Draft <i class="fas fa-arrow-right" style="font-size:12px;color:var(--text-muted);"></i> Generated <i class="fas fa-arrow-right" style="font-size:12px;color:var(--text-muted);"></i> Sent <i class="fas fa-arrow-right" style="font-size:12px;color:var(--text-muted);"></i> Acknowledged <i class="fas fa-arrow-right" style="font-size:12px;color:var(--text-muted);"></i> Delivered <i class="fas fa-arrow-right" style="font-size:12px;color:var(--text-muted);"></i> Accepted/Rejected <i class="fas fa-arrow-right" style="font-size:12px;color:var(--text-muted);"></i> Executed</div>
-    <table class="data-table"><thead><tr><th>Notice ID</th><th>Type</th><th>Quote</th><th>Insured</th><th>Premium / Proposed</th><th>Status</th><th>Actions</th></tr></thead><tbody id="notices-body">
+    <div class="card-title">Notice Flow: Draft <i class="fas fa-arrow-right" style="font-size:12px;color:var(--text-muted);"></i> Generated <i class="fas fa-arrow-right" style="font-size:12px;color:var(--text-muted);"></i> Sent <i class="fas fa-arrow-right" style="font-size:12px;color:var(--text-muted);"></i> MGA Acknowledged <i class="fas fa-arrow-right" style="font-size:12px;color:var(--text-muted);"></i> With Broker <i class="fas fa-arrow-right" style="font-size:12px;color:var(--text-muted);"></i> Insured Review <i class="fas fa-arrow-right" style="font-size:12px;color:var(--text-muted);"></i> Insured Confirmation <i class="fas fa-arrow-right" style="font-size:12px;color:var(--text-muted);"></i> Accepted/Rejected <i class="fas fa-arrow-right" style="font-size:12px;color:var(--text-muted);"></i> Executed</div>
+    <table class="data-table"><thead><tr><th>Notice ID <i class="info-btn info-btn-sm" onclick="showInfo('notice-id')">i</i></th><th>Type <i class="info-btn info-btn-sm" onclick="showInfo('notice-type')">i</i></th><th>Quote <i class="info-btn info-btn-sm" onclick="showInfo('quote-id')">i</i></th><th>Insured <i class="info-btn info-btn-sm" onclick="showInfo('insured-name')">i</i></th><th>Premium / Proposed <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('notice-status')">i</i></th><th>Actions</th></tr></thead><tbody id="notices-body">
     </tbody></table>
   </div>
   <div class="card glass mt-md" style="padding:12px;background:var(--accent-dim);border-radius:var(--radius-sm);">
-    <div style="font-size:12px;color:var(--text-muted);"><strong>Integration:</strong> Notification Service — Sends email to MGA on "Send" action. PAS publishes <code>NoticeGenerated</code>, <code>NoticeAccepted</code>, <code>NoticeRejected</code> events.</div>
+    <div style="font-size:12px;color:var(--text-muted);"><strong>Integration:</strong> PAS generates &amp; sends the offer to MGA. The offer then flows MGA → Broker → Insured (tracked automatically). The insured's decision returns to PAS via the MGA; PAS <strong>records</strong> that response (it never selects Accept/Reject). Policies that reach their expiration date without an accepted renewal auto-expire. Consumes: MGA API, Broker API. Events: <code>NoticeGenerated</code>, <code>NoticeSent</code>, <code>InsuredDecisionRecorded</code>, <code>PolicyExpired</code>.</div>
+  </div>
+</div>
+
+<div id="ntc-modal" class="modal-overlay">
+  <div class="modal-box glass" style="width:640px;max-width:90vw;">
+    <div class="modal-header"><h3>Notice Record — <span id="ntc-modal-id">-</span></h3><button class="modal-close" onclick="closeNoticeDetail()">&times;</button></div>
+    <div class="modal-body" style="padding:var(--spacing-lg);">
+      <div class="summary-card glass-sm" style="margin-bottom:16px;">
+        <div class="sc-item"><div class="sc-label">Insured <i class="info-btn info-btn-sm" onclick="showInfo('insured-name')">i</i></div><div class="sc-value" id="ntc-modal-insured">-</div></div>
+        <div class="sc-item"><div class="sc-label">Quote <i class="info-btn info-btn-sm" onclick="showInfo('quote-id')">i</i></div><div class="sc-value" id="ntc-modal-quote" style="font-family:monospace;">-</div></div>
+        <div class="sc-item"><div class="sc-label">Type <i class="info-btn info-btn-sm" onclick="showInfo('notice-type')">i</i></div><div class="sc-value" id="ntc-modal-type">-</div></div>
+        <div class="sc-item"><div class="sc-label">Offer <i class="info-btn info-btn-sm" onclick="showInfo('offer-number')">i</i></div><div class="sc-value" id="ntc-modal-offer">-</div></div>
+        <div class="sc-item"><div class="sc-label">Proposed Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></div><div class="sc-value" id="ntc-modal-premium" style="color:var(--accent);">-</div></div>
+        <div class="sc-item"><div class="sc-label">Proposed Term <i class="info-btn info-btn-sm" onclick="showInfo('proposed-values')">i</i></div><div class="sc-value" id="ntc-modal-dates">-</div></div>
+        <div class="sc-item"><div class="sc-label">Status <i class="info-btn info-btn-sm" onclick="showInfo('notice-status')">i</i></div><div class="sc-value" id="ntc-modal-status">-</div></div>
+      </div>
+      <div id="ntc-modal-decision" style="display:none;margin-bottom:16px;padding:10px 14px;background:var(--accent-dim);border-radius:var(--radius-sm);"></div>
+      <div class="card-title" style="margin-bottom:8px;">Timeline / Record <i class="info-btn" onclick="showInfo('notice-events')">i</i></div>
+      <div class="timeline" id="ntc-modal-timeline"></div>
+    </div>
   </div>
 </div>
 
@@ -192,7 +212,7 @@
   <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Transactions</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Lifecycle Timeline</span></div>
   <div class="page-header"><div style="display:flex;align-items:center;gap:12px;"><button class="btn btn-ghost btn-sm" onclick="showScreen('dashboard')"><i class="fas fa-arrow-left"></i></button><h1>Transaction History <i class="info-btn" onclick="showInfo('transaction')">i</i></h1></div><div class="actions"><span style="font-size:12px;color:var(--text-muted);">Append-only — Owned by PAS</span></div></div>
   <div class="card glass">
-    <table class="data-table"><thead><tr><th>Transaction #</th><th>Type</th><th>Quote</th><th>Insured</th><th>Effective Date</th><th>Status</th><th>Summary</th></tr></thead><tbody id="transactions-body">
+    <table class="data-table"><thead><tr><th>Transaction # <i class="info-btn info-btn-sm" onclick="showInfo('transaction')">i</i></th><th>Type <i class="info-btn info-btn-sm" onclick="showInfo('transaction-type')">i</i></th><th>Quote <i class="info-btn info-btn-sm" onclick="showInfo('quote-id')">i</i></th><th>Insured <i class="info-btn info-btn-sm" onclick="showInfo('insured-name')">i</i></th><th>Effective Date <i class="info-btn info-btn-sm" onclick="showInfo('effective-date')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('transaction-status')">i</i></th><th>Summary <i class="info-btn info-btn-sm" onclick="showInfo('transaction-summary')">i</i></th></tr></thead><tbody id="transactions-body">
     </tbody></table>
   </div>
 </div>
@@ -262,11 +282,11 @@
       <div class="tab-item" data-tab="bill-transactions" onclick="switchTab('bill-tabs','bill-transactions')">Transactions</div>
     </div>
     <div id="tab-bill-policies" class="tab-content active">
-      <table class="data-table"><thead><tr><th>Quote</th><th>Insured</th><th>Installment <i class="info-btn info-btn-sm" onclick="showInfo('installment')">i</i></th><th>Amount</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="billing-schedule-body">
+      <table class="data-table"><thead><tr><th>Quote <i class="info-btn info-btn-sm" onclick="showInfo('quote-id')">i</i></th><th>Insured <i class="info-btn info-btn-sm" onclick="showInfo('insured-name')">i</i></th><th>Installment <i class="info-btn info-btn-sm" onclick="showInfo('installment')">i</i></th><th>Amount <i class="info-btn info-btn-sm" onclick="showInfo('amount-due')">i</i></th><th>Due Date <i class="info-btn info-btn-sm" onclick="showInfo('due-date')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('billing-status')">i</i></th><th>Actions</th></tr></thead><tbody id="billing-schedule-body">
       </tbody></table>
     </div>
     <div id="tab-bill-transactions" class="tab-content">
-      <table class="data-table"><thead><tr><th>Date</th><th>Type</th><th>Method</th><th>Reference</th><th>Amount</th><th>Status</th></tr></thead><tbody id="billing-transactions-body">
+      <table class="data-table"><thead><tr><th>Date <i class="info-btn info-btn-sm" onclick="showInfo('transaction')">i</i></th><th>Type <i class="info-btn info-btn-sm" onclick="showInfo('transaction-type')">i</i></th><th>Method <i class="info-btn info-btn-sm" onclick="showInfo('billing-method')">i</i></th><th>Reference <i class="info-btn info-btn-sm" onclick="showInfo('payment-reference')">i</i></th><th>Amount <i class="info-btn info-btn-sm" onclick="showInfo('amount-due')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('billing-status')">i</i></th></tr></thead><tbody id="billing-transactions-body">
       </tbody></table>
     </div>
   </div>
@@ -277,7 +297,7 @@
   <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Documents</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Upload / View</span></div>
   <div class="page-header"><div style="display:flex;align-items:center;gap:12px;"><button class="btn btn-ghost btn-sm" onclick="showScreen('dashboard')"><i class="fas fa-arrow-left"></i></button><h1>Document Repository <i class="info-btn" onclick="showInfo('document-type')">i</i></h1></div><button class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Upload</button></div>
   <div class="card glass">
-    <table class="data-table"><thead><tr><th>Document</th><th>Policy</th><th>Category <i class="info-btn info-btn-sm" onclick="showInfo('document-type')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('doc-status')">i</i></th><th>Uploaded By</th><th>Date</th><th>Actions</th></tr></thead><tbody id="documents-body">
+    <table class="data-table"><thead><tr><th>Document <i class="info-btn info-btn-sm" onclick="showInfo('document')">i</i></th><th>Policy <i class="info-btn info-btn-sm" onclick="showInfo('policy-number')">i</i></th><th>Category <i class="info-btn info-btn-sm" onclick="showInfo('document-type')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('doc-status')">i</i></th><th>Uploaded By <i class="info-btn info-btn-sm" onclick="showInfo('uploaded-by')">i</i></th><th>Date <i class="info-btn info-btn-sm" onclick="showInfo('created-date')">i</i></th><th>Actions</th></tr></thead><tbody id="documents-body">
     </tbody></table>
   </div>
   <!-- Document Viewer Modal -->
@@ -316,7 +336,7 @@
       </div>
     </div>
     <div id="tab-act-audit" class="tab-content">
-      <table class="data-table"><thead><tr><th>Timestamp</th><th>User</th><th>Action <i class="info-btn info-btn-sm" onclick="showInfo('audit-trail')">i</i></th><th>Entity</th><th>Entity ID</th><th>Details</th></tr></thead><tbody id="audit-log-body">
+      <table class="data-table"><thead><tr><th>Timestamp <i class="info-btn info-btn-sm" onclick="showInfo('audit-timestamp')">i</i></th><th>User <i class="info-btn info-btn-sm" onclick="showInfo('audit-user')">i</i></th><th>Action <i class="info-btn info-btn-sm" onclick="showInfo('audit-trail')">i</i></th><th>Entity <i class="info-btn info-btn-sm" onclick="showInfo('audit-entity')">i</i></th><th>Entity ID <i class="info-btn info-btn-sm" onclick="showInfo('audit-entity-id')">i</i></th><th>Details <i class="info-btn info-btn-sm" onclick="showInfo('audit-details')">i</i></th></tr></thead><tbody id="audit-log-body">
       </tbody></table>
     </div>
   </div>
@@ -327,20 +347,20 @@
   <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Reports</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Schedule</span></div>
   <div class="page-header"><div style="display:flex;align-items:center;gap:12px;"><button class="btn btn-ghost btn-sm" onclick="showScreen('dashboard')"><i class="fas fa-arrow-left"></i></button><h1>Reports <i class="info-btn" onclick="showInfo('reports')">i</i></h1></div><button class="btn btn-primary btn-sm"><i class="fas fa-calendar-alt"></i> Schedule Report</button></div>
   <div class="summary-card glass">
-    <div class="sc-item"><div class="sc-label">Total Policies</div><div class="sc-value">8</div></div>
-    <div class="sc-item"><div class="sc-label">Total Premium</div><div class="sc-value" style="color:var(--success);">$1.07M</div></div>
-    <div class="sc-item"><div class="sc-label">Pending Subs</div><div class="sc-value" style="color:var(--warning);">5</div></div>
-    <div class="sc-item"><div class="sc-label">Loss Ratio</div><div class="sc-value">42%</div></div>
+    <div class="sc-item"><div class="sc-label">Total Policies <i class="info-btn info-btn-sm" onclick="showInfo('policy-status')">i</i></div><div class="sc-value">8</div></div>
+    <div class="sc-item"><div class="sc-label">Total Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></div><div class="sc-value" style="color:var(--success);">$1.07M</div></div>
+    <div class="sc-item"><div class="sc-label">Pending Subs <i class="info-btn info-btn-sm" onclick="showInfo('quote-status')">i</i></div><div class="sc-value" style="color:var(--warning);">5</div></div>
+    <div class="sc-item"><div class="sc-label">Loss Ratio <i class="info-btn info-btn-sm" onclick="showInfo('reports')">i</i></div><div class="sc-value">42%</div></div>
   </div>
   <div class="report-grid">
-    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--accent);"><i class="fas fa-chart-bar"></i></div><div class="rc-title">Premium by LOB</div><div class="rc-desc">Premium distribution across lines of business</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
-    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--success);"><i class="fas fa-chart-pie"></i></div><div class="rc-title">Policy Count by Status</div><div class="rc-desc">Active, expired, cancelled breakdown</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
-    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--warning);"><i class="fas fa-chart-line"></i></div><div class="rc-title">Submission Trend</div><div class="rc-desc">Submission volume over time</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
-    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--info);"><i class="fas fa-tachometer-alt"></i></div><div class="rc-title">UW Performance</div><div class="rc-desc">Turnaround time, approval rate</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
-    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--danger);"><i class="fas fa-file-invoice-dollar"></i></div><div class="rc-title">Aged Receivables</div><div class="rc-desc">Outstanding premium by aging bucket</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
-    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--purple);"><i class="fas fa-exchange-alt"></i></div><div class="rc-title">Endorsement Summary</div><div class="rc-desc">Endorsement volume by type</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
-    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--cyan);"><i class="fas fa-sync-alt"></i></div><div class="rc-title">Renewal Pipeline</div><div class="rc-desc">Upcoming renewals in next 90 days</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
-    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--gray);"><i class="fas fa-history"></i></div><div class="rc-title">Audit Trail</div><div class="rc-desc">Complete change history export</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--accent);"><i class="fas fa-chart-bar"></i></div><div class="rc-title">Premium by LOB <i class="info-btn info-btn-sm" onclick="showInfo('reports')">i</i></div><div class="rc-desc">Premium distribution across lines of business</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--success);"><i class="fas fa-chart-pie"></i></div><div class="rc-title">Policy Count by Status <i class="info-btn info-btn-sm" onclick="showInfo('reports')">i</i></div><div class="rc-desc">Active, expired, cancelled breakdown</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--warning);"><i class="fas fa-chart-line"></i></div><div class="rc-title">Submission Trend <i class="info-btn info-btn-sm" onclick="showInfo('reports')">i</i></div><div class="rc-desc">Submission volume over time</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--info);"><i class="fas fa-tachometer-alt"></i></div><div class="rc-title">UW Performance <i class="info-btn info-btn-sm" onclick="showInfo('reports')">i</i></div><div class="rc-desc">Turnaround time, approval rate</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--danger);"><i class="fas fa-file-invoice-dollar"></i></div><div class="rc-title">Aged Receivables <i class="info-btn info-btn-sm" onclick="showInfo('reports')">i</i></div><div class="rc-desc">Outstanding premium by aging bucket</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--purple);"><i class="fas fa-exchange-alt"></i></div><div class="rc-title">Endorsement Summary <i class="info-btn info-btn-sm" onclick="showInfo('reports')">i</i></div><div class="rc-desc">Endorsement volume by type</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--cyan);"><i class="fas fa-sync-alt"></i></div><div class="rc-title">Renewal Pipeline <i class="info-btn info-btn-sm" onclick="showInfo('reports')">i</i></div><div class="rc-desc">Upcoming renewals in next 90 days</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
+    <div class="report-card glass-sm"><div class="rc-icon" style="color:var(--gray);"><i class="fas fa-history"></i></div><div class="rc-title">Audit Trail <i class="info-btn info-btn-sm" onclick="showInfo('reports')">i</i></div><div class="rc-desc">Complete change history export</div><button class="btn btn-xs" style="background:var(--accent-dim);color:var(--accent);">Run</button></div>
   </div>
 </div>
 
@@ -349,7 +369,7 @@
   <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Dashboard</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">Integration Monitor</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> System Health</span></div>
   <div class="page-header"><div style="display:flex;align-items:center;gap:12px;"><button class="btn btn-ghost btn-sm" onclick="showScreen('dashboard')"><i class="fas fa-arrow-left"></i></button><h1>Integration Monitor <i class="info-btn" onclick="showInfo('integration-monitor')">i</i></h1></div><div class="actions"><span style="font-size:12px;color:var(--text-muted);">Real-time service health — Owned by PAS</span></div></div>
   <div class="card glass">
-    <div class="card-title">External Service Status</div>
+    <div class="card-title">External Service Status <i class="info-btn" onclick="showInfo('integration-monitor')">i</i></div>
     <div class="integration-grid" id="integration-body" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
     </div>
   </div>
@@ -366,7 +386,7 @@
     <div style="font-size:12px;color:var(--text-muted);"><strong>API Contract:</strong> Every lifecycle action follows: Receive API → Validate → Business Processing → Database Update → Publish Event → Response.</div>
   </div>
   <div class="card glass">
-    <table class="data-table"><thead><tr><th>Timestamp</th><th>Dir</th><th>Endpoint</th><th>Method</th><th>Status</th><th>Duration</th><th>Retries</th><th>Correlation ID</th><th>Payload</th></tr></thead><tbody id="api-log-body">
+    <table class="data-table"><thead><tr><th>Timestamp <i class="info-btn info-btn-sm" onclick="showInfo('audit-timestamp')">i</i></th><th>Dir <i class="info-btn info-btn-sm" onclick="showInfo('api-direction')">i</i></th><th>Endpoint <i class="info-btn info-btn-sm" onclick="showInfo('api-endpoint')">i</i></th><th>Method <i class="info-btn info-btn-sm" onclick="showInfo('api-method')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('api-status')">i</i></th><th>Duration <i class="info-btn info-btn-sm" onclick="showInfo('api-duration')">i</i></th><th>Retries <i class="info-btn info-btn-sm" onclick="showInfo('api-retries')">i</i></th><th>Correlation ID <i class="info-btn info-btn-sm" onclick="showInfo('api-correlation-id')">i</i></th><th>Payload <i class="info-btn info-btn-sm" onclick="showInfo('api-payload')">i</i></th></tr></thead><tbody id="api-log-body">
     </tbody></table>
   </div>
 </div>
@@ -382,11 +402,11 @@
       <div class="tab-item" data-tab="admin-settings" onclick="switchTab('admin-tabs','admin-settings')">System Settings</div>
     </div>
     <div id="tab-admin-users" class="tab-content active">
-      <table class="data-table"><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th></tr></thead><tbody id="admin-users-body">
+      <table class="data-table"><thead><tr><th>User <i class="info-btn info-btn-sm" onclick="showInfo('user-name')">i</i></th><th>Email <i class="info-btn info-btn-sm" onclick="showInfo('user-email')">i</i></th><th>Role <i class="info-btn info-btn-sm" onclick="showInfo('user-role')">i</i></th><th>Status <i class="info-btn info-btn-sm" onclick="showInfo('user-status')">i</i></th><th>Last Login <i class="info-btn info-btn-sm" onclick="showInfo('last-login')">i</i></th></tr></thead><tbody id="admin-users-body">
       </tbody></table>
     </div>
     <div id="tab-admin-roles" class="tab-content">
-      <table class="data-table"><thead><tr><th>Role</th><th>Users</th><th>Permissions</th></tr></thead><tbody id="admin-roles-body">
+      <table class="data-table"><thead><tr><th>Role <i class="info-btn info-btn-sm" onclick="showInfo('role')">i</i></th><th>Users <i class="info-btn info-btn-sm" onclick="showInfo('user-name')">i</i></th><th>Permissions <i class="info-btn info-btn-sm" onclick="showInfo('role-permissions')">i</i></th></tr></thead><tbody id="admin-roles-body">
       </tbody></table>
     </div>
     <div id="tab-admin-settings" class="tab-content">
@@ -407,20 +427,20 @@
       <div class="card glass-sm" style="margin-bottom:16px;">
         <div class="card-title" style="font-size:13px;">Quote Review <i class="info-btn" onclick="showInfo('quote')">i</i></div>
         <div class="summary-card">
-          <div class="sc-item"><div class="sc-label">Quote ID</div><div class="sc-value" id="issue-modal-quote-id" style="font-family:monospace;">-</div></div>
-          <div class="sc-item"><div class="sc-label">Insured</div><div class="sc-value" id="issue-modal-insured">-</div></div>
-          <div class="sc-item"><div class="sc-label">Line of Business</div><div class="sc-value" id="issue-modal-lob">-</div></div>
-          <div class="sc-item"><div class="sc-label">Premium</div><div class="sc-value" id="issue-modal-premium" style="color:var(--accent);">-</div></div>
-          <div class="sc-item"><div class="sc-label">Coverage</div><div class="sc-value" id="issue-modal-coverage">-</div></div>
-          <div class="sc-item"><div class="sc-label">Rating Basis</div><div class="sc-value" id="issue-modal-rating">-</div></div>
-          <div class="sc-item"><div class="sc-label">Underwriter</div><div class="sc-value" id="issue-modal-uw">-</div></div>
-          <div class="sc-item"><div class="sc-label">Agent / Broker</div><div class="sc-value" id="issue-modal-agent">-</div></div>
-          <div class="sc-item"><div class="sc-label">MGA</div><div class="sc-value" id="issue-modal-mga">-</div></div>
-          <div class="sc-item"><div class="sc-label">Billing Plan</div><div class="sc-value" id="issue-modal-billing">-</div></div>
+          <div class="sc-item"><div class="sc-label">Quote ID <i class="info-btn info-btn-sm" onclick="showInfo('quote-id')">i</i></div><div class="sc-value" id="issue-modal-quote-id" style="font-family:monospace;">-</div></div>
+          <div class="sc-item"><div class="sc-label">Insured <i class="info-btn info-btn-sm" onclick="showInfo('insured-name')">i</i></div><div class="sc-value" id="issue-modal-insured">-</div></div>
+          <div class="sc-item"><div class="sc-label">Line of Business <i class="info-btn info-btn-sm" onclick="showInfo('lob')">i</i></div><div class="sc-value" id="issue-modal-lob">-</div></div>
+          <div class="sc-item"><div class="sc-label">Premium <i class="info-btn info-btn-sm" onclick="showInfo('premium')">i</i></div><div class="sc-value" id="issue-modal-premium" style="color:var(--accent);">-</div></div>
+          <div class="sc-item"><div class="sc-label">Coverage <i class="info-btn info-btn-sm" onclick="showInfo('coverage')">i</i></div><div class="sc-value" id="issue-modal-coverage">-</div></div>
+          <div class="sc-item"><div class="sc-label">Rating Basis <i class="info-btn info-btn-sm" onclick="showInfo('rating-basis')">i</i></div><div class="sc-value" id="issue-modal-rating">-</div></div>
+          <div class="sc-item"><div class="sc-label">Underwriter <i class="info-btn info-btn-sm" onclick="showInfo('underwriter')">i</i></div><div class="sc-value" id="issue-modal-uw">-</div></div>
+          <div class="sc-item"><div class="sc-label">Agent / Broker <i class="info-btn info-btn-sm" onclick="showInfo('agent')">i</i></div><div class="sc-value" id="issue-modal-agent">-</div></div>
+          <div class="sc-item"><div class="sc-label">MGA <i class="info-btn info-btn-sm" onclick="showInfo('mga')">i</i></div><div class="sc-value" id="issue-modal-mga">-</div></div>
+          <div class="sc-item"><div class="sc-label">Billing Plan <i class="info-btn info-btn-sm" onclick="showInfo('billing-plan')">i</i></div><div class="sc-value" id="issue-modal-billing">-</div></div>
         </div>
       </div>
       <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;">
-        <div class="form-group"><label class="form-label">Issue Date <i class="info-btn" onclick="showInfo('effective-date')">i</i></label><input id="issue-modal-date" class="form-input" type="date"></div>
+        <div class="form-group"><label class="form-label">Issue Date <i class="info-btn" onclick="showInfo('issue-date')">i</i></label><input id="issue-modal-date" class="form-input" type="date"></div>
         <div class="form-group"><label class="form-label">Effective Date <i class="info-btn" onclick="showInfo('effective-date')">i</i></label><input id="issue-modal-effective" class="form-input" type="date"></div>
         <div class="form-group"><label class="form-label">Expiration Date <i class="info-btn" onclick="showInfo('expiration-date')">i</i></label><input id="issue-modal-expiration" class="form-input" type="date"></div>
       </div>
