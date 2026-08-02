@@ -2718,9 +2718,17 @@ function acceptNotice(id) {
       q.status = 'EXPIRED';
       q.renewalTerm = q.renewalTerm || 1;
       q.renewedTo = newPolicyNumber;
+      NOTICES.filter(x => x.quoteId === q.id && x.type === 'RENEWAL_OFFER' && x.id !== id && !['EXECUTED','REJECTED','EXPIRED'].includes(x.status)).forEach(x => {
+        x.status = 'EXPIRED';
+        x.decision = 'EXPIRED';
+        x.decisionDate = new Date().toISOString().slice(0,10);
+        if (!x.events) x.events = [];
+        x.events.push({ step:'EXPIRED', at:new Date().toLocaleString(), actor:'Akhilesh-Salman-Policy', note:'Offer superseded — renewal executed, new policy ' + newPolicyNumber + ' issued' });
+      });
       BILLING_SCHEDULES[newId] = makeInstallmentSchedule(np);
       TRANSACTIONS.push({ id:'TXN-' + String(TRANSACTIONS.length+1).padStart(3,'0'), transactionNo:'TXN-2026-' + String(TRANSACTIONS.length+1).padStart(4,'0'), quoteId:newId, type:'RENEWAL', status:'COMPLETED', sourceSystem:'PAS', eventId:'EVT-POLICY-RENEWED-' + String(TRANSACTIONS.length+1).padStart(3,'0'), eventStatus:'PUBLISHED', effectiveDate:newEffective, requestedBy:'System', approvedBy:'System', processedAt:new Date().toISOString(), correlationId:'CORR-' + String(TRANSACTIONS.length+1).padStart(3,'0'), summary:'Renewal — new policy ' + newPolicyNumber + ' created (Term ' + renewalTerm + ') from ' + q.policyNumber + ' for ' + q.insuredName, createdAt:new Date().toISOString().slice(0,10) });
       TRANSACTIONS.push({ id:'TXN-' + String(TRANSACTIONS.length+1).padStart(3,'0'), transactionNo:'TXN-2026-' + String(TRANSACTIONS.length+1).padStart(4,'0'), quoteId:q.id, type:'EXPIRATION', status:'COMPLETED', sourceSystem:'PAS', eventId:'EVT-POLICY-EXPIRED-' + String(TRANSACTIONS.length+1).padStart(3,'0'), eventStatus:'PUBLISHED', effectiveDate:q.expiration, requestedBy:'System', approvedBy:'System', processedAt:new Date().toISOString(), correlationId:'CORR-' + String(TRANSACTIONS.length+1).padStart(3,'0'), summary:'Policy expired — term renewed into new policy ' + newPolicyNumber + ' for ' + q.insuredName, createdAt:new Date().toISOString().slice(0,10) });
+      TRANSACTIONS.push({ id:'TXN-' + String(TRANSACTIONS.length+1).padStart(3,'0'), transactionNo:'TXN-2026-' + String(TRANSACTIONS.length+1).padStart(4,'0'), quoteId:q.id, type:'RENEWAL', status:'COMPLETED', sourceSystem:'PAS', eventId:'EVT-POLICY-RENEWED-' + String(TRANSACTIONS.length+1).padStart(3,'0'), eventStatus:'PUBLISHED', effectiveDate:newEffective, requestedBy:'System', approvedBy:'System', processedAt:new Date().toISOString(), correlationId:'CORR-' + String(TRANSACTIONS.length+1).padStart(3,'0'), summary:'Renewal — policy renewed, continued as new policy ' + newPolicyNumber + ' for ' + q.insuredName, createdAt:new Date().toISOString().slice(0,10) });
     }
   } else if (n.type === 'CANCELLATION_NOTICE') {
     q.status = 'CANCELLED';
