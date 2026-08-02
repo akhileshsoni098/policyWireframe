@@ -1,0 +1,419 @@
+================================================================================
+PAS WIREFRAME — STEP-BY-STEP IMPLEMENTATION REQUIREMENTS
+================================================================================
+App     : index.html + app.js  (single-page wireframe, localStorage)
+Docs    : documentation.html (30-section Hinglish PAS spec)
+Refs    : file : function / line  — exact location of each change
+
+SCOPE OF THIS DOCUMENT (4 work items)
+--------------------------------------------------------------------------------
+  1. Bind / BOUND state                     (doc Section 7)
+  2. Policy Versioning — snapshot + diff    (doc Section 12)
+  3. UW Queue / New Submission fix          (doc Section 14) — dead code repair
+  4. exportCSV crash fix                    (bug discovered during analysis)
+
+Language: English steps, with Hinglish notes where helpful.
+Order: do Parts 1->4 in sequence; each part leaves the app runnable.
+
+Verification commands (run after each part):
+  node --check app.js
+  node "C:\Users\AKHILE~1\AppData\Local\Temp\opencode\pas_test.js"
+
+================================================================================
+PART 1 — BIND / BOUND STATE  (doc Sec 7)
+================================================================================
+GOAL: Introduce a separate Bind step before Issuance.
+Flow today :  APPROVED -> Issue modal -> ACTIVE            (one step, no binder)
+Flow wanted:  APPROVED -> Bind -> BOUND (binder + expiry)  -> Issue -> ACTIVE
+
+----------------------------------------------------------------------
+1.1  Add BOUND status to the chip colour map
+----------------------------------------------------------------------
+File: app.js, function `chip()` (line ~597)
+Find:   const map = { ACTIVE:'active', APPROVED:'approved', ...
+Add:    BOUND:'info'   (and keep BIND mapped, e.g. BIND:'info' if needed)
+Why:    So BOUND renders as a blue/info chip everywhere via `chip(status)`.
+
+1.2  Add binder fields to the quote record
+----------------------------------------------------------------------
+File: app.js — QUOTES seed array (starts line ~16) AND confirmBind below.
+Each quote object should support these OPTIONAL fields:
+      bindDate        : 'YYYY-MM-DD'          (when binder was created)
+      binderNumber    : 'BN-2026-001'         (generated, not seeded)
+      binderExpiry    : 'YYYY-MM-DD'          (bindDate + 30/60/90 days)
+      subjectivities  : 'text'                (conditions to satisfy)
+Do NOT add to seed rows manually; they are created at bind time (1.4).
+
+1.3  Add the Bind modal to index.html
+----------------------------------------------------------------------
+File: index.html — near #issue-modal (line ~423)
+Add a new modal `#bind-modal` (reuse modal-overlay / modal-box / glass classes):
+  - Header        : "Bind Policy"
+  - Quote summary : reuse style of issue-modal (quote id, insured, premium)
+  - Form          : Binder Expiry select  -> 30 / 60 / 90 days (default 30)
+  - Form          : Subjectivities textarea (optional)
+  - Hidden field  : current quote id (like #issue-modal-quote-id)
+  - Buttons       : Cancel  |  Confirm Bind (onclick="confirmBind()")
+  - Error line    : #bind-modal-error (like #issue-modal-error)
+
+1.4  Add confirmBind() to app.js
+----------------------------------------------------------------------
+File: app.js — add near confirmIssue() (line ~2864)
+Logic:
+  1. Read quote id from #bind-modal hidden field; find q in QUOTES.
+  2. Guard: q.status must be 'APPROVED' and !q.policyNumber; else show error.
+  3. Read binder expiry days + subjectivities from the form.
+  4. Set:
+       q.status        = 'BOUND'
+       q.bindDate      = today (ISO)
+       q.binderNumber  = 'BN-2026-' + zero-padded counter (see 1.5)
+       q.binderExpiry  = bindDate + selected days
+       q.subjectivities = subjectivities text (or 'None')
+  5. Push a TRANSACTIONS record:
+       type:'BIND', status:'COMPLETED', eventId:'EVT-POLICY-BOUND-...',
+       summary:'Policy bound for <insured> — Binder <binderNumber> (exp <date>)'
+  6. Push ACTIVITIES entry (action:'Bound', module:'Policy').
+  7. Push AUDIT_LOGS entry (field:'Status', old:'APPROVED', new:'BOUND').
+  8. saveData(); close #bind-modal; re-render current screen.
+
+1.5  Binder number sequence
+----------------------------------------------------------------------
+File: app.js — helper (inline in confirmBind or near number generators)
+Derive from QUOTES: count existing binderNumbers -> next padded number:
+      const n = QUOTES.filter(x => x.binderNumber).length + 1;
+      const bn = 'BN-2026-' + String(n).padStart(3,'0');
+
+1.6  Add a "Bind" button on the quote details screen
+----------------------------------------------------------------------
+File: app.js, renderQuoteDetails() (line ~2303), actions block (line ~2337)
+Find:   ${isApproved ? `<button ... onclick="showIssueModal('${q.id}')">
+Change to TWO buttons when isApproved:
+  - "Bind Policy"     -> onclick="openBindModal('${q.id}')"   (opens #bind-modal)
+  - "Issue Policy"    -> onclick="showIssueModal('${q.id}')"  (kept for already-bound/approved path)
+Also add a THIRD action for when q.status === 'BOUND':
+  - "Issue Bound Policy" -> onclick="showIssueModal('${q.id}')"
+Why:    BOUND quotes still need to reach ACTIVE via issue modal.
+
+1.7  Add openBindModal() helper
+----------------------------------------------------------------------
+File: app.js — near showIssueModal() (line ~2843)
+Like showIssueModal(): fill #bind-modal summary fields + hidden quote id,
+reset form, show overlay.
+
+1.8  Show binder info when BOUND on quote details
+----------------------------------------------------------------------
+File: app.js, renderQuoteDetails() (line ~2303)
+When q.binderNumber exists, render a small binder summary card:
+  Binder: <binderNumber> | Bind Date: <bindDate> | Expires: <binderExpiry>
+  Subjectivities: <subjectivities>
+Place under the header card (after line ~2344).
+
+1.9  Show BOUND + binder on policy detail
+----------------------------------------------------------------------
+File: app.js, renderPolicyDetail() (line ~1053)
+- Header line (line ~1092): show chip(q.status) already; BOUND now coloured.
+- If q.binderNumber: add one detail row / badge: Binder <number> (exp <date>).
+- Action buttons (line ~1113): for status BOUND show "Issue Bound Policy"
+  instead of Endorse/Renew/Cancel.
+
+1.10 Queries must include BOUND quotes
+----------------------------------------------------------------------
+File: app.js
+a) renderQuotes() (line ~731): change
+       let list = QUOTES.filter(q => q.status === 'APPROVED');
+   to include BOUND:
+       let list = QUOTES.filter(q => q.status === 'APPROVED' || q.status === 'BOUND');
+b) Dashboard counts:
+   - approvedNotIssued (line ~796) -> also count BOUND (no policyNumber).
+   - renderDashboard active/lifecycle figures — keep ACTIVE-only as before.
+c) Reports (line ~2831): approvedCount can stay APPROVED-only (optional).
+
+1.11 confirmIssue() must accept BOUND
+----------------------------------------------------------------------
+File: app.js, confirmIssue() (line ~2864)
+- Change guard: allow q.status === 'APPROVED' OR q.status === 'BOUND'.
+- On success (line ~2878): q.status = 'ACTIVE' (already there).
+- If the quote was BOUND, KEEP q.binderNumber as a permanent reference
+  (do not delete) and note it in the ISSUE transaction summary.
+- Transaction summary: 'Policy <n> issued for <insured> (binder <bn>)'.
+
+1.12 Binder expiry handling
+----------------------------------------------------------------------
+File: app.js, checkExpiredPolicies() (line ~2730)
+Add: for each quote with q.status === 'BOUND' and q.binderExpiry < today:
+  - Option A (recommended): flag as "BINDER_EXPIRED" — set q.status='APPROVED',
+    keep binderNumber + add AUDIT log (old:'BOUND', new:'APPROVED',
+    reason:'binder expired'). Re-bind allowed.
+  - Option B: leave BOUND but show an "Expired Binder" warning chip.
+Choose Option A so the quote returns to the normal Bind/Issue pipeline.
+Also surface a warning chip in renderQuoteDetails when
+q.status==='BOUND' && q.binderExpiry < today.
+
+----------------------------------------------------------------------
+PART 1 DONE CHECKLIST
+  [] node --check app.js passes
+  [] Bind button -> modal -> confirmBind creates BOUND + binder no.
+  [] BOUND quote shows binder card; Issue converts to ACTIVE
+  [] BOUND quotes appear in Quotes list + dashboard counts
+  [] Expired binder reverts to APPROVED on load
+================================================================================
+
+================================================================================
+PART 2 — POLICY VERSIONING (snapshot + diff)  (doc Sec 12)
+================================================================================
+GOAL: Every policy carries a version number; completed transactions create a
+      new version snapshot; user can view any version and a field-level diff
+      vs the current version.
+Approach chosen: "Snapshot + diff view" (lightweight; NOT a full immutable
+journal).
+
+----------------------------------------------------------------------
+2.1  Add version fields to the quote record
+----------------------------------------------------------------------
+File: app.js — QUOTES seed (line ~16)
+Optional fields (initialised by helpers, not seeded manually):
+      q.version        = 1                     (int)
+      q.versionHistory = []                    (array of snapshots)
+Provide a helper used everywhere:
+      function ensureVersioning(q) {
+        if (!q.version) q.version = 1;
+        if (!Array.isArray(q.versionHistory)) q.versionHistory = [];
+      }
+
+2.2  snapshotQuote(q) helper
+----------------------------------------------------------------------
+File: app.js — add near helpers (line ~594)
+Captures the CURRENT field values into a plain object:
+      {
+        insuredName, fein, lob, coverage, limit, deductible,
+        effective, expiration, premium, basePremium, modFactor,
+        scheduleCredit, slaTax, stampingFee, ratingBasis,
+        billingPlan, paymentMethod
+      }
+Return the object. (Keeps snapshot small; add fields if needed later.)
+
+2.3  bumpVersion(q, type, summary) helper
+----------------------------------------------------------------------
+File: app.js — add near snapshotQuote
+Logic:
+  1. ensureVersioning(q).
+  2. current = snapshotQuote(q)  (the state BEFORE change if called first)
+     => call bumpVersion BEFORE mutating q, OR snapshot before+after.
+  3. changedFields = compare snapshot vs current quote after change
+     (field names whose value changed).
+  4. q.versionHistory.push({
+       version: ++q.version,            // new version number
+       timestamp: ISO now,
+       type: type,                      // 'ISSUE' | 'RENEWAL' | 'ENDORSEMENT' | 'EXPIRATION' | ...
+       summary: summary,
+       changedFields: changedFields,
+       snapshot: <snapshot object of post-change state>
+     })
+Note: to compute changedFields reliably, pass both the pre-snapshot and the
+post-snapshot, or capture pre-snapshot first then call after mutation.
+Recommended pattern per change site:
+       const pre = snapshotQuote(q);          // before mutation
+       ... mutate q ...
+       const post = snapshotQuote(q);         // after mutation
+       const diff = fieldsChanged(pre, post);
+       q.versionHistory.push({ version:++q.version, ..., changedFields:diff, snapshot:post });
+
+2.4  fieldsChanged(pre, post) helper
+----------------------------------------------------------------------
+File: app.js — add near snapshotQuote
+Return array of keys where pre[k] !== post[k].
+
+2.5  Hook version bump into every state-changing flow
+----------------------------------------------------------------------
+File: app.js — one call each:
+a) confirmIssue()        (line ~2864)  -> type 'ISSUE'        (first version, version 1)
+b) acceptNotice() renewal branch (line ~2632) -> type 'RENEWAL'
+c) processEndorsementRequest() APPROVED path (line ~1376) -> type 'ENDORSEMENT'
+d) expirePolicy()        (line ~2711)  -> type 'EXPIRATION'
+For (b)/(c)/(d): capture pre-snapshot, apply existing mutations, then bump.
+Do NOT bump on: reject/decline, notices, reinstatement is optional (can bump
+with type 'REINSTATEMENT' — recommended for consistency).
+
+2.6  Version badge on policy detail
+----------------------------------------------------------------------
+File: app.js, renderPolicyDetail() (line ~1053), header (line ~1092)
+After <h1>${q.policyNumber}</h1> add a version badge:
+      <span class="chip chip-info">v${q.version || 1}</span>
+Also add to quote-details header (renderQuoteDetails, line ~2329).
+
+2.7  Version History UI on policy detail
+----------------------------------------------------------------------
+File: app.js, renderPolicyDetail() (line ~1053) — add a new card near
+      Transaction History (line ~1177).
+Card "Version History":
+  - Table columns: Version | Date | Type | Summary | Changed Fields | View
+  - Each row button "View" -> openVersionSnapshot(q.id, version)
+  - Empty state: "No version history yet" (before first issue).
+
+2.8  Version snapshot/diff viewer
+----------------------------------------------------------------------
+File: app.js — new function openVersionSnapshot(quoteId, version)
+- Reuse a generic modal (add `#version-modal` in index.html near #info-modal):
+  - Left: snapshot field values (label: value) from that version.
+  - Right/top: "Changed vs current" list of field names + old->new values.
+    Compute by comparing that version.snapshot vs snapshotQuote(current q)
+    for the changedFields; render as a small table (Field | vN | Current).
+- On OK just closes; no edit allowed (read-only history).
+
+2.9  (Optional) Multi-version diff summary chip
+----------------------------------------------------------------------
+Show "N versions" in policy list summary (renderPolicies, line ~990) and in
+the dashboard card if easy; purely cosmetic, skip if time-constrained.
+
+----------------------------------------------------------------------
+PART 2 DONE CHECKLIST
+  [] node --check app.js passes
+  [] Issue creates version 1; renewal/endorsement/expiry bump version
+  [] Policy header shows vN badge
+  [] Version History card lists snapshots
+  [] View opens read-only snapshot + changed-fields diff
+================================================================================
+
+================================================================================
+PART 3 — UW QUEUE / NEW SUBMISSION FIX  (doc Sec 14)
+================================================================================
+GOAL: Repair the dead-code UW workflow so a new submission can be created,
+      reviewed, and approved — and the approval flows into the normal
+      Quotes -> Bind/Issue pipeline.
+
+CURRENT BUGS (confirmed in analysis):
+  1. index.html has NO #screen-uw-queue and NO #screen-new-submission.
+  2. showScreen() (app.js:603) has no case for 'uw-queue'.
+  3. UW_QUEUE and SUBMISSIONS are never declared (ReferenceError if reached).
+  4. uwDecision() pushes into a POLICIES array that is never declared/used
+     by the real Policies screen (which reads QUOTES, line ~999).
+  5. exportCSV() (app.js:2134) iterates POLICIES -> would throw.
+
+----------------------------------------------------------------------
+3.1  Declare UW_QUEUE and SUBMISSIONS seed arrays
+----------------------------------------------------------------------
+File: app.js — near QUOTES declaration (line ~16)
+Add (3-4 rows each is enough):
+  const SUBMISSIONS = [
+    { id:'SUB-2026-101', insured:'Greenfield Logistics', lob:'General Liability', premium:87500, status:'New', submittedDate:'2026-07-30', assignedTo:'Akhilesh-Salman-Policy', score:7.5 }
+  ];
+  const UW_QUEUE = [
+    { id:'UWO-001', submissionId:'SUB-2026-101', insured:'Greenfield Logistics', lob:'GL', premium:87500, score:7.5, daysInQueue:2, status:'New', assignedTo:'Akhilesh-Salman-Policy' }
+  ];
+Match the field names already used by renderUWQueue()/uwDecision()/renderSubmissionDetail().
+
+3.2  Add the UW Queue + New Submission screens to index.html
+----------------------------------------------------------------------
+File: index.html
+a) Sidebar (Policies section, line ~57): add
+   <div class="sidebar-item" id="nav-uw-queue" onclick="showScreen('uw-queue')">
+     <span class="icon"><i class="fas fa-clipboard-check"></i></span><span>UW Queue</span></div>
+b) Add <div id="screen-uw-queue" class="screen"> ... </div> containing:
+   - page-header "Underwriting Queue" + button "New Submission"
+     (onclick="showScreen('new-submission')")
+   - .summary-card with #uw-queue summary (ids used by renderUWQueue:
+     the function writes into '#screen-uw-queue .summary-card' and
+     '#uw-queue-body')
+   - a data-table <tbody id="uw-queue-body"></tbody>
+   - a detail panel <div id="submission-detail-body"></div>
+c) Add <div id="screen-new-submission" class="screen"> ... </div>:
+   - page-header "New Submission"
+   - form with: Insured Name (text), Line of Business (select with the same
+     LOB list used elsewhere), Premium (number), and a "Submit" button
+     (onclick="submitNewSubmission()")
+   - use markup selectors EXACTLY as submitNewSubmission() expects:
+     '#screen-new-submission .form-row:first-child .form-group:first-child .form-input'
+     '#screen-new-submission select'
+   (either match these selectors or update the function to use ids — the
+   cleaner option is to add ids and update the function in 3.5.)
+
+3.3  Wire showScreen() for uw-queue and new-submission
+----------------------------------------------------------------------
+File: app.js, showScreen() (line ~603)
+Add cases:
+      if (id === 'uw-queue') renderUWQueue();
+      if (id === 'new-submission') {}    // form screen, no render needed
+Also ensure backFromSubScreen() (line ~946) routes back sensibly (add
+'screen-uw-queue'/'screen-new-submission' to the lifecycle handling if wanted).
+
+3.4  uwDecision() — approval must create a QUOTE, not a POLICIES row
+----------------------------------------------------------------------
+File: app.js, uwDecision() (line ~2027)
+Replace the POLICIES.push block (lines ~2053-2081) with logic that creates a
+normal APPROVED quote so it enters the standard pipeline:
+  1. Build a new quote object mirroring QUOTES schema:
+       id:'QTE-2026-' + padded, insuredName:u.insured,
+       lob: full LOB name, status:'APPROVED', policyNumber:null,
+       effective/expiration defaults, premium:u.premium,
+       uw:u.assignedTo, agent:'-', mga:'-', coverage:u.lob,
+       limit:2000000, deductible:10000, ratingBasis:'-',
+       basePremium/premium fields, createdDate, approvedDate: today,
+       version:1, versionHistory:[]  (see Part 2)
+  2. QUOTES.push(newQuote).
+  3. Keep ACTIVITIES + AUDIT_LOGS logging (already present).
+  4. Remove the POLICIES.push call entirely (do not introduce POLICIES).
+Why: Policies screen reads QUOTES (line ~999); this makes approvals visible.
+
+3.5  submitNewSubmission() — robust form reads
+----------------------------------------------------------------------
+File: app.js, submitNewSubmission() (line ~2149)
+Update to read by element id (add ids in 3.2c):
+      const name = document.getElementById('nsub-name').value;
+      const lob  = document.getElementById('nsub-lob').value;
+      const prem = Number(document.getElementById('nsub-premium').value) || 87500;
+Guard empty name -> alert. Keep the SUBMISSIONS.push + UW_QUEUE.push logic
+(lines ~2155-2156), then showScreen('uw-queue') instead of alert-only.
+
+3.6  renderUWQueue() empty-state safety
+----------------------------------------------------------------------
+File: app.js, renderUWQueue() (line ~1985)
+- It already guards `if (!container) return;`.
+- Add empty-row handling when UW_QUEUE.length === 0 in container.innerHTML.
+
+3.7  (Optional) add to quick-actions on dashboard
+----------------------------------------------------------------------
+File: index.html quick-action grid (lines ~101-108)
+Add "UW Queue" quick action tile -> showScreen('uw-queue').
+
+----------------------------------------------------------------------
+PART 3 DONE CHECKLIST
+  [] node --check app.js passes
+  [] UW Queue nav + screen opens; seed row renders with Approve/Refer/Decline
+  [] New Submission form creates SUB + UW row; lands on uw-queue
+  [] Approve creates an APPROVED quote visible in Quotes
+  [] No ReferenceError for UW_QUEUE/SUBMISSIONS/POLICIES anywhere
+================================================================================
+
+================================================================================
+PART 4 — exportCSV CRASH FIX
+================================================================================
+GOAL: The Policies CSV export must not throw.
+
+File: app.js, exportCSV() (line ~2132-2146)
+Current: iterates POLICIES (undefined) -> throws ReferenceError on click.
+Fix:     iterate the real policy source:
+      const policies = QUOTES.filter(q => q.policyNumber);
+      policies.forEach(p => { ... });   // p is the quote, fields match
+Keep header row + blob/download + ACTIVITIES log unchanged.
+
+----------------------------------------------------------------------
+PART 4 DONE CHECKLIST
+  [] node --check app.js passes
+  [] Policies -> Export CSV downloads a file without error
+================================================================================
+
+================================================================================
+GLOBAL VERIFICATION (run last)
+================================================================================
+  1. node --check app.js                              -> SYNTAX_OK
+  2. node "C:\Users\AKHILE~1\AppData\Local\Temp\opencode\pas_test.js"  -> all PASS
+  3. Manual flow walkthrough:
+       Login -> Quotes -> open APPROVED quote -> Bind -> confirm
+       -> quote BOUND + binder card -> Issue Bound Policy -> ACTIVE v1
+       -> Renewal offer ACCEPT -> version bumps to v2, history grows
+       -> Policy detail: Version History + View diff
+       -> UW Queue: new submission -> approve -> new APPROVED quote
+       -> Policies -> Export CSV -> no error
+================================================================================
+END OF REQUIREMENTS
+================================================================================
