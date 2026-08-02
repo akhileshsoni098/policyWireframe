@@ -1079,11 +1079,24 @@ function renderPolicyDetail(id) {
     return short;
   }
 
+  const priorPolicy = q.priorPolicyId ? QUOTES.find(x => x.policyNumber === q.priorPolicyId) : null;
+  const nextPolicy = q.renewedTo ? QUOTES.find(x => x.policyNumber === q.renewedTo) : null;
+  const chainCard = (priorPolicy || nextPolicy) ? `
+    <div class="card glass mb-md">
+      <div class="card-title">Policy Chain</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
+        ${priorPolicy ? `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><span style="color:var(--text-muted);"><i class="fas fa-history"></i> Renewed from:</span><span style="font-family:monospace;color:var(--accent);font-weight:600;">${q.priorPolicyId}</span><span style="font-size:12px;color:var(--text-secondary);">${priorPolicy.insuredName}</span><button class="btn btn-ghost btn-xs" onclick="selectedPolicyId='${priorPolicy.id}';renderPolicies();"><i class="fas fa-eye"></i> View Previous</button></div>` : ''}
+        ${nextPolicy ? `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><span style="color:var(--text-muted);"><i class="fas fa-arrow-right"></i> Renewed to:</span><span style="font-family:monospace;color:var(--accent);font-weight:600;">${q.renewedTo}</span><span style="font-size:12px;color:var(--text-secondary);">${nextPolicy.insuredName}</span><button class="btn btn-ghost btn-xs" onclick="selectedPolicyId='${nextPolicy.id}';renderPolicies();"><i class="fas fa-eye"></i> View Next</button></div>` : ''}
+      </div>
+    </div>` : '';
+
   container.innerHTML = `
     <div class="flex-between mb-sm">
       <button class="btn btn-ghost btn-sm" onclick="selectedPolicyId=null;renderPolicies();"><i class="fas fa-arrow-left"></i> Back to Policies</button>
     </div>
     <div class="journey-bar"><span class="step done"><i class="fas fa-check-circle"></i> Policies</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step current">${q.policyNumber}</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step"><i class="far fa-circle"></i> Endorse / Renew / Cancel</span></div>
+
+    ${chainCard}
 
     <div class="card glass mb-md">
       <div class="flex-between">
@@ -2621,47 +2634,94 @@ function closeNoticeDetail() {
   document.getElementById('ntc-modal').classList.remove('open');
 }
 
+function generatePolicyNumber(year) {
+  const y = year || new Date().getFullYear();
+  let maxSeq = 0;
+  QUOTES.forEach(x => {
+    const m = /^POL-\d{4}-(\d+)$/.exec(x.policyNumber || '');
+    if (m) maxSeq = Math.max(maxSeq, parseInt(m[1], 10));
+  });
+  return 'POL-' + y + '-' + String(maxSeq + 1).padStart(3, '0');
+}
+
+function makeInstallmentSchedule(p) {
+  const instCount = { Annual:1, 'Semi-Annual':2, Quarterly:4, Monthly:12 };
+  const numInst = instCount[p.billingPlan] || 12;
+  const instAmount = Math.round(p.premium / numInst);
+  const schedule = [];
+  const start = new Date(p.effective);
+  for (let i = 0; i < numInst; i++) {
+    const due = new Date(start);
+    if (p.billingPlan === 'Monthly') due.setMonth(due.getMonth() + i);
+    else if (p.billingPlan === 'Quarterly') due.setMonth(due.getMonth() + i * 3);
+    else if (p.billingPlan === 'Semi-Annual') due.setMonth(due.getMonth() + i * 6);
+    else if (p.billingPlan === 'Annual') due.setFullYear(due.getFullYear() + i);
+    schedule.push({
+      inst: i + 1,
+      dueDate: due.toISOString().slice(0,10),
+      amountDue: i === numInst - 1 ? p.premium - instAmount * (numInst - 1) : instAmount,
+      amountPaid: 0, status: 'Upcoming', paidDate: null
+    });
+  }
+  return schedule;
+}
+
 function acceptNotice(id) {
   const n = NOTICES.find(x => x.id === id);
   if (!n) return;
+  if (n.status === 'EXECUTED' || n.status === 'REJECTED' || n.status === 'EXPIRED') return;
   const q = QUOTES.find(x => x.id === n.quoteId);
   if (!q) return;
   n.status = 'ACCEPTED';
   n.decision = 'ACCEPTED';
   n.decisionDate = new Date().toISOString().slice(0,10);
   if (n.type === 'RENEWAL_OFFER') {
-    q.status = 'ACTIVE';
-    if (n.proposedValues) {
-      const pv = n.proposedValues;
-      q.effective = pv.effectiveDate || q.expiration;
-      q.expiration = pv.expirationDate || new Date(new Date(q.effective).getTime() + 365*86400000).toISOString().slice(0,10);
-      q.premium = pv.premium || q.premium;
-      q.basePremium = pv.basePremium || q.basePremium;
-      q.modFactor = pv.modFactor || q.modFactor;
-      q.scheduleCredit = pv.scheduleCredit !== undefined ? pv.scheduleCredit : q.scheduleCredit;
+    const pv = n.proposedValues || {};
+    const newEffective = pv.effectiveDate || new Date(new Date(q.expiration).getTime() + 86400000).toISOString().slice(0,10);
+    const newExpiration = pv.expirationDate || new Date(new Date(newEffective).getTime() + 365*86400000).toISOString().slice(0,10);
+    const newPremium = pv.premium || q.premium;
+    const newBase = pv.basePremium || q.basePremium;
+    const newMod = pv.modFactor || q.modFactor;
+    const newCredit = pv.scheduleCredit !== undefined ? pv.scheduleCredit : (q.scheduleCredit || 0);
+
+    if (!q.policyNumber) {
+      q.status = 'ACTIVE';
+      q.effective = newEffective;
+      q.expiration = newExpiration;
+      q.premium = newPremium;
+      q.basePremium = newBase;
+      q.modFactor = newMod;
+      q.scheduleCredit = newCredit;
       q.slaTax = Math.round(q.premium * 0.036);
       q.stampingFee = Math.round(q.premium * 0.015);
-      const instCount = { Annual:1, 'Semi-Annual':2, Quarterly:4, Monthly:12 };
-      const numInst = instCount[q.billingPlan] || 12;
-      const instAmount = Math.round(q.premium / numInst);
-      const schedule = [];
-      const start = new Date(q.effective);
-      for (let i = 0; i < numInst; i++) {
-        const due = new Date(start);
-        if (q.billingPlan === 'Monthly') due.setMonth(due.getMonth() + i);
-        else if (q.billingPlan === 'Quarterly') due.setMonth(due.getMonth() + i * 3);
-        else if (q.billingPlan === 'Semi-Annual') due.setMonth(due.getMonth() + i * 6);
-        else if (q.billingPlan === 'Annual') due.setFullYear(due.getFullYear() + i);
-        schedule.push({
-          inst: i + 1,
-          dueDate: due.toISOString().slice(0,10),
-          amountDue: i === numInst - 1 ? q.premium - instAmount * (numInst - 1) : instAmount,
-          amountPaid: 0, status: 'Upcoming', paidDate: null
-        });
-      }
-      BILLING_SCHEDULES[q.id] = schedule;
+      BILLING_SCHEDULES[q.id] = makeInstallmentSchedule(q);
+      TRANSACTIONS.push({ id:'TXN-' + String(TRANSACTIONS.length+1).padStart(3,'0'), transactionNo:'TXN-2026-' + String(TRANSACTIONS.length+1).padStart(4,'0'), quoteId:q.id, type:'RENEWAL', status:'COMPLETED', sourceSystem:'PAS', eventId:'EVT-POLICY-RENEWED-' + String(TRANSACTIONS.length+1).padStart(3,'0'), eventStatus:'PUBLISHED', effectiveDate:q.effective, requestedBy:'System', approvedBy:'System', processedAt:new Date().toISOString(), correlationId:'CORR-' + String(TRANSACTIONS.length+1).padStart(3,'0'), summary:'Renewal executed via notice ' + id + ' — Term 2, Premium ' + fmt(q.premium) + ' for ' + q.insuredName, createdAt:new Date().toISOString().slice(0,10) });
+    } else {
+      const year = newEffective.slice(0,4);
+      let maxQid = 0;
+      QUOTES.forEach(x => { const m = /^QTE-\d{4}-(\d+)$/.exec(x.id || ''); if (m) maxQid = Math.max(maxQid, parseInt(m[1], 10)); });
+      const newId = 'QTE-' + year + '-' + String(maxQid + 1).padStart(3, '0');
+      const newPolicyNumber = generatePolicyNumber(year);
+      const renewalTerm = (q.renewalTerm || 1) + 1;
+      const np = {
+        id:newId, insuredName:q.insuredName, fein:q.fein, lob:q.lob, status:'ACTIVE',
+        effective:newEffective, expiration:newExpiration, premium:newPremium,
+        uw:q.uw, agent:q.agent, mga:q.mga, term:q.term, billingPlan:q.billingPlan, paymentMethod:q.paymentMethod,
+        coverage:q.coverage, deductible:q.deductible, limit:q.limit, ratingBasis:q.ratingBasis,
+        basePremium:newBase, modFactor:newMod, scheduleCredit:newCredit,
+        slaTax:Math.round(newPremium * 0.036), stampingFee:Math.round(newPremium * 0.015),
+        policyNumber:newPolicyNumber, issueDate:new Date().toISOString().slice(0,10),
+        createdDate:new Date().toISOString().slice(0,10), approvedDate:new Date().toISOString().slice(0,10),
+        priorPolicyId:q.policyNumber, priorPolicyNumber:q.policyNumber, renewalTerm:renewalTerm
+      };
+      QUOTES.push(np);
+      q.status = 'EXPIRED';
+      q.renewalTerm = q.renewalTerm || 1;
+      q.renewedTo = newPolicyNumber;
+      BILLING_SCHEDULES[newId] = makeInstallmentSchedule(np);
+      TRANSACTIONS.push({ id:'TXN-' + String(TRANSACTIONS.length+1).padStart(3,'0'), transactionNo:'TXN-2026-' + String(TRANSACTIONS.length+1).padStart(4,'0'), quoteId:newId, type:'RENEWAL', status:'COMPLETED', sourceSystem:'PAS', eventId:'EVT-POLICY-RENEWED-' + String(TRANSACTIONS.length+1).padStart(3,'0'), eventStatus:'PUBLISHED', effectiveDate:newEffective, requestedBy:'System', approvedBy:'System', processedAt:new Date().toISOString(), correlationId:'CORR-' + String(TRANSACTIONS.length+1).padStart(3,'0'), summary:'Renewal — new policy ' + newPolicyNumber + ' created (Term ' + renewalTerm + ') from ' + q.policyNumber + ' for ' + q.insuredName, createdAt:new Date().toISOString().slice(0,10) });
+      TRANSACTIONS.push({ id:'TXN-' + String(TRANSACTIONS.length+1).padStart(3,'0'), transactionNo:'TXN-2026-' + String(TRANSACTIONS.length+1).padStart(4,'0'), quoteId:q.id, type:'EXPIRATION', status:'COMPLETED', sourceSystem:'PAS', eventId:'EVT-POLICY-EXPIRED-' + String(TRANSACTIONS.length+1).padStart(3,'0'), eventStatus:'PUBLISHED', effectiveDate:q.expiration, requestedBy:'System', approvedBy:'System', processedAt:new Date().toISOString(), correlationId:'CORR-' + String(TRANSACTIONS.length+1).padStart(3,'0'), summary:'Policy expired — term renewed into new policy ' + newPolicyNumber + ' for ' + q.insuredName, createdAt:new Date().toISOString().slice(0,10) });
     }
-    TRANSACTIONS.push({ id:'TXN-' + String(TRANSACTIONS.length+1).padStart(3,'0'), transactionNo:'TXN-2026-' + String(TRANSACTIONS.length+1).padStart(4,'0'), quoteId:q.id, type:'RENEWAL', status:'COMPLETED', sourceSystem:'PAS', eventId:'EVT-POLICY-RENEWED-' + String(TRANSACTIONS.length+1).padStart(3,'0'), eventStatus:'PUBLISHED', effectiveDate:q.effective, requestedBy:'System', approvedBy:'System', processedAt:new Date().toISOString(), correlationId:'CORR-' + String(TRANSACTIONS.length+1).padStart(3,'0'), summary:'Renewal executed via notice ' + id + ' — Term 2, Premium ' + fmt(q.premium) + ' for ' + q.insuredName, createdAt:new Date().toISOString().slice(0,10) });
   } else if (n.type === 'CANCELLATION_NOTICE') {
     q.status = 'CANCELLED';
     TRANSACTIONS.push({ id:'TXN-' + String(TRANSACTIONS.length+1).padStart(3,'0'), transactionNo:'TXN-2026-' + String(TRANSACTIONS.length+1).padStart(4,'0'), quoteId:q.id, type:'CANCELLATION', status:'COMPLETED', sourceSystem:'PAS', eventId:'EVT-POLICY-CANCELLED-' + String(TRANSACTIONS.length+1).padStart(3,'0'), eventStatus:'PUBLISHED', effectiveDate:new Date().toISOString().slice(0,10), requestedBy:'System', approvedBy:'System', processedAt:new Date().toISOString(), correlationId:'CORR-' + String(TRANSACTIONS.length+1).padStart(3,'0'), summary:'Cancellation executed via notice ' + id + ' for ' + q.insuredName, createdAt:new Date().toISOString().slice(0,10) });
@@ -2674,6 +2734,9 @@ function acceptNotice(id) {
   n.events.push({ step:'ACCEPTED', at:new Date().toLocaleString(), actor:'Akhilesh-Salman-Policy', note:'PAS recorded insured response — ACCEPT, then executed: ' + n.type + ' for ' + q.insuredName });
   ACTIVITIES.unshift({timestamp:new Date().toLocaleString(), user:'Akhilesh-Salman-Policy', action:'Recorded', module:'Notice', entity:id, details:'Insured response ACCEPT recorded and notice executed — ' + n.type + ' for ' + q.insuredName});
   saveData();
+  if (n.type === 'RENEWAL_OFFER' && q.renewedTo) {
+    alert('Renewal executed!\nNew policy: ' + q.renewedTo + ' (ACTIVE)\nPrevious policy: ' + q.policyNumber + ' — preserved as snapshot (EXPIRED)\n\nOpen Policies to view both.');
+  }
   renderNoticeManagement();
 }
 
@@ -2874,7 +2937,7 @@ function confirmIssue() {
     errorEl.style.display = 'block';
     return;
   }
-  const policyNum = 'POL-2026-' + String(QUOTES.filter(x => x.policyNumber).length + 1).padStart(3,'0');
+  const policyNum = generatePolicyNumber(effectiveDate.slice(0,4));
   q.status = 'ACTIVE';
   q.policyNumber = policyNum;
   q.issueDate = issueDate;
