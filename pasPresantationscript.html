@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAS — Client Presentation</title>
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('pas_pres_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));}catch(e){}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --bg:#f4f6fb; --card:#ffffff; --border:#e2e8f0; --soft:#eef2ff;
+  --text:#0f172a; --text-secondary:#475569; --text-muted:#94a3b8;
+  --accent:#0099cc; --secondary:#7c3aed; --grad1:#00d4ff; --grad2:#7c3aed;
+  --success:#10b981; --warning:#f59e0b; --danger:#ef4444; --info:#3b82f6;
+  --shadow:0 6px 24px rgba(2,6,23,.07); --radius:14px;
+}
+[data-theme="dark"]{
+  --bg:#0f172a; --card:#1e293b; --border:#334155; --soft:#16233d;
+  --text:#e2e8f0; --text-secondary:#94a3b8; --text-muted:#64748b;
+  --accent:#00d4ff; --secondary:#a78bfa;
+  --shadow:0 6px 24px rgba(0,0,0,.45);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;overflow:hidden;transition:background .3s,color .3s}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:8px}
+::-webkit-scrollbar-track{background:transparent}
+kbd{background:var(--soft);border:1px solid var(--border);border-bottom-width:2px;border-radius:6px;padding:2px 8px;font-size:12px;font-family:inherit;font-weight:700;color:var(--text-secondary)}
+
+/* ---------- TOP BAR ---------- */
+.topbar{position:fixed;top:0;left:0;right:0;height:56px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:0 18px;z-index:100;transition:background .3s,border .3s}
+.logo{display:flex;align-items:center;gap:10px}
+.logo .lb{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--grad1),var(--grad2));color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.logo .tt{font-size:14px;font-weight:800;letter-spacing:-.2px;line-height:1.1}
+.logo .st{font-size:10px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.8px;display:block;line-height:1.4}
+.topbar .spacer{flex:1}
+.iconbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.iconbtn:hover{color:var(--accent);border-color:var(--accent)}
+
+/* ---------- PROGRESS ---------- */
+.progress{position:fixed;top:56px;left:0;height:3px;background:linear-gradient(90deg,var(--grad1),var(--grad2));width:0%;z-index:101;transition:width .3s ease}
+
+/* ---------- SLIDES ---------- */
+.deck{position:fixed;inset:0}
+.slide{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;background:var(--bg);opacity:0;visibility:hidden;transform:translateY(18px) scale(.99);transition:opacity .45s ease,transform .45s ease,visibility 0s linear .45s}
+.slide.active{opacity:1;visibility:visible;transform:none;transition:opacity .45s ease,transform .45s ease}
+.slide-inner{max-width:1080px;margin:0 auto;padding:84px 36px 110px;min-height:100%;display:flex;flex-direction:column}
+.slide-inner.center{align-items:center;justify-content:center;text-align:center}
+.slide.active .slide-inner>*{opacity:0;animation:fadeUp .55s ease both}
+.slide.active .slide-inner>*:nth-child(1){animation-delay:.05s}
+.slide.active .slide-inner>*:nth-child(2){animation-delay:.12s}
+.slide.active .slide-inner>*:nth-child(3){animation-delay:.19s}
+.slide.active .slide-inner>*:nth-child(4){animation-delay:.26s}
+.slide.active .slide-inner>*:nth-child(5){animation-delay:.33s}
+.slide.active .slide-inner>*:nth-child(6){animation-delay:.40s}
+.slide.active .slide-inner>*:nth-child(7){animation-delay:.47s}
+.slide.active .slide-inner>*:nth-child(8){animation-delay:.54s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+/* ---------- SLIDE HEAD ---------- */
+.slide-head{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.slide-ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;background:linear-gradient(135deg,var(--grad1),var(--grad2));box-shadow:0 6px 18px rgba(0,212,255,.28);flex-shrink:0}
+.slide-head h2{font-size:26px;font-weight:800;letter-spacing:-.4px;line-height:1.2}
+.slide-head .sub{display:block;font-size:12px;font-weight:700;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:.7px}
+.slide-head .tagline{display:block;font-size:14px;color:var(--text-secondary);margin-top:5px;font-weight:400;text-transform:none;letter-spacing:0}
+
+/* ---------- CARDS / GRIDS ---------- */
+.grid{display:grid;gap:14px}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);transition:background .3s,border .3s}
+.card.ico .ci{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px;color:#fff;flex-shrink:0}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px}
+.card p{font-size:13px;color:var(--text-secondary);line-height:1.6}
+.card ul{padding-left:18px;color:var(--text-secondary);font-size:13px}
+.card li{margin-bottom:4px}
+
+/* ---------- AGENDA ---------- */
+.agenda{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;counter-reset:ag;list-style:none}
+.agenda li{counter-increment:ag;display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;box-shadow:var(--shadow);font-size:13.5px;color:var(--text-secondary);transition:background .3s,border .3s}
+.agenda li::before{content:counter(ag);flex-shrink:0;width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--grad1),var(--grad2));color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.agenda li b{color:var(--text)}
+.agenda li i{color:var(--accent);margin-left:auto;font-size:12px}
+
+/* ---------- FLOW ---------- */
+.flow{display:flex;align-items:stretch;gap:6px;flex-wrap:wrap}
+.flow .step{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:12px;font-weight:600;text-align:center;min-width:88px;flex:1;box-shadow:var(--shadow);color:var(--text-secondary);transition:background .3s,border .3s}
+.flow .step b{display:block;font-size:11px;font-weight:700;color:var(--text);margin-bottom:2px}
+.flow .step.done{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,.08)}
+.flow .step.warn{border-color:var(--warning);color:var(--warning);background:rgba(245,158,11,.1)}
+.flow .step.good{border-color:var(--success);color:var(--success);background:rgba(16,185,129,.1)}
+.flow .arrow{display:flex;align-items:center;color:var(--text-muted);font-size:12px;flex-shrink:0}
+.flow-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px;background:var(--soft);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:12px}
+
+/* ---------- TABLE ---------- */
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;transition:background .3s,border .3s}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:var(--soft);font-weight:700;font-size:11.5px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--soft)}
+.total-row td{font-weight:800;background:rgba(0,212,255,.07)}
+
+/* ---------- KPI PREVIEW ---------- */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);transition:background .3s,border .3s}
+.kpi .lbl{font-size:10.5px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.kpi .val{font-size:22px;font-weight:800;margin-top:4px}
+.kpi .i{float:right;font-size:15px;opacity:.85}
+
+/* ---------- TAGS / CHIPS ---------- */
+.tag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;white-space:nowrap}
+.tag.g{background:rgba(16,185,129,.15);color:#059669}
+.tag.y{background:rgba(245,158,11,.15);color:#d97706}
+.tag.r{background:rgba(239,68,68,.15);color:#dc2626}
+.tag.b{background:rgba(0,212,255,.15);color:#0099cc}
+.tag.p{background:rgba(124,58,237,.15);color:#6d28d9}
+[data-theme="dark"] .tag.g{color:#6ee7b7;background:rgba(16,185,129,.18)}
+[data-theme="dark"] .tag.y{color:#fcd34d;background:rgba(245,158,11,.2)}
+[data-theme="dark"] .tag.r{color:#fca5a5;background:rgba(239,68,68,.2)}
+[data-theme="dark"] .tag.b{color:#67e8f9;background:rgba(0,212,255,.18)}
+[data-theme="dark"] .tag.p{color:#c4b5fd;background:rgba(124,58,237,.25)}
+
+/* ---------- FORMULA / NOTE ---------- */
+.formula{font-family:'Courier New',monospace;background:#0f0c29;color:#00d4ff;border-radius:10px;padding:14px 18px;font-size:13px;white-space:pre-wrap;line-height:1.9}
+.formula .g{color:#10b981;font-weight:700}
+.note{background:rgba(0,212,255,.08);border-left:4px solid var(--accent);padding:12px 16px;border-radius:0 10px 10px 0;font-size:13px;color:var(--text-secondary)}
+.note strong{color:var(--accent)}
+
+/* ---------- BUTTONS / DEMO BAR ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:10px;border:1px solid transparent;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none}
+.btn.primary{background:linear-gradient(135deg,var(--grad1),var(--grad2));color:#fff;box-shadow:0 8px 22px rgba(0,212,255,.3)}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,212,255,.42)}
+.btn.ghost{background:transparent;border-color:var(--border);color:var(--text-secondary)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn.small{padding:8px 14px;font-size:12.5px;border-radius:8px}
+.btn.big{padding:14px 26px;font-size:15px;border-radius:12px}
+.demo-bar{margin-top:auto;display:flex;align-items:center;gap:12px;padding-top:22px;flex-wrap:wrap}
+.demo-bar .dlabel{font-size:11.5px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+
+/* ---------- HERO ---------- */
+.hero-slide{background:linear-gradient(135deg,#0f0c29 0%,#302b63 45%,#24243e 100%)}
+.hero-slide h1{font-size:50px;font-weight:900;letter-spacing:-1px;line-height:1.12;color:#fff;margin-top:18px}
+.hero-slide h1 .grad{background:linear-gradient(90deg,#00d4ff,#a78bfa,#f0abfc);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-slide .lead{font-size:17px;color:rgba(255,255,255,.85);max-width:700px;margin-top:14px}
+.hero-slide .lead strong{color:#7ee8ff}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,255,.15);border:1px solid rgba(0,212,255,.35);color:#7ee8ff;padding:6px 16px;border-radius:30px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}
+.chips .chip{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:8px 14px;border-radius:12px;font-size:13px;font-weight:600;color:#fff}
+.chips .chip i{color:#00d4ff}
+.cta{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap;justify-content:center}
+.hint-hero{margin-top:28px;font-size:12px;color:rgba(255,255,255,.55)}
+.hint-hero kbd{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25);color:#fff}
+
+/* ---------- CONTROLS ---------- */
+.controls{position:fixed;bottom:0;left:0;right:0;height:56px;background:var(--card);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:16px;z-index:100;transition:background .3s,border .3s}
+.controls .navbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.controls .navbtn:hover{color:#fff;background:linear-gradient(135deg,var(--grad1),var(--grad2));border-color:transparent}
+.counter{font-size:12.5px;color:var(--text-muted);font-weight:600;min-width:62px;text-align:center;font-variant-numeric:tabular-nums}
+.dots{display:flex;gap:6px;max-width:40vw;overflow:hidden;flex-wrap:wrap;justify-content:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;border:none;padding:0}
+.dot.active{background:linear-gradient(135deg,var(--grad1),var(--grad2));transform:scale(1.3)}
+.hint{position:fixed;bottom:64px;right:16px;font-size:11px;color:var(--text-muted);z-index:99;pointer-events:none}
+
+/* ---------- INDEX OVERLAY ---------- */
+.overlay{position:fixed;inset:0;background:rgba(2,6,23,.6);backdrop-filter:blur(4px);z-index:200;opacity:0;visibility:hidden;transition:all .25s}
+.overlay.show{opacity:1;visibility:visible}
+.overlay .panel{position:absolute;top:0;right:0;bottom:0;width:340px;max-width:90vw;background:var(--card);padding:20px;overflow-y:auto;transform:translateX(100%);transition:transform .3s;transition:background .3s}
+.overlay.show .panel{transform:none}
+.overlay .phead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.overlay .phead h3{font-size:15px;font-weight:800}
+.overlay a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;color:var(--text-secondary);text-decoration:none;font-size:13px;transition:all .15s}
+.overlay a i{width:18px;text-align:center;color:var(--text-muted);font-size:12px}
+.overlay a:hover,.overlay a.active{background:var(--soft);color:var(--accent)}
+.overlay a.active i{color:var(--accent)}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:760px){
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .agenda{grid-template-columns:1fr}
+  .slide-inner{padding:76px 18px 100px}
+  .slide-head h2{font-size:20px}
+  .hero-slide h1{font-size:32px}
+  .controls .dots{display:none}
+  .flow .arrow{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="logo">
+    <div class="lb">PA</div>
+    <div><div class="tt">PAS Console</div><div class="st">Client Presentation · 2026</div></div>
+  </div>
+  <div class="spacer"></div>
+  <button class="iconbtn" id="indexBtn" title="Slide Index (M)"><i class="fas fa-th-large"></i></button>
+  <button class="iconbtn" id="themeToggle" title="Day / Night (T)"><i class="fas fa-moon"></i></button>
+</header>
+
+<!-- DECK -->
+<main class="deck">
+
+  <!-- 1 · HERO -->
+  <section class="slide hero-slide active" id="s1">
+    <div class="slide-inner center">
+      <div class="badge"><i class="fas fa-shield-halved"></i> Policy Administration System · Client Presentation</div>
+      <h1>Insurance ka Kaam,<br><span class="grad">Ab Ek Hi System Mein</span></h1>
+      <p class="lead">MGA aur Carrier ke liye <strong>complete policy lifecycle</strong> ka browser-based platform — Submission, Underwriting, Issue, Notices, Endorsement, Renewal, Cancellation, Reinstatement, Billing. Sab kuch ek jagah, <strong>full audit</strong> ke saath.</p>
+      <div class="chips">
+        <span class="chip"><i class="fas fa-building"></i> MGA + Carrier Workflow</span>
+        <span class="chip"><i class="fas fa-desktop"></i> 20+ Screens</span>
+        <span class="chip"><i class="fas fa-globe"></i> 100% Browser-based</span>
+        <span class="chip"><i class="fas fa-comments"></i> Hinglish UX</span>
+        <span class="chip"><i class="fas fa-shield-halved"></i> Full Audit Trail</span>
+      </div>
+      <div class="cta">
+        <button class="btn primary big" onclick="openDemo('index.html')"><i class="fas fa-play"></i> Open Live Demo</button>
+        <button class="btn ghost big" onclick="go(1)"><i class="fas fa-arrow-right"></i> Start Presentation</button>
+      </div>
+      <div class="hint-hero">Navigate with <kbd>←</kbd> <kbd>→</kbd> or click Next</div>
+    </div>
+  </section>
+
+  <!-- 2 · AGENDA -->
+  <section class="slide" id="s2">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-list-check"></i></div>
+        <div><h2>Agenda</h2><span class="sub">Aaj hum kya cover karenge</span><span class="tagline">Har section ke end par live demo button hai — screen pe hi chalta hua dikhega.</span></div>
+      </div>
+      <ol class="agenda">
+        <li><b>Problem</b> — Aaj ke insurance operations ki taklifen: scattered data, koi audit trail nahi, slow notice chain, manual premium calculation aur compliance risk — aaj ka poora scenario. <i class="fas fa-arrow-right"></i></li>
+        <li><b>Solution</b> — PAS ka concept: ek single system jo poora policy lifecycle, saare workflows aur har event ka audit trail ek jagah sambhalta hai. <i class="fas fa-arrow-right"></i></li>
+        <li><b>Architecture</b> — MGA / Carrier model: Full, Limited aur Non-Binding binding authority — kaun kis cheez ka final decision lene layak hai. <i class="fas fa-arrow-right"></i></li>
+        <li><b>Policy Lifecycle</b> — Poori journey ek nazar me: New Business → Issue → Active → Endorsement → Renewal → Cancellation → Reinstatement, ek timeline pe. <i class="fas fa-arrow-right"></i></li>
+        <li><b>Dashboard</b> — Portfolio ka birds-eye view: 8 KPI cards — active policies, total premium, pending queue, notices, endorsements, cancellations, reinstatements aur waivers. <i class="fas fa-arrow-right"></i></li>
+        <li><b>New Business</b> — Submission se issue tak: UW rules (Approve ≥5 / Refer <5 / Decline ≤3), service line, effective date, premium breakdown aur policy issue. <i class="fas fa-arrow-right"></i></li>
+        <li><b>Premium</b> — Transparent pricing: base premium, experience modifier, schedule credit, SLA tax aur stamping — har paisa breakdown me, koi hidden charge nahi. <i class="fas fa-arrow-right"></i></li>
+        <li><b>Policy Detail</b> — 8 tabs me sab kuch: policy info, coverage, insured, premium, transactions, timeline, documents aur endorsements. <i class="fas fa-arrow-right"></i></li>
+        <li><b>Notice Workflow</b> — MGA → Broker → Insured: 8-step notice chain — PAS notice issue karta hai, status har step pe track hota hai, waiver ya response record hota hai. <i class="fas fa-arrow-right"></i></li>
+        <li><b>Endorsement Queue</b> — Mid-term changes: chhote changes (typofix, address update, cancellation waiver) system me approve, bade changes manual — sab queue me visible. <i class="fas fa-arrow-right"></i></li>
+        <li><b>Cancellation Flow</b> — Queue + MGA confirmation: received request → cancellation queue → reviewed &amp; final decision (accept / decline / lapsed) → policy CANCELLED ya ACTIVE — har step transaction log me. <i class="fas fa-arrow-right"></i></li>
+        <li><b>Value</b> — Aapko kya milega: single source of truth, complete audit trail, fast workflows, transparent pricing, integration-ready aur compliance-ready system. <i class="fas fa-arrow-right"></i></li>
+      </ol>
+      <div class="note" style="margin-top:18px;"><strong>Disclaimer:</strong> Ye ek functional wireframe / demo prototype hai — puri architecture ko isi jaisa develop kiya ja sakta hai. Aaj live demo + complete flow dekhenge.</div>
+    </div>
+  </section>
+
+  <!-- 3 · PROBLEM -->
+  <section class="slide" id="s3">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico" style="background:linear-gradient(135deg,#ef4444,#f97316);box-shadow:0 6px 18px rgba(239,68,68,.28);"><i class="fas fa-circle-exclamation"></i></div>
+        <div><h2>Problem — Aaj Ka Scenario</h2><span class="sub">Insurance operations me kya dikkat hoti hai</span></div>
+      </div>
+      <div class="grid grid-3">
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#ef4444,#f97316);"><i class="fas fa-sitemap"></i></div><h4>Scattered Data</h4><p>Policy records alag-alag systems me — quote ek jagah, billing doosri, documents teesri. Koi single source of truth nahi.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#f59e0b,#ef4444);"><i class="fas fa-magnifying-glass"></i></div><h4>Koi Audit Nahi</h4><p>Kaunne kya change kiya, kab kiya — pata hi nahi. Regulatory compliance (SOX / NAIC) ke liye records zaroori hai.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#8b5cf6,#ec4899);"><i class="fas fa-envelope-open-text"></i></div><h4>Slow Notice Chain</h4><p>Renewal / cancellation notices ka MGA → Broker → Insured tracking manual hai — status kahan hai, koi idea nahi.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#0ea5e9,#3b82f6);"><i class="fas fa-calculator"></i></div><h4>Manual Premium</h4><p>Premium calculation Excel / hat se — galtiyan hoti hain, transparency nahi hoti, client ko breakdown nahi dikhata.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#10b981,#0ea5e9);"><i class="fas fa-hourglass-half"></i></div><h4>Slow Workflows</h4><p>Endorsement approval, cancellation, reinstatement — sab me manual chasing, SLA miss hota hai.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);"><i class="fas fa-scale-balanced"></i></div><h4>Compliance Risk</h4><p>Har transaction ka trail nahi rehta — audit me fail hone ka dar, dispute me proof nahi milta.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · SOLUTION -->
+  <section class="slide" id="s4">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-wand-magic-sparkles"></i></div>
+        <div><h2>Solution — PAS kya hai</h2><span class="sub">Ek system, sab kuch</span></div>
+      </div>
+      <div class="grid grid-3">
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#00d4ff,#3b82f6);"><i class="fas fa-cubes"></i></div><h4>Single Source of Truth</h4><p>Quote = master record. Policy ki poori journey ek hi jagah — details, coverage, premium, versions, timeline.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#7c3aed,#ec4899);"><i class="fas fa-diagram-project"></i></div><h4>Complete Lifecycle</h4><p>Submission → UW → Issue → Active → Notice / Endorse / Renew / Cancel / Reinstate — sab workflows built-in.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#10b981,#00d4ff);"><i class="fas fa-file-signature"></i></div><h4>Har Event Ka Transaction</h4><p>Har action ek transaction + event banata hai — correlation ID ke saath, poora trail preserve hota hai.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#f59e0b,#ef4444);"><i class="fas fa-bell"></i></div><h4>Notice Workflow Engine</h4><p>Notices PAS → MGA → Broker → Insured jaati hain. PAS decide nahi karta — return decision record karta hai.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#0ea5e9,#8b5cf6);"><i class="fas fa-plug"></i></div><h4>Integration Ready</h4><p>Integration Monitor + API Log — har external service ka health aur har call ka request/response payload visible.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#22d3ee,#10b981);"><i class="fas fa-desktop"></i></div><h4>Browser-based</h4><p>Koi installation nahi — internet wale device se kholo aur use karo. Pure frontend demo, production-ready build possible.</p></div>
+      </div>
+      <div class="note" style="margin-top:18px;"><strong>Design Principle:</strong> PAS "decider" nahi hai — wo <strong>system of record + workflow engine</strong> hai. Reason, decisions, confirmations sab external (MGA / Broker / Insured) se aate hain; PAS record karta hai, execute karta hai, aur har cheez audit karta hai.</div>
+    </div>
+  </section>
+
+  <!-- 5 · ARCHITECTURE -->
+  <section class="slide" id="s5">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-cubes-stacked"></i></div>
+        <div><h2>Architecture &amp; MGA Model</h2><span class="sub">System kaise bana hai + MGA ka authority model</span></div>
+      </div>
+      <div class="grid grid-2" style="margin-bottom:16px;">
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#00d4ff,#3b82f6);"><i class="fas fa-code"></i></div><h4>Single-page App</h4><p>HTML + CSS + JS — ek hi page me 20+ screens, JS routing se navigate hota hai. Data localStorage me persist hota hai.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#7c3aed,#ec4899);"><i class="fas fa-database"></i></div><h4>Data Model</h4><p>Quotes, Transactions, Notices, Endorsement Requests, Billing Schedules, Activities &amp; Audit — sab structured records, append-only transactions.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#10b981,#0ea5e9);"><i class="fas fa-chart-bar"></i></div><h4>Charts Zero Library</h4><p>Dashboard analytics pure CSS se — koi chart library nahi, lightweight aur fast. Premium by LOB, status distribution, pipeline etc.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#f59e0b,#ef4444);"><i class="fas fa-link"></i></div><h4>Event-driven</h4><p>Har lifecycle action transaction + event publish karta hai — correlation ID se end-to-end trace hota hai (API Log me).</p></div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>MGA Authority Tier</th><th>Bind Limit</th><th>Carrier ki zaroorat</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag g">Tier 1 · Full</span></td><td>$1M limit / $500K premium tak</td><td>Sirf annual audit</td></tr>
+            <tr><td><span class="tag y">Tier 2 · Limited</span></td><td>$500K limit / $250K premium tak</td><td>Quarterly review</td></tr>
+            <tr><td><span class="tag r">Tier 3 · Non-Binding</span></td><td>Sirf quote</td><td>Har submission par</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note" style="margin-top:14px;"><strong>MGA decision:</strong> Approve (authority ke andar) · Refer to Carrier (authority se bahar) · Decline (unacceptable risk). Ye authority model BAA (Binding Authority Agreement) se aata hai.</div>
+    </div>
+  </section>
+
+  <!-- 6 · LIFECYCLE -->
+  <section class="slide" id="s6">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-route"></i></div>
+        <div><h2>Complete Policy Lifecycle</h2><span class="sub">Ek policy ki poori journey</span></div>
+      </div>
+      <div class="flow">
+        <div class="step good"><b>1 · Submission</b>Broker se 5-step wizard</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step warn"><b>2 · UW Queue</b>Risk score 1–10</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step good"><b>3 · Bind &amp; Issue</b>Policy number + billing</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step done"><b>4 · ACTIVE Policy</b>Lifecycle shuru</div>
+      </div>
+      <div class="flow" style="margin-top:10px;">
+        <div class="step"><b><i class="fas fa-bell"></i> Notice Mgmt</b>Renewal / offers chain</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b><i class="fas fa-pen-nib"></i> Endorsement</b>Mid-term changes queue</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b><i class="fas fa-sync-alt"></i> Renewal</b>Naya term, nayi premium</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b><i class="fas fa-ban"></i> Cancellation</b>Queue + MGA confirm</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b><i class="fas fa-rotate-left"></i> Reinstatement</b>30-day window + $250 fee</div>
+      </div>
+      <div class="note" style="margin-top:16px;"><strong>Har step ek transaction:</strong> ISSUE · ENDORSEMENT · RENEWAL · CANCELLATION · REINSTATEMENT — append-only record + event, jo poori history timeline me dikhta hai. Ye hi compliance ka proof hai.</div>
+      <div class="demo-bar">
+        <span class="dlabel">Live dekhen:</span>
+        <button class="btn primary small" onclick="openDemo('index.html')"><i class="fas fa-play"></i> Open Live Demo</button>
+        <button class="btn ghost small" onclick="go(10)"><i class="fas fa-eye"></i> Notice Workflow Slide</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · DASHBOARD -->
+  <section class="slide" id="s7">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-gauge-high"></i></div>
+        <div><h2>Dashboard — Portfolio ka Nazariya</h2><span class="sub">Ek screen pe poora business</span></div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><span class="i" style="color:var(--info);"><i class="fas fa-check-circle"></i></span><div class="lbl">Approved to Issue</div><div class="val">0</div></div>
+        <div class="kpi"><span class="i" style="color:var(--success);"><i class="fas fa-file-contract"></i></span><div class="lbl">Active Policies</div><div class="val">0</div></div>
+        <div class="kpi"><span class="i" style="color:var(--secondary);"><i class="fas fa-dollar-sign"></i></span><div class="lbl">In-Force Premium</div><div class="val">$0</div></div>
+        <div class="kpi"><span class="i" style="color:var(--accent);"><i class="fas fa-chart-line"></i></span><div class="lbl">Avg Premium</div><div class="val">$0</div></div>
+        <div class="kpi"><span class="i" style="color:var(--warning);"><i class="fas fa-bell"></i></span><div class="lbl">Pending Notices</div><div class="val">0</div></div>
+        <div class="kpi"><span class="i" style="color:var(--danger);"><i class="fas fa-hourglass-half"></i></span><div class="lbl">Pending Decisions</div><div class="val">0</div></div>
+        <div class="kpi"><span class="i" style="color:var(--warning);"><i class="fas fa-sync-alt"></i></span><div class="lbl">Renewals Due 30d</div><div class="val">0</div></div>
+        <div class="kpi"><span class="i" style="color:var(--secondary);"><i class="fas fa-pen-alt"></i></span><div class="lbl">Open Endorse Reqs</div><div class="val">0</div></div>
+      </div>
+      <div class="note" style="margin-top:16px;"><strong>8 KPI + 6 analytics charts:</strong> Premium by LOB · Policy Status Distribution · Transaction Volume · Top Agents · Notice Pipeline · Endorsement Requests — sab live data se calculate hote hain.</div>
+      <div class="demo-bar">
+        <span class="dlabel">Live dekhen:</span>
+        <button class="btn primary small" onclick="openDemo('index.html')"><i class="fas fa-play"></i> Dashboard Screen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · NEW BUSINESS -->
+  <section class="slide" id="s8">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-file-circle-plus"></i></div>
+        <div><h2>New Business Flow</h2><span class="sub">Submission se Active Policy tak</span></div>
+      </div>
+      <div class="flow">
+        <div class="step"><b>Submission</b>5-step wizard: Insured → Coverage → Details → Premium → Review</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step warn"><b>UW Review</b>Risk score 1–10</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b>Decision</b>Approve / Refer / Decline</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step good"><b>Bind &amp; Issue</b>Policy number + coverage shuru</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step done"><b>ACTIVE</b>Billing schedule + documents</div>
+      </div>
+      <div class="grid grid-3" style="margin-top:16px;">
+        <div class="card"><h4><span class="tag g" style="margin-right:6px;">Approve</span></h4><p>UW score <b>≥ 5</b> → authority ke andar bind karo.</p></div>
+        <div class="card"><h4><span class="tag y" style="margin-right:6px;">Refer</span></h4><p>Score <b>&lt; 5</b> ya premium <b>&gt; $500K</b> → senior UW ko.</p></div>
+        <div class="card"><h4><span class="tag r" style="margin-right:6px;">Decline</span></h4><p>Score <b>≤ 3</b> → reason ke saath reject.</p></div>
+      </div>
+      <div class="note" style="margin-top:16px;"><strong>Issue hone par kya hota hai:</strong> Policy number generate → quote status ACTIVE → premium breakdown + billing schedule (installments) → documents list → ISSUE transaction + event. Sab ek click me.</div>
+      <div class="demo-bar">
+        <span class="dlabel">Live dekhen:</span>
+        <button class="btn primary small" onclick="openDemo('index.html')"><i class="fas fa-play"></i> Quotes / New Submission</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · PREMIUM -->
+  <section class="slide" id="s9">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-calculator"></i></div>
+        <div><h2>Transparent Premium Calculation</h2><span class="sub">Client ko dikho ki price kyun hai — breakdown ke saath</span></div>
+      </div>
+      <div class="formula">Base Premium × Experience Mod × (1 − Schedule Credit) = Premium Subtotal
+Subtotal + SLA Tax + Stamping Fee = <span class="g">Total Annual Premium</span></div>
+      <div class="tbl-wrap" style="margin-top:14px;">
+        <table>
+          <thead><tr><th>Component</th><th>Amount</th><th>Kya hai</th></tr></thead>
+          <tbody>
+            <tr><td>Base Premium</td><td>$98,000</td><td>Rating basis: Gross Revenue $12.5M</td></tr>
+            <tr><td>Experience Mod (0.92)</td><td>−$7,840</td><td>Loss history adjustment</td></tr>
+            <tr><td>Schedule Credit (−5%)</td><td>−$4,508</td><td>UW discretionary adjustment</td></tr>
+            <tr><td><b>Premium Subtotal</b></td><td><b>$85,652</b></td><td>Pure risk premium</td></tr>
+            <tr><td>SLA Tax (3.6%)</td><td>+$3,528</td><td>Statutory surplus lines tax</td></tr>
+            <tr><td>Stamping Fee (1.5%)</td><td>+$1,470</td><td>State filing fee</td></tr>
+            <tr class="total-row"><td>Total Annual Premium</td><td>$125,000</td><td>Billed amount (live demo me POL-2026-001)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note" style="margin-top:14px;"><strong>Why it matters:</strong> Har kyun, har rupaya explain karta hai — regulatory requirement bhi, client trust bhi. Renewal / Endorsement par current vs proposed comparison table bhi dikhta hai.</div>
+    </div>
+  </section>
+
+  <!-- 10 · POLICY DETAIL -->
+  <section class="slide" id="s10">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-folder-open"></i></div>
+        <div><h2>Policy Detail — 8 Tabs</h2><span class="sub">Ek policy, sab kuch ek click me</span></div>
+      </div>
+      <div class="grid grid-4">
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#00d4ff,#3b82f6);"><i class="fas fa-circle-info"></i></div><h4>Details</h4><p>Insured, FEIN, dates, term, UW, agent, MGA — poora header.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#10b981,#0ea5e9);"><i class="fas fa-shield-halved"></i></div><h4>Coverages</h4><p>Coverage, limit, deductible, rating basis.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#f59e0b,#ef4444);"><i class="fas fa-dollar-sign"></i></div><h4>Premium</h4><p>Full breakdown — base se total tak.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#7c3aed,#ec4899);"><i class="fas fa-code-branch"></i></div><h4>Versions</h4><p>Policy ke naye versions / endorsements.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#0ea5e9,#8b5cf6);"><i class="fas fa-timeline"></i></div><h4>Timeline</h4><p>Poori transaction history — approval se ab tak.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#8b5cf6,#ec4899);"><i class="fas fa-file-lines"></i></div><h4>Documents</h4><p>Category-wise files: app, policy, certificates.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);"><i class="fas fa-sticky-note"></i></div><h4>Notes</h4><p>UW / billing / claims notes timestamps ke saath.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#ef4444,#f97316);"><i class="fas fa-magnifying-glass-chart"></i></div><h4>Audit</h4><p>Is policy par hua har change — old → new value.</p></div>
+      </div>
+      <div class="demo-bar">
+        <span class="dlabel">Live dekhen:</span>
+        <button class="btn primary small" onclick="openDemo('index.html')"><i class="fas fa-play"></i> Policy Details</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · NOTICE -->
+  <section class="slide" id="s11">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-bell"></i></div>
+        <div><h2>Notice Management — MGA → Broker → Insured</h2><span class="sub">Confirmation chain, full tracking ke saath</span></div>
+      </div>
+      <div class="flow">
+        <div class="step"><b>DRAFT</b></div><div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b>GENERATED</b></div><div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b>SENT</b></div><div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b>MGA ACK</b></div><div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b>WITH BROKER</b></div><div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b>INSURED REVIEW</b></div><div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b>INSURED DECISION</b></div><div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step good"><b>ACCEPT / REJECT</b></div>
+      </div>
+      <div class="flow-row"><span class="step">ACCEPTED / REJECTED</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step">EXECUTED (renewal executes)</span><span class="arrow" style="margin-left:14px;"><i class="fas fa-chevron-right"></i></span><span class="step">Ya</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step">EXPIRED (no response)</span></div>
+      <div class="note" style="margin-top:16px;"><strong>Key Principle:</strong> PAS notice <b>generate aur send</b> karta hai; Insured <b>confirm</b> karta hai; PAS wapas aaya decision <b>record</b> karta hai (Receive MGA Revert). Accept hone par renewal execute hota hai. Har stage ki timeline append-only hoti hai.</div>
+      <div class="demo-bar">
+        <span class="dlabel">Live dekhen:</span>
+        <button class="btn primary small" onclick="openDemo('index.html')"><i class="fas fa-play"></i> Notice Management</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 · ENDORSEMENT -->
+  <section class="slide" id="s12">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-pen-nib"></i></div>
+        <div><h2>Endorsement Request Queue</h2><span class="sub">Mid-term changes — structured pipeline</span></div>
+      </div>
+      <div class="flow">
+        <div class="step"><b>MGA API</b>Request aaya</div><div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b>RECEIVED</b></div><div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b>VALIDATED</b></div><div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b>ASSIGNED</b></div><div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step warn"><b>IN_REVIEW</b></div><div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b>APPROVED / REJECTED</b></div><div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step good"><b>PROCESSED → COMPLETED</b></div>
+      </div>
+      <div class="grid grid-2" style="margin-top:16px;">
+        <div class="card"><h4><i class="fas fa-arrows-left-right" style="color:var(--accent);"></i> Current vs Proposed</h4><p>Har request me comparison table — limit, deductible, premium change, reason. Reviewer ko sab clear dikhta hai.</p></div>
+        <div class="card"><h4><i class="fas fa-fingerprint" style="color:var(--secondary);"></i> Correlation ID</h4><p>Har request ek trace ID ke saath — transaction, event, aur API log tak end-to-end track hota hai. Priority High / Medium / Low ke saath.</p></div>
+      </div>
+      <div class="note" style="margin-top:16px;"><strong>Premium impact:</strong> Endorsement type ke hisaab se premium ka increase / decrease pehle hi dikhaya jaata hai — approval ke baad pro-rata apply hota hai aur ENDORSEMENT transaction banta hai.</div>
+      <div class="demo-bar">
+        <span class="dlabel">Live dekhen:</span>
+        <button class="btn primary small" onclick="openDemo('index.html')"><i class="fas fa-play"></i> Endorsement Queue</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 · RENEWAL -->
+  <section class="slide" id="s13">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-sync-alt"></i></div>
+        <div><h2>Renewal</h2><span class="sub">Naya term, nayi premium — offer ke saath</span></div>
+      </div>
+      <div class="grid grid-3">
+        <div class="card"><h4><span class="tag g">Approve as Proposed</span></h4><p>UW ne rate adequate mana — offer MGA ko jaata hai as-is.</p></div>
+        <div class="card"><h4><span class="tag y">Approve with Changes</span></h4><p>Premium / coverage adjust karke offer bhejo — current vs proposed table.</p></div>
+        <div class="card"><h4><span class="tag r">Decline Renewal</span></h4><p>Policy term end par EXPIRED ho jaayegi.</p></div>
+      </div>
+      <div class="grid grid-2" style="margin-top:14px;">
+        <div class="card"><h4><i class="fas fa-calendar-check" style="color:var(--success);"></i> 30-Day Window</h4><p>Expiration se 30 din pehle window khulti hai — tabhi Renewal button active hota hai.</p></div>
+        <div class="card"><h4><i class="fas fa-list-ol" style="color:var(--secondary);"></i> Multiple Offers</h4><p>Offer 1, Offer 2... — decline ya no-response par naya offer ban sakta hai, jab tak policy ACTIVE hai.</p></div>
+      </div>
+      <div class="note" style="margin-top:14px;"><strong>Renewal ka rasta:</strong> UW decision → offer generate → notice chain (MGA → Broker → Insured) → insured ACCEPT → RENEWAL transaction + naye term. Expired policy bhi "Mark as Expired" se handle hoti hai.</div>
+      <div class="demo-bar">
+        <span class="dlabel">Live dekhen:</span>
+        <button class="btn primary small" onclick="openDemo('index.html')"><i class="fas fa-play"></i> Renewal Screen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 · CANCELLATION -->
+  <section class="slide" id="s14">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico" style="background:linear-gradient(135deg,#ef4444,#f97316);box-shadow:0 6px 18px rgba(239,68,68,.28);"><i class="fas fa-ban"></i></div>
+        <div><h2>Cancellation — Queue Based Flow</h2><span class="sub">Reason MGA deta hai, PAS record karta hai, MGA confirm karta hai</span></div>
+      </div>
+      <div class="flow">
+        <div class="step"><b>Request Received</b>Reason auto-filled (MGA)</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b>Type Auto-Applied</b>Pro-Rata / Short Rate</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b>Transaction Created</b>Preliminary calc</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step warn"><b>Cancellation Queue</b>Review</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step"><b>Reviewed &amp; Final Cancellation</b>ACCEPT / DECLINE / Lapsed</div>
+        <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="step good"><b>Policy Cancelled</b>Final recalc + txn COMPLETED</div>
+      </div>
+      <div class="grid grid-3" style="margin-top:16px;">
+        <div class="card"><h4><span class="tag b">Pro-Rata</span></h4><p>Time proportionate — carrier / UW cancel. App default.</p></div>
+        <div class="card"><h4><span class="tag y">Short Rate</span></h4><p>Return = unearned × 90% — insured khud cancel kare.</p></div>
+        <div class="card"><h4><span class="tag g">Flat</span></h4><p>100% return — policy never in force.</p></div>
+      </div>
+      <div class="note" style="margin-top:14px;"><strong>Rules:</strong> Reason field <b>readonly</b> hai — MGA/Broker/Billing/UW se auto aata hai, PAS decide nahi karta. DECLINE / no response par policy ACTIVE rehti hai aur transaction VOIDED. <b>Notice raise nahi hota.</b> Return premium = unearned premium (due balance ke saath).</div>
+      <div class="demo-bar">
+        <span class="dlabel">Explore karein:</span>
+        <button class="btn primary small" onclick="openDemo('index.html')"><i class="fas fa-play"></i> Cancellation Screen</button>
+        <button class="btn ghost small" onclick="openDemo('CancelPolicy.html')"><i class="fas fa-book"></i> Cancel Types Doc</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 · REINSTATEMENT -->
+  <section class="slide" id="s15">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-rotate-left"></i></div>
+        <div><h2>Reinstatement</h2><span class="sub">Cancelled policy ko wapas zinda karo</span></div>
+      </div>
+      <div class="grid grid-3">
+        <div class="card"><h4><i class="fas fa-hourglass-half" style="color:var(--warning);"></i> 30-Day Window</h4><p>Cancellation ke 30 din ke andar reinstatement ho sakta hai — nayi underwriting ki zaroorat nahi.</p></div>
+        <div class="card"><h4><i class="fas fa-dollar-sign" style="color:var(--success);"></i> $250 Fee + Past Due</h4><p>Reinstatement fee + outstanding balance = Total Due Today. Payment clear hone par policy ACTIVE.</p></div>
+        <div class="card"><h4><i class="fas fa-calendar-days" style="color:var(--accent);"></i> Coverage Gap Check</h4><p>System check karta hai ki gap 30 din ke andar hai ya nahi — gap 0d dikhta hai agar window me ho.</p></div>
+      </div>
+      <div class="note" style="margin-top:16px;"><strong>Benefit:</strong> Policy ki original terms + continuous history preserve rehti hai — naya application, nayi UW, naye documents nahi lagte. Reinstatement notice MGA chain se confirm hota hai.</div>
+      <div class="demo-bar">
+        <span class="dlabel">Live dekhen:</span>
+        <button class="btn primary small" onclick="openDemo('index.html')"><i class="fas fa-play"></i> Reinstatement Screen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16 · BILLING -->
+  <section class="slide" id="s16">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-credit-card"></i></div>
+        <div><h2>Billing</h2><span class="sub">Plans, installments aur collection rules</span></div>
+      </div>
+      <div class="flow">
+        <div class="step good"><b>Annual</b></div>
+        <div class="step"><b>Semi-Annual</b></div>
+        <div class="step"><b>Quarterly</b>Default</div>
+        <div class="step warn"><b>Monthly</b>+ interest</div>
+      </div>
+      <div class="grid grid-3" style="margin-top:16px;">
+        <div class="card"><h4><i class="fas fa-shield" style="color:var(--accent);"></i> Grace Period</h4><p>Due date ke baad <b>10 din</b> grace — is window me payment ho to late fee nahi.</p></div>
+        <div class="card"><h4><i class="fas fa-percent" style="color:var(--danger);"></i> Late Fee</h4><p>Grace ke baad <b>1.5% / month</b> (≈18% APR) apply hota hai.</p></div>
+        <div class="card"><h4><i class="fas fa-ban" style="color:var(--warning);"></i> Non-Payment</h4><p>10-day notice ke baad cancellation process — billing status se trigger hota hai.</p></div>
+      </div>
+      <div class="note" style="margin-top:14px;"><strong>Visibility:</strong> Policy detail me billing schedule — installment-wise due date, amount, payment method, status (Upcoming / Paid / Overdue). Overdue balances cancellation ke time automatically dikhte hain.</div>
+      <div class="demo-bar">
+        <span class="dlabel">Live dekhen:</span>
+        <button class="btn primary small" onclick="openDemo('index.html')"><i class="fas fa-play"></i> Billing Screen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 17 · INTEGRATION -->
+  <section class="slide" id="s17">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-plug"></i></div>
+        <div><h2>Integration Monitor + API Log</h2><span class="sub">Har service ka health, har call ka proof</span></div>
+      </div>
+      <div class="grid grid-3">
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#10b981,#0ea5e9);"><i class="fas fa-heart-pulse"></i></div><h4>Integration Monitor</h4><p>PAS · CRM · Billing · Claims · Compliance · Reporting — har service ka status aur last sync time real-time.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#00d4ff,#3b82f6);"><i class="fas fa-arrows-left-right"></i></div><h4>Inbound / Outbound</h4><p>Har API call ka direction, endpoint, method, status code, duration aur retries — sab log me.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#7c3aed,#ec4899);"><i class="fas fa-fingerprint"></i></div><h4>Correlation ID</h4><p>Ek business operation ki saari calls ek trace ID se judi — debugging aur audit me turant milta hai.</p></div>
+      </div>
+      <div class="note" style="margin-top:16px;"><strong>Payload view:</strong> Request / response ka full JSON payload dekh sakte hain — kaunne kya bheja, kya mila. Yehi traceability compliance aur troubleshooting dono ka kaam karti hai.</div>
+      <div class="demo-bar">
+        <span class="dlabel">Live dekhen:</span>
+        <button class="btn primary small" onclick="openDemo('index.html')"><i class="fas fa-play"></i> Integration Monitor</button>
+        <button class="btn ghost small" onclick="openDemo('index.html')"><i class="fas fa-code"></i> API Log</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18 · AUDIT -->
+  <section class="slide" id="s18">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-gavel"></i></div>
+        <div><h2>Audit Trail &amp; Compliance</h2><span class="sub">Har cheez ka proof — jo kabhi nahi mitata</span></div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card"><h4><i class="fas fa-history" style="color:var(--accent);"></i> Activity Log</h4><p>User-friendly feed — kaunne kya kiya, kab kiya. Operations visibility ke liye.</p></div>
+        <div class="card"><h4><i class="fas fa-magnifying-glass-chart" style="color:var(--secondary);"></i> Audit Log</h4><p>Immutable, append-only records — timestamp, user, entity, field, <b>old → new value</b>. Kuch bhi change hota hai to proof rehta hai.</p></div>
+        <div class="card"><h4><i class="fas fa-scale-balanced" style="color:var(--success);"></i> SOX / NAIC Ready</h4><p>Regulatory compliance ke liye mandatory — har transaction aur change track hota hai.</p></div>
+        <div class="card"><h4><i class="fas fa-database" style="color:var(--warning);"></i> 5-Year Retention</h4><p>Audit records long-term preserve hote hain — dispute me turant proof milta hai.</p></div>
+      </div>
+      <div class="note" style="margin-top:14px;"><strong>Demo highlight:</strong> Cancellation / Endorsement / Renewal — koi bhi action karo aur Activity &amp; Audit screen me ekdum naya entry dekh lo. Yehi PAS ko "production-grade" feel deta hai.</div>
+      <div class="demo-bar">
+        <span class="dlabel">Live dekhen:</span>
+        <button class="btn primary small" onclick="openDemo('index.html')"><i class="fas fa-play"></i> Activities &amp; Audit</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 19 · REPORTS -->
+  <section class="slide" id="s19">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-chart-pie"></i></div>
+        <div><h2>Reports &amp; Analytics</h2><span class="sub">Management decisions ke liye data</span></div>
+      </div>
+      <div class="grid grid-3">
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#00d4ff,#3b82f6);"><i class="fas fa-building-columns"></i></div><h4>Premium by LOB</h4><p>Har line of business ka premium distribution.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#10b981,#0ea5e9);"><i class="fas fa-arrows-split-up-and-left"></i></div><h4>Quote Status</h4><p>Active / Approved / Cancelled / Expired distribution.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#f59e0b,#ef4444);"><i class="fas fa-user-tie"></i></div><h4>UW Performance</h4><p>UW-wise volume, approvals, turnaround.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#ef4444,#f97316);"><i class="fas fa-clock"></i></div><h4>Aging Receivables</h4><p>Overdue balances by aging bucket.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#7c3aed,#ec4899);"><i class="fas fa-repeat"></i></div><h4>Transaction Volume</h4><p>Issue / Renewal / Endorsement / Cancel / Reinstate.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#8b5cf6,#ec4899);"><i class="fas fa-users"></i></div><h4>Top Agents &amp; More</h4><p>Top agents, notice pipeline, endorsement requests.</p></div>
+      </div>
+      <div class="demo-bar">
+        <span class="dlabel">Live dekhen:</span>
+        <button class="btn primary small" onclick="openDemo('index.html')"><i class="fas fa-play"></i> Reports Screen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 20 · VALUE -->
+  <section class="slide" id="s20">
+    <div class="slide-inner">
+      <div class="slide-head">
+        <div class="slide-ico"><i class="fas fa-gem"></i></div>
+        <div><h2>Aapko kya Milega — Value</h2><span class="sub">6 reasons jo business ko better banate hain</span></div>
+      </div>
+      <div class="grid grid-3">
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#10b981,#0ea5e9);"><i class="fas fa-circle-check"></i></div><h4>Single Source of Truth</h4><p>Policy ki poori journey ek jagah — koi scattered records nahi, koi confusion nahi.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#00d4ff,#3b82f6);"><i class="fas fa-shield-halved"></i></div><h4>Full Audit Trail</h4><p>Har change ka proof — SOX/NAIC compliance aasaan, disputes me turant evidence.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#f59e0b,#ef4444);"><i class="fas fa-calculator"></i></div><h4>Transparent Pricing</h4><p>Premium ka har component breakdown — client ko trust, regulator ko requirement.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#7c3aed,#ec4899);"><i class="fas fa-plug-circle-check"></i></div><h4>Integration Ready</h4><p>Billing, CRM, Claims, Compliance — monitor + API log ke saath, correlation ID tracing.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#0ea5e9,#8b5cf6);"><i class="fas fa-bolt"></i></div><h4>Fast Workflows</h4><p>UW queue, endorsement queue, cancellation queue, notice chain — sab structured pipeline me.</p></div>
+        <div class="card ico"><div class="ci" style="background:linear-gradient(135deg,#8b5cf6,#ec4899);"><i class="fas fa-globe"></i></div><h4>Browser-based, No Install</h4><p>Kahin se bhi kholo, kisi device pe. Hinglish UX — team aasaan se use kare.</p></div>
+      </div>
+      <div class="note" style="margin-top:18px;"><strong>Bottom line:</strong> Ye wireframe dikhata hai ki PAS kaise kaam karega — design, flows aur data model sab functional hai. Production build ke liye ye blueprint ready hai.</div>
+    </div>
+  </section>
+
+  <!-- 21 · CLOSING -->
+  <section class="slide" id="s21">
+    <div class="slide-inner center">
+      <div class="badge"><i class="fas fa-hands-clapping"></i> Dhanyavad · Thank You</div>
+      <h1 style="font-size:38px;font-weight:900;letter-spacing:-.8px;margin-top:16px;">Chaliye, <span style="background:linear-gradient(90deg,var(--grad1),var(--grad2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Live Demo</span> dekhte hain</h1>
+      <p class="lead" style="font-size:15.5px;color:var(--text-secondary);max-width:640px;margin-top:12px;">Neeche diye buttons se live wireframe, detailed documentation aur cancellation types reference kholein — sab ek naye tab me.</p>
+      <div class="cta" style="margin-top:28px;">
+        <button class="btn primary big" onclick="openDemo('index.html')"><i class="fas fa-desktop"></i> Open Live PAS</button>
+        <button class="btn ghost big" onclick="openDemo('documentation.html')"><i class="fas fa-book"></i> Documentation</button>
+        <button class="btn ghost big" onclick="openDemo('CancelPolicy.html')"><i class="fas fa-ban"></i> Cancel Types</button>
+      </div>
+      <div style="margin-top:30px;font-size:13px;color:var(--text-muted);"><i class="fas fa-comment"></i> Sawaal aur feedback ke liye hum contact me rahenge — PAS, aapke insurance operations ki neev banane ke liye taiyaar hai.</div>
+      <div class="hint-hero" style="color:var(--text-muted);margin-top:26px;">Press <kbd>→</kbd> to loop · <kbd>F</kbd> fullscreen · <kbd>M</kbd> slide index</div>
+    </div>
+  </section>
+
+</main>
+
+<!-- CONTROLS -->
+<footer class="controls">
+  <button class="navbtn" id="prev" title="Previous (←)"><i class="fas fa-chevron-left"></i></button>
+  <div class="dots" id="dots"></div>
+  <span class="counter" id="counter">1 / 21</span>
+  <button class="navbtn" id="next" title="Next (→)"><i class="fas fa-chevron-right"></i></button>
+</footer>
+
+<div class="hint">← → navigate · F fullscreen · M slide index</div>
+
+<!-- INDEX OVERLAY -->
+<div class="overlay" id="indexOverlay">
+  <div class="panel">
+    <div class="phead">
+      <h3><i class="fas fa-th-large" style="color:var(--accent);"></i> Slide Index</h3>
+      <button class="iconbtn" id="indexClose" title="Close (Esc)"><i class="fas fa-xmark"></i></button>
+    </div>
+    <a href="#" data-go="0"><i class="fas fa-flag-checkered"></i> Hero</a>
+    <a href="#" data-go="1"><i class="fas fa-list-check"></i> Agenda</a>
+    <a href="#" data-go="2"><i class="fas fa-circle-exclamation"></i> Problem</a>
+    <a href="#" data-go="3"><i class="fas fa-wand-magic-sparkles"></i> Solution</a>
+    <a href="#" data-go="4"><i class="fas fa-cubes-stacked"></i> Architecture &amp; MGA Model</a>
+    <a href="#" data-go="5"><i class="fas fa-route"></i> Policy Lifecycle</a>
+    <a href="#" data-go="6"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="#" data-go="7"><i class="fas fa-file-circle-plus"></i> New Business</a>
+    <a href="#" data-go="8"><i class="fas fa-calculator"></i> Premium Calculation</a>
+    <a href="#" data-go="9"><i class="fas fa-folder-open"></i> Policy Detail</a>
+    <a href="#" data-go="10"><i class="fas fa-bell"></i> Notice Management</a>
+    <a href="#" data-go="11"><i class="fas fa-pen-nib"></i> Endorsement Queue</a>
+    <a href="#" data-go="12"><i class="fas fa-sync-alt"></i> Renewal</a>
+    <a href="#" data-go="13"><i class="fas fa-ban"></i> Cancellation</a>
+    <a href="#" data-go="14"><i class="fas fa-rotate-left"></i> Reinstatement</a>
+    <a href="#" data-go="15"><i class="fas fa-credit-card"></i> Billing</a>
+    <a href="#" data-go="16"><i class="fas fa-plug"></i> Integration &amp; API Log</a>
+    <a href="#" data-go="17"><i class="fas fa-gavel"></i> Audit &amp; Compliance</a>
+    <a href="#" data-go="18"><i class="fas fa-chart-pie"></i> Reports</a>
+    <a href="#" data-go="19"><i class="fas fa-gem"></i> Value / Benefits</a>
+    <a href="#" data-go="20"><i class="fas fa-hands-clapping"></i> Closing / Demo</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dotsWrap = document.getElementById('dots');
+  var counter = document.getElementById('counter');
+  var progress = document.getElementById('progress');
+  var current = 0;
+
+  slides.forEach(function(s, i){
+    var d = document.createElement('button');
+    d.className = 'dot';
+    d.setAttribute('aria-label', 'Slide ' + (i + 1));
+    d.addEventListener('click', function(){ show(i); });
+    dotsWrap.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsWrap.children);
+
+  function show(i){
+    current = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function(s, idx){ s.classList.toggle('active', idx === current); });
+    dots.forEach(function(d, idx){ d.classList.toggle('active', idx === current); });
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    progress.style.width = ((current + 1) / slides.length * 100) + '%';
+    slides.forEach(function(s){ s.scrollTop = 0; });
+    document.querySelectorAll('#indexOverlay a').forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('data-go') === String(current));
+    });
+  }
+  window.go = show;
+  window.next = function(){ show(current + 1); };
+  window.prev = function(){ show(current - 1); };
+
+  document.getElementById('next').addEventListener('click', window.next);
+  document.getElementById('prev').addEventListener('click', window.prev);
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); window.next(); }
+    else if (e.key === 'ArrowLeft') { window.prev(); }
+    else if (e.key === 'Home') { show(0); }
+    else if (e.key === 'End') { show(slides.length - 1); }
+    else if (e.key === 'f' || e.key === 'F') { window.toggleFullscreen(); }
+    else if (e.key === 'm' || e.key === 'M') { window.toggleIndex(); }
+    else if (e.key === 'Escape') { window.closeIndex(); }
+    else if (e.key === 't' || e.key === 'T') { document.getElementById('themeToggle').click(); }
+  });
+
+  window.toggleFullscreen = function(){
+    if (document.fullscreenElement) { document.exitFullscreen(); }
+    else if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen().catch(function(){}); }
+  };
+
+  var root = document.documentElement;
+  var tBtn = document.getElementById('themeToggle');
+  var tIcon = tBtn.querySelector('i');
+  function applyTheme(t){
+    root.setAttribute('data-theme', t);
+    tIcon.className = t === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  }
+  var savedTheme = null;
+  try { savedTheme = localStorage.getItem('pas_pres_theme'); } catch(e) {}
+  if (savedTheme) applyTheme(savedTheme);
+  else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) applyTheme('dark');
+  tBtn.addEventListener('click', function(){
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try { localStorage.setItem('pas_pres_theme', next); } catch(e) {}
+  });
+
+  window.toggleIndex = function(){ document.getElementById('indexOverlay').classList.toggle('show'); };
+  window.closeIndex = function(){ document.getElementById('indexOverlay').classList.remove('show'); };
+  document.getElementById('indexBtn').addEventListener('click', window.toggleIndex);
+  document.getElementById('indexClose').addEventListener('click', window.closeIndex);
+  document.getElementById('indexOverlay').addEventListener('click', function(e){ if (e.target === this) window.closeIndex(); });
+  document.querySelectorAll('#indexOverlay a').forEach(function(a){
+    a.addEventListener('click', function(){
+      show(parseInt(a.getAttribute('data-go'), 10));
+      window.closeIndex();
+    });
+  });
+
+  window.openDemo = function(file){ window.open(file || 'index.html', '_blank'); };
+
+  show(0);
+})();
+</script>
+</body>
+</html>

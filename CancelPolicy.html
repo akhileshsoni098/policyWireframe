@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Policy Cancellation Types — PAS Doc</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --accent: #00d4ff;
+  --secondary: #7c3aed;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  --text: #1f2937;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+  --bg: #f8fafc;
+  --card-bg: #ffffff;
+  --border: #e5e7eb;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+[data-theme="dark"] {
+  --accent: #00d4ff;
+  --secondary: #a78bfa;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #60a5fa;
+  --text: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --bg: #0f172a;
+  --card-bg: #1e293b;
+  --border: #334155;
+  --shadow: 0 4px 24px rgba(0,0,0,0.45);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', -apple-system, sans-serif; font-size: 15px; color: var(--text); background: var(--bg); line-height: 1.7; }
+.container { max-width: 960px; margin: 0 auto; padding: 40px 20px; }
+
+.header { text-align: center; padding: 48px 0 32px; }
+.header .badge { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #00d4ff, #7c3aed); color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+.header h1 { font-size: 36px; font-weight: 800; background: linear-gradient(135deg, #0f0c29, #302b63); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.header p { font-size: 17px; color: var(--text-secondary); margin-top: 8px; }
+
+.section { margin-bottom: 40px; }
+.section h2 { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 3px solid var(--accent); }
+.section h2 .num { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--secondary)); color: #fff; font-size: 16px; font-weight: 700; padding: 0 4px; }
+.section h3 { font-size: 18px; font-weight: 600; color: var(--secondary); margin: 16px 0 8px; display: flex; align-items: center; gap: 8px; }
+.section p { margin-bottom: 12px; color: var(--text-secondary); }
+
+.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow); }
+.card h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.card ul { padding-left: 20px; margin-bottom: 8px; list-style: none; }
+.card ul li { margin-bottom: 6px; color: var(--text-secondary); padding-left: 0; }
+.card ul li::before { content: '\2022'; color: var(--accent); font-weight: bold; display: inline-block; width: 1em; margin-left: -1em; }
+
+.highlight { background: rgba(0, 212, 255, 0.1); border-left: 4px solid var(--accent); padding: 12px 16px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 12px 0; font-size: 14px; }
+.highlight strong { color: var(--accent); }
+
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+.tag-blue { background: rgba(0,212,255,0.15); color: #0099cc; }
+.tag-green { background: rgba(16,185,129,0.15); color: #059669; }
+.tag-purple { background: rgba(124,58,237,0.15); color: #6d28d9; }
+.tag-red { background: rgba(239,68,68,0.15); color: #dc2626; }
+.tag-yellow { background: rgba(245,158,11,0.15); color: #d97706; }
+.tag-info { background: rgba(59,130,246,0.15); color: #2563eb; }
+
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+th { background: #f0f9ff; font-weight: 600; font-size: 13px; color: var(--text-secondary); }
+tr:hover td { background: #f8fafc; }
+
+.formula { font-family: 'Courier New', monospace; background: #0f0c29; color: #00d4ff; padding: 12px 16px; border-radius: var(--radius-sm); font-size: 13px; margin: 8px 0 12px; line-height: 1.8; white-space: pre-wrap; }
+.formula .val { color: #10b981; font-weight: 700; }
+
+.flow-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 10px 0; padding: 10px 12px; background: #f0f9ff; border-radius: 8px; font-size: 12px; }
+.flow-row .step { padding: 5px 12px; background: #fff; border: 1px solid var(--border); border-radius: 20px; font-weight: 500; white-space: nowrap; }
+.flow-row .arrow { color: var(--text-muted); font-size: 12px; }
+
+.toc { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 32px; box-shadow: var(--shadow); }
+.toc h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+.toc-grid a { color: var(--text-secondary); text-decoration: none; font-size: 14px; padding: 4px 0; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+.toc-grid a:hover { color: var(--accent); }
+.toc-grid a .toc-num { color: var(--accent); font-weight: 600; min-width: 20px; }
+
+.cols { display: flex; gap: 16px; }
+.cols > * { flex: 1; }
+@media (max-width: 600px) { .cols { flex-direction: column; } }
+
+.footer { text-align: center; padding: 32px 0; color: var(--text-muted); font-size: 13px; border-top: 1px solid var(--border); margin-top: 40px; }
+.footer a { color: var(--accent); text-decoration: none; }
+
+@media (max-width: 600px) {
+  .header h1 { font-size: 24px; }
+  .toc-grid { grid-template-columns: 1fr; }
+  .card { padding: 16px; }
+}
+
+/* ===== NIGHT MODE TOGGLE ===== */
+.header { position: relative; }
+.theme-toggle { position: absolute; top: 16px; right: 0; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-secondary); cursor: pointer; font-size: 16px; box-shadow: var(--shadow); transition: all 0.25s; z-index: 10; display: flex; align-items: center; justify-content: center; }
+.theme-toggle:hover { color: var(--accent); border-color: var(--accent); transform: rotate(20deg) scale(1.05); }
+
+/* ===== SIDEBAR LAYOUT ===== */
+.layout { display: grid; grid-template-columns: 250px 1fr; gap: 32px; align-items: start; }
+.sidebar { position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow-y: auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+.sidebar h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.side-nav { display: flex; flex-direction: column; gap: 2px; }
+.nav-link { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; font-size: 13px; transition: all 0.2s; border-left: 3px solid transparent; }
+.nav-link span { color: var(--accent); font-weight: 600; font-size: 12px; min-width: 16px; }
+.nav-link:hover { background: rgba(0,212,255,0.08); color: var(--text); }
+.nav-link.active { background: rgba(0,212,255,0.12); color: var(--text); border-left-color: var(--accent); font-weight: 600; }
+.nav-link.active span { color: var(--accent); }
+.content { min-width: 0; }
+
+/* ===== DARK MODE OVERRIDES ===== */
+[data-theme="dark"] .header h1 { background: linear-gradient(135deg, #67e8f9, #a78bfa); }
+[data-theme="dark"] th { background: #16233d; }
+[data-theme="dark"] tr:hover td { background: #24334a; }
+[data-theme="dark"] .flow-row { background: #16233d; }
+[data-theme="dark"] .flow-row .step { background: #1e293b; border-color: #334155; }
+[data-theme="dark"] .highlight { background: rgba(0,212,255,0.08); border-left-color: var(--accent); }
+[data-theme="dark"] .section h3 { color: #a78bfa; }
+[data-theme="dark"] .tag-blue { background: rgba(0,212,255,0.18); color: #67e8f9; }
+[data-theme="dark"] .tag-green { background: rgba(16,185,129,0.18); color: #6ee7b7; }
+[data-theme="dark"] .tag-purple { background: rgba(124,58,237,0.25); color: #c4b5fd; }
+[data-theme="dark"] .tag-red { background: rgba(239,68,68,0.2); color: #fca5a5; }
+[data-theme="dark"] .tag-yellow { background: rgba(245,158,11,0.2); color: #fcd34d; }
+[data-theme="dark"] .tag-info { background: rgba(59,130,246,0.2); color: #93c5fd; }
+[data-theme="dark"] .formula { border: 1px solid #334155; }
+
+@media (max-width: 700px) {
+  .layout { display: block; }
+  .sidebar { position: static; max-height: none; margin-bottom: 24px; }
+  .side-nav { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  .nav-link { border-left: none; border-bottom: 2px solid transparent; padding: 6px 10px; }
+  .nav-link.active { border-bottom-color: var(--accent); }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle night mode"><i class="fas fa-moon"></i></button>
+    <div class="badge"><i class="fas fa-ban"></i> PAS · Policy Cancellation</div>
+    <h1>Cancellation Types</h1>
+    <p>Policy cancel hone par premium ka hissa kaise return hota hai — sab types, formulas aur examples ke saath.</p>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h3><i class="fas fa-list"></i> Content</h3>
+      <nav class="side-nav" id="sideNav">
+        <a href="#intro" class="nav-link" data-target="intro"><span>1</span> Earned vs Unearned Premium</a>
+        <a href="#flat" class="nav-link" data-target="flat"><span>2</span> Flat Cancellation</a>
+        <a href="#prorata" class="nav-link" data-target="prorata"><span>3</span> Pro-Rata Cancellation</a>
+        <a href="#shortrate" class="nav-link" data-target="shortrate"><span>4</span> Short Rate Cancellation</a>
+        <a href="#variations" class="nav-link" data-target="variations"><span>5</span> Variations (Table, Min Earned, Void)</a>
+        <a href="#who" class="nav-link" data-target="who"><span>6</span> Kaun cancel kare → kaun sa type</a>
+        <a href="#notice" class="nav-link" data-target="notice"><span>7</span> Notice Window vs Type</a>
+        <a href="#compare" class="nav-link" data-target="compare"><span>8</span> Comparison Table</a>
+        <a href="#example" class="nav-link" data-target="example"><span>9</span> Ek Example, Teeno Types</a>
+        <a href="#app" class="nav-link" data-target="app"><span>10</span> App me abhi kya hai</a>
+      </nav>
+    </aside>
+    <main class="content">
+
+  <!-- 1. INTRO -->
+  <div class="section" id="intro">
+    <h2><span class="num">1</span> Pehle Samjho: Earned vs Unearned Premium</h2>
+    <p>Jab policy apni natural expiry se <strong>pehle</strong> cancel hoti hai, toh poora premium insurer ka nahi hota. Policy jitna time chali, utna premium insurer "earn" karta hai (risk cover diya). Baaki bacha hua premium insured ko <strong>return</strong> hota hai.</p>
+    <div class="formula">Earned Premium   = Premium × (Days Elapsed ÷ Total Term Days)
+Unearned Premium = Premium − Earned Premium
+Return Premium   = Unearned Premium (cancellation type ke hisaab se adjust)</div>
+    <p>Bas yahi concept har type me calculate hota hai — farak sirf itna hai ki <strong>insurer kitna earn karega</strong> (sirf time proportion, ya time + penalty).</p>
+  </div>
+
+  <!-- 2. FLAT -->
+  <div class="section" id="flat">
+    <h2><span class="num">2</span> Flat Cancellation <span class="tag tag-green"><i class="fas fa-undo"></i> 100% Return</span></h2>
+    <div class="card">
+      <h4><i class="fas fa-ban" style="color:var(--danger);"></i> Flat Cancellation kya hai</h4>
+      <p>Policy kabhi effectively start hi nahi hui — yani coverage <strong>never in force</strong>. Isme insurer ko <strong>kuch bhi earned premium nahi</strong> milta, poori premium wapas.</p>
+      <div class="formula">Earned Premium   = <span class="val">$0</span>
+Unearned Premium = Premium
+Return Premium   = <span class="val">Premium (100%)</span></div>
+      <ul>
+        <li><strong>Kab use hota hai:</strong> binding error, duplicate policy, effective date par hi cancel, ya "flat cancel" policy.</li>
+        <li><strong>Matlab:</strong> policy jese thi hi nahi — poori payment refund.</li>
+      </ul>
+      <div class="highlight"><strong>Example:</strong> $12,000 annual policy, 2nd din cancel → <strong>$12,000</strong> return, $0 earned.</div>
+    </div>
+  </div>
+
+  <!-- 3. PRO-RATA -->
+  <div class="section" id="prorata">
+    <h2><span class="num">3</span> Pro-Rata Cancellation <span class="tag tag-blue"><i class="fas fa-clock"></i> Time-based · App Default</span></h2>
+    <div class="card">
+      <h4><i class="fas fa-balance-scale" style="color:var(--accent);"></i> Pro-Rata kya hai</h4>
+      <p>Premium sirf <strong>time ke hisaab se proportionate</strong> earn hota hai. Na koi penalty, na koi benefit — jitna time policy chali, utna charge. Iska istemaal tab hota hai jab cancellation <strong>insured ki galti nahi</strong> hai (carrier / UW / non-renewal side se).</p>
+      <div class="formula">Earned = Premium × (Days Elapsed ÷ Total Days)
+Return = Unearned = Premium − Earned</div>
+      <ul>
+        <li><strong>Kab use hota hai:</strong> carrier ke decision se cancel, underwriting reasons, non-renewal, insured ki taraf se "fair" cancel (no claims).</li>
+        <li><strong>Matlab:</strong> insured ko sirf utna charge jitna risk cover mila.</li>
+      </ul>
+      <div class="highlight"><strong>Example:</strong> $12,000 annual policy, 6 mahine (180/360 din) chali → Earned = $6,000 · Return = <strong>$6,000</strong>.</div>
+    </div>
+  </div>
+
+  <!-- 4. SHORT RATE -->
+  <div class="section" id="shortrate">
+    <h2><span class="num">4</span> Short Rate Cancellation <span class="tag tag-yellow"><i class="fas fa-exclamation-triangle"></i> Penalty</span></h2>
+    <div class="card">
+      <h4><i class="fas fa-arrow-trend-down" style="color:var(--warning);"></i> Short Rate kya hai</h4>
+      <p>Insurer <strong>pro-rata se zyada earn</strong> karta hai — insured ko thodi si penalty. Kyunki jab insured khud jaldi cancel karta hai, insurer ka acquisition cost (commission, admin, policy issue) pehle hi lag chuka hota hai. Common rule: <strong>return = unearned ka 90%</strong>.</p>
+      <div class="formula">Earned = Premium − (Unearned × 0.90)
+Return = Unearned × 0.90</div>
+      <ul>
+        <li><strong>Kab use hota hai:</strong> insured / broker khud cancel karwaye, premium financing, ya state rules jahan non-payment par short rate.</li>
+        <li><strong>Matlab:</strong> jaldi cancel karne ki price — thoda premium insurer ke paas reh jata hai.</li>
+      </ul>
+      <div class="highlight"><strong>Example:</strong> $12,000 policy, 6 mahine chali → Unearned = $6,000 · Return = $6,000 × 90% = <strong>$5,400</strong> (insurer ne $6,600 earn kiya).</div>
+    </div>
+  </div>
+
+  <!-- 5. VARIATIONS -->
+  <div class="section" id="variations">
+    <h2><span class="num">5</span> Variations — Inhi se derived types</h2>
+    <div class="cols">
+      <div class="card">
+        <h4><i class="fas fa-table" style="color:var(--info);"></i> Short Rate Table</h4>
+        <p>Linear 90% nahi — industry ki <strong>standard table</strong> (NAUA / ISO) use hoti hai. Pehle mahine me penalty zyada (e.g. 10% se shuru), baad me gradual kam.</p>
+        <div class="highlight" style="margin-top:8px;"><strong>Kab:</strong> jab state ya carrier table-method mandate kare.</div>
+      </div>
+      <div class="card">
+        <h4><i class="fas fa-shield-halved" style="color:var(--secondary);"></i> Minimum Earned Premium</h4>
+        <p>Chahe kitni bhi jaldi cancel ho, insurer <strong>fixed minimum</strong> rakhta hai (e.g. $100 ya 10% of premium). Flat/Pro-Rata ke saath combine hota hai.</p>
+        <div class="highlight" style="margin-top:8px;"><strong>Kab:</strong> chhoti policies / high acquisition cost wale LOB.</div>
+      </div>
+    </div>
+    <div class="card">
+      <h4><i class="fas fa-rotate-left" style="color:var(--danger);"></i> Flat / Void (Never In Force)</h4>
+      <p>Flat se hi milta-julta: policy effective hone se pehle ya binding error par cancel → <strong>policy void ab initio</strong> (jaise kabhi thi hi nahi). Isme poori premium return, koi earned nahi.</p>
+    </div>
+  </div>
+
+  <!-- 6. WHO CANCELS -->
+  <div class="section" id="who">
+    <h2><span class="num">6</span> Kaun cancel kare → kaun sa type lagta hai</h2>
+    <table>
+      <thead><tr><th>Kisne cancel kiya</th><th>Type</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td>Carrier / Underwriter</td><td><span class="tag tag-blue">Pro-Rata</span></td><td>Insured ki galti nahi — sirf time ka proportion.</td></tr>
+        <tr><td>Non-Renewal / UW Decision</td><td><span class="tag tag-blue">Pro-Rata</span></td><td>Risk ab acceptable nahi, insured fair treatment.</td></tr>
+        <tr><td>Insured / Broker khud</td><td><span class="tag tag-yellow">Short Rate</span></td><td>Jaldi cancel ka penalty — acquisition cost cover.</td></tr>
+        <tr><td>Policy never in force</td><td><span class="tag tag-green">Flat</span></td><td>Coverage start hi nahi hui — 100% return.</td></tr>
+        <tr><td>Non-Payment</td><td><span class="tag tag-yellow">Short Rate / varies</span></td><td>State aur policy ke hisaab se (billing default).</td></tr>
+        <tr><td>High-risk LOB</td><td><span class="tag tag-purple">Min. Earned</span></td><td>Fixed minimum insurer ko protect karta hai.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 7. NOTICE VS TYPE -->
+  <div class="section" id="notice">
+    <h2><span class="num">7</span> Important: Notice Window ≠ Cancellation Type</h2>
+    <div class="card">
+      <p><strong>10-Day / 30-Day / 45-Day Notice</strong> cancellation ka <strong>type nahi</strong> — ye sirf batata hai ki policy <strong>kab effective</strong> hogi (kitna notice dekar cancel hoga). Calculation type (Flat/Pro-Rata/Short Rate) alag cheez hai.</p>
+      <div class="flow-row">
+        <span class="step">Non-Payment</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step">10-Day Notice</span>
+        <span class="arrow" style="margin-left:12px;"><i class="fas fa-chevron-right"></i></span>
+        <span class="step">UW / Underwriting</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step">30-Day Notice</span>
+        <span class="arrow" style="margin-left:12px;"><i class="fas fa-chevron-right"></i></span>
+        <span class="step">Flat / Non-Renewal</span><span class="arrow"><i class="fas fa-chevron-right"></i></span><span class="step">45-Day Notice</span>
+      </div>
+      <div class="highlight"><strong>Yaad rakho:</strong> Notice = "kab effective", Type = "kitna return". Dono milke cancellation complete karte hain.</div>
+    </div>
+  </div>
+
+  <!-- 8. COMPARISON -->
+  <div class="section" id="compare">
+    <h2><span class="num">8</span> Ek Nazar Me — Comparison</h2>
+    <table>
+      <thead><tr><th>Type</th><th>Earned Premium</th><th>Return Premium</th><th>Penalty</th><th>Best for</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag tag-green">Flat</span></td><td>$0</td><td>100% of premium</td><td>—</td><td>Policy never started</td></tr>
+        <tr><td><span class="tag tag-blue">Pro-Rata</span></td><td>Time-proportion</td><td>Unearned (full)</td><td>Nahi</td><td>Carrier / UW cancel</td></tr>
+        <tr><td><span class="tag tag-yellow">Short Rate</span></td><td>Pro-rata + penalty</td><td>Unearned × ~90%</td><td>Haan (insured par)</td><td>Insured khud cancel</td></tr>
+        <tr><td><span class="tag tag-purple">Min. Earned</span></td><td>Kam se kam fixed</td><td>Premium − minimum</td><td>Haan</td><td>High-cost LOB</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 9. EXAMPLE -->
+  <div class="section" id="example">
+    <h2><span class="num">9</span> Ek Policy, Teeno Types — Example</h2>
+    <div class="card">
+      <p><strong>Policy:</strong> Annual Premium <strong>$12,000</strong> · Term 360 din · 180 din (6 mahine) chalne ke baad cancel.</p>
+      <table>
+        <thead><tr><th>Calculation</th><th>Earned</th><th>Return</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tag-green">Flat</span></td><td>$0</td><td><strong>$12,000</strong></td></tr>
+          <tr><td><span class="tag tag-blue">Pro-Rata</span></td><td>$6,000</td><td><strong>$6,000</strong></td></tr>
+          <tr><td><span class="tag tag-yellow">Short Rate (90%)</span></td><td>$6,600</td><td><strong>$5,400</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="highlight" style="margin-top:12px;"><strong>Samjho:</strong> same policy, same time — sirf type badla, return $12,000 → $6,000 → $5,400. Type decide karta hai ki insured ko kitna wapas milega.</div>
+    </div>
+  </div>
+
+  <!-- 10. APP NOTE -->
+  <div class="section" id="app">
+    <h2><span class="num">10</span> PAS App me abhi kya implement hai</h2>
+    <div class="card">
+      <ul>
+        <li><strong>Default Type:</strong> Pro-Rata · 10-Day Notice · Effective date = aaj + 10 din (auto-applied from request).</li>
+        <li><strong>Short Rate support:</strong> <code>calcCancelImpact()</code> me Short Rate = Unearned × <strong>90%</strong>.</li>
+        <li><strong>Flow:</strong> request → Cancellation Queue → MGA Confirmation (ACCEPT) → final recalculation → transaction COMPLETED.</li>
+        <li><strong>Extendable:</strong> Flat / Short Rate Table / Minimum Earned Premium types aur formulas aasani se add ho sakte hain.</li>
+      </ul>
+    </div>
+  </div>
+
+    </main>
+  </div>
+
+  <div class="footer">
+    <i class="fas fa-ban"></i> PAS · Policy Cancellation Types Reference · Pro-Rata / Flat / Short Rate / Variations<br>
+    <a href="documentation.html"><i class="fas fa-book"></i> Full PAS Documentation</a>
+  </div>
+
+</div>
+<script>
+(function(){
+  var root = document.documentElement;
+  var toggle = document.getElementById('themeToggle');
+  var icon = toggle.querySelector('i');
+
+  function apply(theme){
+    root.setAttribute('data-theme', theme);
+    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  }
+  var saved = null;
+  try { saved = localStorage.getItem('pas_cancel_theme'); } catch(e) {}
+  if(saved){ apply(saved); }
+  else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){ apply('dark'); }
+
+  toggle.addEventListener('click', function(){
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    apply(next);
+    try { localStorage.setItem('pas_cancel_theme', next); } catch(e) {}
+  });
+
+  var links = document.querySelectorAll('.nav-link');
+  var sections = document.querySelectorAll('.section[id]');
+  function highlight(id){
+    links.forEach(function(l){ l.classList.toggle('active', l.getAttribute('data-target') === id); });
+  }
+  if('IntersectionObserver' in window){
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ highlight(entry.target.id); }
+      });
+    }, { rootMargin: '-15% 0px -70% 0px' });
+    sections.forEach(function(s){ observer.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>
